@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import App, { AppProps, AppContext } from 'next/app';
+import { AppProps } from 'next/app';
 import Head from 'next/head';
 import { ThemeProvider, CssBaseline } from '@material-ui/core';
 import theme from 'styles/theme';
