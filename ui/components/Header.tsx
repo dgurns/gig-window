@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Button } from '@material-ui/core';
+import { Grid, Link, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
@@ -10,7 +10,7 @@ const useStyles = makeStyles(theme => ({
   },
   logo: {
     height: 50,
-    marginTop: 2
+    marginTop: 3
   },
   button: {
     color: theme.palette.common.white
@@ -28,14 +28,12 @@ const Header = () => {
       alignItems="center"
       justify="space-between"
     >
-      <img className={classes.logo} src="/images/cw_logo.png" />
+      <Link href="/">
+        <img className={classes.logo} src="/images/cw_logo.png" />
+      </Link>
       <Grid item>
-        <Button className={classes.button} size="large">
-          Log in
-        </Button>
-        <Button className={classes.button} size="large">
-          Sign up
-        </Button>
+        <Button className={classes.button}>Log in</Button>
+        <Button className={classes.button}>Sign up</Button>
       </Grid>
     </Grid>
   );

@@ -43,6 +43,8 @@ export default createMuiTheme({
   overrides: {
     MuiButton: {
       root: {
+        borderRadius: 7,
+        fontSize: '1rem',
         textTransform: 'none'
       }
     }
