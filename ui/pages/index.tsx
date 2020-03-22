@@ -51,13 +51,13 @@ const Home = () => {
             spacing={2}
             className={classes.showCards}
           >
-            <Grid item xs={12} sm={6} lg={4}>
+            <Grid item xs={12} sm={6} xl={4}>
               <ShowCard />
             </Grid>
-            <Grid item xs={12} sm={6} lg={4}>
+            <Grid item xs={12} sm={6} xl={4}>
               <ShowCard />
             </Grid>
-            <Grid item xs={12} sm={6} lg={4}>
+            <Grid item xs={12} sm={6} xl={4}>
               <ShowCard />
             </Grid>
           </Grid>
@@ -72,7 +72,7 @@ const Home = () => {
             spacing={2}
             className={classes.showCards}
           >
-            <Grid item xs={12} sm={6} lg={4}>
+            <Grid item xs={12} sm={6} xl={4}>
               <ShowCard />
             </Grid>
           </Grid>
