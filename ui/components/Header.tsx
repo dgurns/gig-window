@@ -21,21 +21,23 @@ const Header = () => {
   const classes = useStyles();
 
   return (
-    <Grid
-      container
-      className={classes.container}
-      direction="row"
-      alignItems="center"
-      justify="space-between"
-    >
-      <Link href="/">
-        <img className={classes.logo} src="/images/cw_logo.png" />
-      </Link>
-      <Grid item>
-        <Button className={classes.button}>Log in</Button>
-        <Button className={classes.button}>Sign up</Button>
+    <>
+      <Grid
+        container
+        className={classes.container}
+        direction="row"
+        alignItems="center"
+        justify="space-between"
+      >
+        <Link href="/">
+          <img className={classes.logo} src="/images/cw_logo.png" />
+        </Link>
+        <Grid item>
+          <Button className={classes.button}>Log in</Button>
+          <Button className={classes.button}>Sign up</Button>
+        </Grid>
       </Grid>
-    </Grid>
+    </>
   );
 };
 
