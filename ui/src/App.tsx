@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { ThemeProvider, CssBaseline } from '@material-ui/core';
-import theme from 'styles/theme';
+import theme from 'style/theme';
 
 import Header from 'components/Header';
 import Home from 'screens/Home';
