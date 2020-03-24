@@ -1,15 +1,19 @@
 import React from 'react';
-import { Card, CardMedia, CardContent, Link } from '@material-ui/core';
+import { Link } from 'react-router-dom';
+import { Card, CardMedia, Grid, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { grey } from '@material-ui/core/colors';
 
 const useStyles = makeStyles(theme => ({
+  cardLink: {
+    textDecoration: 'none'
+  },
   card: {
-    alignItems: 'center',
+    alignItems: 'flex-start',
     display: 'flex',
     flex: 1,
     flexDirection: 'row',
-    height: 87,
+    height: 88,
     minWidth: 280,
     padding: 8,
     '&:hover': {
@@ -17,8 +21,13 @@ const useStyles = makeStyles(theme => ({
     }
   },
   image: {
-    height: 60,
-    width: 'auto'
+    height: 72,
+    marginRight: 10,
+    minWidth: 109
+  },
+  textContent: {
+    height: 72,
+    overflow: 'hidden'
   }
 }));
 
@@ -26,14 +35,18 @@ const ShowCard = () => {
   const classes = useStyles();
 
   return (
-    <Link href="/about">
-      <Card raised className={classes.card}>
+    <Link to="/artist" className={classes.cardLink}>
+      <Card className={classes.card} elevation={3}>
         <CardMedia
-          component="img"
-          src="/images/cw_logo.png"
+          image="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.daytonlocal.com%2Fimages%2Fmusic%2Fdayton-celtic-festival-gaelic-storm.jpg&f=1&nofb=1"
           className={classes.image}
         />
-        <CardContent>Hi</CardContent>
+        <Grid className={classes.textContent}>
+          <Typography variant="body1">My Great Tunes</Typography>
+          <Typography variant="body1" color="textSecondary">
+            Bartholomew Hornswoggle
+          </Typography>
+        </Grid>
       </Card>
     </Link>
   );
