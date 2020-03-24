@@ -46,6 +46,9 @@ export default createMuiTheme({
         borderRadius: 7,
         fontSize: '1rem',
         textTransform: 'none'
+      },
+      sizeSmall: {
+        fontSize: '1rem'
       }
     },
     MuiCard: {
@@ -61,6 +64,11 @@ export default createMuiTheme({
       elevation3: {
         boxShadow:
           '0px 3px 3px -2px rgba(0,0,0,0.1), 0px 3px 4px 0px rgba(0,0,0,0.07), 0px 1px 8px 0px rgba(0,0,0,0.06)'
+      }
+    },
+    MuiInputBase: {
+      input: {
+        fontSize: '1rem'
       }
     }
   }
