@@ -15,7 +15,7 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'row',
     height: 88,
     minWidth: 280,
-    padding: 8,
+    padding: theme.spacing(1),
     '&:hover': {
       backgroundColor: grey[100]
     }

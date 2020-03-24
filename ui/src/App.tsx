@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 import Header from 'components/Header';
 import Home from 'screens/Home';
+import Artist from 'screens/Artist';
 
 function App() {
   useEffect(() => {
@@ -17,7 +18,9 @@ function App() {
     <Router>
       <Header />
       <Switch>
-        <Route path="/artist">Artist</Route>
+        <Route path="/artist">
+          <Artist />
+        </Route>
         <Route path="/">
           <Home />
         </Route>

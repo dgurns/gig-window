@@ -3,13 +3,13 @@ import { Paper, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 type SubheaderProps = {
-  children: React.ReactElement;
+  children: React.ReactElement | React.ReactElement[];
 };
 
 const useStyles = makeStyles(theme => ({
   container: {
     backgroundColor: theme.palette.common.white,
-    height: 30
+    minHeight: 30
   }
 }));
 
