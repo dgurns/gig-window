@@ -55,7 +55,10 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.common.white
   },
   tools: {
-    marginTop: theme.spacing(2)
+    marginTop: theme.spacing(2),
+    [theme.breakpoints.down('sm')]: {
+      padding: `0 ${theme.spacing(2)}px`
+    }
   },
   tipInput: {
     marginRight: theme.spacing(1),
