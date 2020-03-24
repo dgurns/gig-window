@@ -15,6 +15,35 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.down('xs')]: {
       margin: '10px 20px'
     }
+  },
+  artistInfoContainer: {
+    alignItems: 'center',
+    padding: `${theme.spacing(4)}px ${theme.spacing(4)}px`,
+    [theme.breakpoints.down('xs')]: {
+      alignItems: 'flex-start',
+      flexDirection: 'column-reverse',
+      padding: `${theme.spacing(3)}px ${theme.spacing(3)}px`
+    }
+  },
+  artistImage: {
+    height: 72,
+    marginRight: theme.spacing(2),
+    [theme.breakpoints.down('xs')]: {
+      marginTop: theme.spacing(2)
+    }
+  },
+  artistText: {
+    flexDirection: 'column'
+  },
+  watchChatContainer: {
+    height: 520
+  },
+  watch: {
+    backgroundColor: theme.palette.common.black,
+    backgroundSize: 'cover'
+  },
+  chat: {
+    backgroundColor: theme.palette.common.white
   }
 }));
 
@@ -58,7 +87,23 @@ const Artist = () => {
         </Link>
       </Subheader>
       <Container disableGutters maxWidth={false}>
-        Artist
+        <Grid container direction="row" className={classes.artistInfoContainer}>
+          <img
+            src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.daytonlocal.com%2Fimages%2Fmusic%2Fdayton-celtic-festival-gaelic-storm.jpg&f=1&nofb=1"
+            alt="Artist"
+            className={classes.artistImage}
+          />
+          <Grid item className={classes.artistText}>
+            <Typography variant="h6">Paul Bigelow</Typography>
+            <Typography variant="body1" color="textSecondary">
+              Today at 7pm: Covers and Improv
+            </Typography>
+          </Grid>
+        </Grid>
+        <Grid container direction="row" className={classes.watchChatContainer}>
+          <Grid item xs={12} sm={8} md={9} lg={9} className={classes.watch} />
+          <Grid item xs={false} sm={4} md={3} lg={3} className={classes.chat} />
+        </Grid>
       </Container>
     </>
   );

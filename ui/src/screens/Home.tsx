@@ -7,8 +7,8 @@ import ShowCard from 'components/ShowCard';
 
 const useStyles = makeStyles(theme => ({
   pageContent: {
-    padding: 10,
-    paddingTop: 35,
+    padding: theme.spacing(2),
+    paddingTop: theme.spacing(4),
     width: '100%'
   },
   sectionHeading: {
@@ -28,7 +28,7 @@ const Home = () => {
         <Typography variant="body1">Today</Typography>
       </Subheader>
       <Container maxWidth="md" disableGutters className={classes.pageContent}>
-        <Typography variant="h5" className={classes.sectionHeading}>
+        <Typography variant="h6" className={classes.sectionHeading}>
           Live now
         </Typography>
         <Grid container item xs={12} spacing={2} className={classes.showCards}>
@@ -43,7 +43,7 @@ const Home = () => {
           </Grid>
         </Grid>
 
-        <Typography variant="h5" className={classes.sectionHeading}>
+        <Typography variant="h6" className={classes.sectionHeading}>
           7:30 pm
         </Typography>
         <Grid container item xs={12} spacing={2} className={classes.showCards}>
