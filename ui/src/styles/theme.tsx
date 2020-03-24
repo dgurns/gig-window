@@ -38,7 +38,7 @@ export default createMuiTheme({
     }
   },
   typography: {
-    fontFamily: ['Roboto', '"Helvetica Neue"', 'Arial', 'sans-serif'].join(',')
+    fontFamily: ['Lato', '"Helvetica Neue"', 'Arial', 'sans-serif'].join(',')
   },
   overrides: {
     MuiButton: {

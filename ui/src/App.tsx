@@ -1,7 +1,5 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { ThemeProvider, CssBaseline } from '@material-ui/core';
-import theme from 'style/theme';
 
 import Header from 'components/Header';
 import Home from 'screens/Home';
@@ -16,18 +14,15 @@ function App() {
   }, []);
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Router>
-        <Header />
-        <Switch>
-          <Route path="/artist">Artist</Route>
-          <Route path="/">
-            <Home />
-          </Route>
-        </Switch>
-      </Router>
-    </ThemeProvider>
+    <Router>
+      <Header />
+      <Switch>
+        <Route path="/artist">Artist</Route>
+        <Route path="/">
+          <Home />
+        </Route>
+      </Switch>
+    </Router>
   );
 }
 
