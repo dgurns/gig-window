@@ -2,9 +2,9 @@ import React from 'react';
 import { Paper, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-type SubheaderProps = {
+interface SubheaderProps {
   children: React.ReactElement | React.ReactElement[];
-};
+}
 
 const useStyles = makeStyles(theme => ({
   container: {

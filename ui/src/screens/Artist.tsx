@@ -1,18 +1,11 @@
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import {
-  Paper,
-  Container,
-  Link,
-  TextField,
-  InputAdornment,
-  Button,
-  Typography,
-  Grid
-} from '@material-ui/core';
+import { Paper, Container, Link, Typography, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Subheader from 'components/Subheader';
+import TipButton from 'components/TipButton';
+import ChatBox from 'components/ChatBox';
 
 const useStyles = makeStyles(theme => ({
   pageContent: {
@@ -59,18 +52,6 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.down('sm')]: {
       padding: `0 ${theme.spacing(2)}px`
     }
-  },
-  tipInput: {
-    marginRight: theme.spacing(1),
-    width: 56
-  },
-  tipInputStartAdornment: {
-    paddingLeft: 7
-  },
-  tipInputInterior: {
-    marginBottom: 1,
-    marginLeft: -3,
-    paddingRight: 0
   }
 }));
 
@@ -134,14 +115,9 @@ const Artist = () => {
             className={classes.watchChatContainer}
           >
             <Grid item xs={12} sm={8} md={9} className={classes.watch} />
-            <Grid
-              item
-              xs={false}
-              sm={4}
-              md={3}
-              lg={3}
-              className={classes.chat}
-            />
+            <Grid item xs={false} sm={4} md={3} lg={3} className={classes.chat}>
+              <ChatBox />
+            </Grid>
           </Grid>
         </Paper>
         <Grid
@@ -159,24 +135,7 @@ const Artist = () => {
             md={9}
             justify="flex-end"
           >
-            <TextField
-              defaultValue="3"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">$</InputAdornment>
-                ),
-                classes: {
-                  adornedStart: classes.tipInputStartAdornment,
-                  input: classes.tipInputInterior
-                }
-              }}
-              size="small"
-              variant="outlined"
-              className={classes.tipInput}
-            />
-            <Button variant="contained" color="primary" size="small">
-              Tip
-            </Button>
+            <TipButton />
           </Grid>
         </Grid>
       </Container>
