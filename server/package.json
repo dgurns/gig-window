@@ -6,7 +6,7 @@
   "scripts": {
     "start": "yarn build:dev",
     "start:dist": "node 'dist/index.js'",
-    "build:dev": "nodemon 'src/index.ts' --exec 'ts-node' src/index.ts -e ts,graphql",
+    "build:dev": "nodemon 'src/index.ts' --exec 'ts-node -r tsconfig-paths/register' index.ts -e ts,graphql",
     "build:dist": "tsc -p .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -19,10 +19,11 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "graphql": "^14.6.0",
-    "http": "^0.0.1-security",
     "ncp": "^2.0.0",
     "reflect-metadata": "^0.1.13",
-    "type-graphql": "^0.17.6"
+    "sqlite3": "^4.1.1",
+    "type-graphql": "^0.17.6",
+    "typeorm": "^0.2.24"
   },
   "devDependencies": {
     "@types/compression": "^1.7.0",
@@ -33,6 +34,7 @@
     "graphql-import-node": "^0.0.4",
     "nodemon": "^2.0.2",
     "ts-node": "^8.8.1",
+    "tsconfig-paths": "^3.9.0",
     "typescript": "^3.8.3"
   }
 }
