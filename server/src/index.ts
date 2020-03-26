@@ -11,7 +11,7 @@ import { BookResolver } from 'resolvers/BookResolver';
 
 async function start() {
   try {
-    const connection = await createConnection();
+    await createConnection();
     const schema = await buildSchema({
       resolvers: [BookResolver]
     });
