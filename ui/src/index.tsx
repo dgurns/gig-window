@@ -1,17 +1,32 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {
+  ApolloClient,
+  HttpLink,
+  InMemoryCache,
+  ApolloProvider
+} from '@apollo/client';
 import { ThemeProvider, CssBaseline } from '@material-ui/core';
 import theme from 'styles/theme';
 import * as serviceWorker from './serviceWorker';
 
 import App from 'App';
 
+const apolloClient = new ApolloClient({
+  cache: new InMemoryCache(),
+  link: new HttpLink({
+    uri: 'http://localhost:4000/graphql'
+  })
+});
+
 ReactDOM.render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <App />
-    </ThemeProvider>
+    <ApolloProvider client={apolloClient}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <App />
+      </ThemeProvider>
+    </ApolloProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
