@@ -1,22 +1,30 @@
 import { Entity, BaseEntity, PrimaryGeneratedColumn, Column } from 'typeorm';
 import { ObjectType, Field, ID } from 'type-graphql';
 
+export enum UserRole {
+  Regular = 'REGULAR',
+  Admin = 'ADMIN'
+}
+
 @Entity()
 @ObjectType()
-export class Book extends BaseEntity {
+export class User extends BaseEntity {
   @Field(() => ID)
   @PrimaryGeneratedColumn()
   id: string;
 
   @Field(() => String)
   @Column()
-  title: string;
+  email: string;
 
   @Field(() => String)
   @Column()
-  author: string;
+  username: string;
 
-  @Field(() => Boolean)
-  @Column({ default: false })
-  isPublished: boolean;
+  @Column()
+  hashedPassword: string;
+
+  @Field(() => [String])
+  @Column({ default: [UserRole.Regular] })
+  roles: UserRole[];
 }

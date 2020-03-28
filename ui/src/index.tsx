@@ -7,6 +7,7 @@ import {
   ApolloProvider
 } from '@apollo/client';
 import { ThemeProvider, CssBaseline } from '@material-ui/core';
+
 import theme from 'styles/theme';
 import * as serviceWorker from './serviceWorker';
 
