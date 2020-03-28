@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {
@@ -16,7 +18,7 @@ import App from 'App';
 const apolloClient = new ApolloClient({
   cache: new InMemoryCache(),
   link: new HttpLink({
-    uri: 'http://localhost:4000/graphql'
+    uri: process.env.GRAPHQL_API_URL
   })
 });
 

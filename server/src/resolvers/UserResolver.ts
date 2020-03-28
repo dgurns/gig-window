@@ -1,6 +1,7 @@
-import { Resolver, Query, Mutation, Arg } from 'type-graphql';
+import { Resolver, Query, Mutation, Arg, Ctx } from 'type-graphql';
 import { User } from 'entities/User';
-import { CreateUserInput } from 'resolvers/inputs/CreateUserInput';
+import { SignUpInput, LogInInput } from 'resolvers/inputs/UserInputs';
+import { CustomContext } from 'auth-checker';
 
 @Resolver()
 export class UserResolver {
@@ -15,9 +16,26 @@ export class UserResolver {
   }
 
   @Mutation(() => User)
-  async createUser(@Arg('data') data: CreateUserInput) {
+  async signUp(@Arg('data') data: SignUpInput, @Ctx() ctx: CustomContext) {
     const user = User.create(data);
     await user.save();
+
+    ctx.login(user);
+
+    return user;
+  }
+
+  @Mutation(() => User)
+  async logIn(@Arg('data') data: LogInInput, @Ctx() ctx: CustomContext) {
+    const { user } = await ctx.authenticate('graphql-local', {
+      email: data.email,
+      password: data.password
+    });
+
+    if (user) {
+      ctx.login(user);
+    }
+
     return user;
   }
 }

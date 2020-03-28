@@ -1,8 +1,7 @@
 import { InputType, Field } from 'type-graphql';
-import { UserRole } from 'entities/User';
 
 @InputType()
-export class CreateUserInput {
+export class SignUpInput {
   @Field()
   email: string;
 
@@ -10,8 +9,14 @@ export class CreateUserInput {
   username: string;
 
   @Field()
-  hashedPassword: string;
+  password: string;
+}
+
+@InputType()
+export class LogInInput {
+  @Field()
+  email: string;
 
   @Field()
-  roles: UserRole[];
+  password: string;
 }
