@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {
@@ -12,13 +10,13 @@ import { ThemeProvider, CssBaseline } from '@material-ui/core';
 
 import theme from 'styles/theme';
 import * as serviceWorker from './serviceWorker';
-
 import App from 'App';
 
 const apolloClient = new ApolloClient({
   cache: new InMemoryCache(),
   link: new HttpLink({
-    uri: process.env.GRAPHQL_API_URL
+    uri: process.env.REACT_APP_GRAPHQL_API_URL,
+    credentials: 'include'
   })
 });
 

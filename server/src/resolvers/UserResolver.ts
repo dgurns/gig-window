@@ -1,7 +1,7 @@
 import { Resolver, Query, Mutation, Arg, Ctx } from 'type-graphql';
 import { User } from 'entities/User';
 import { SignUpInput, LogInInput } from 'resolvers/inputs/UserInputs';
-import { CustomContext } from 'auth-checker';
+import { CustomContext } from 'authChecker';
 
 @Resolver()
 export class UserResolver {
@@ -20,7 +20,7 @@ export class UserResolver {
     const user = User.create(data);
     await user.save();
 
-    ctx.login(user);
+    await ctx.login(user);
 
     return user;
   }
@@ -33,7 +33,7 @@ export class UserResolver {
     });
 
     if (user) {
-      ctx.login(user);
+      await ctx.login(user);
     }
 
     return user;

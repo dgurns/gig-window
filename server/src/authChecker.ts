@@ -17,11 +17,14 @@ export interface CustomContext {
   req: {
     user?: User;
   };
-  user?: User;
 }
 
 export const authChecker: AuthChecker<CustomContext> = (
-  { context: { user } },
+  {
+    context: {
+      req: { user }
+    }
+  },
   roles
 ) => {
   if (roles.length === 0) {

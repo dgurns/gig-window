@@ -3,50 +3,30 @@ import 'reflect-metadata';
 
 import express from 'express';
 import compression from 'compression';
-import cors from 'cors';
-import session from 'express-session';
+import cookieSession from 'cookie-session';
 import passport from 'passport';
 import { ApolloServer } from 'apollo-server-express';
-import { createConnection } from 'typeorm';
+import { createConnection as createDatabaseConnection } from 'typeorm';
 import { buildSchema } from 'type-graphql';
 import depthLimit from 'graphql-depth-limit';
-import { GraphQLLocalStrategy, buildContext } from 'graphql-passport';
+import { buildContext } from 'graphql-passport';
 
-import { authChecker } from './auth-checker';
+import { initializePassport } from './initializePassport';
+import { authChecker } from './authChecker';
 import { User } from 'entities/User';
 import { UserResolver } from 'resolvers/UserResolver';
 
 async function start() {
   try {
-    await createConnection();
-
-    passport.use(
-      new GraphQLLocalStrategy(
-        async (
-          email: unknown,
-          password: unknown,
-          done: (error: any, user: User | undefined) => void
-        ) => {
-          const user = await User.findOne({ where: { email, password } });
-          const error = user ? null : new Error('No matching user');
-          done(error, user);
-        }
-      )
-    );
+    await createDatabaseConnection();
+    initializePassport();
 
     const app = express();
-    app.use(
-      '*',
-      cors({
-        origin: process.env.UI_ORIGIN
-      })
-    );
     app.use(compression());
     app.use(
-      session({
-        resave: false,
-        saveUninitialized: false,
-        secret: process.env.EXPRESS_SESSION_SECRET || 'expressSessionSecret'
+      cookieSession({
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+        keys: [process.env.COOKIE_SESSION_KEY || 'defaultCookieSessionKey']
       })
     );
     app.use(passport.initialize());
@@ -54,7 +34,8 @@ async function start() {
 
     const schema = await buildSchema({
       resolvers: [UserResolver],
-      authChecker
+      authChecker,
+      validate: false
     });
     const server = new ApolloServer({
       schema,
@@ -62,7 +43,10 @@ async function start() {
       context: ({ req, res }) => buildContext({ req, res, User })
     });
 
-    server.applyMiddleware({ app });
+    server.applyMiddleware({
+      app,
+      cors: { origin: process.env.UI_ORIGIN, credentials: true }
+    });
 
     app.listen({ port: 4000 }, () =>
       console.log(
