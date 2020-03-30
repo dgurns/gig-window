@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import { GraphQLLocalStrategy } from 'graphql-passport';
 import passport from 'passport';
 import { User } from 'entities/User';
@@ -20,8 +21,21 @@ export const initializePassport = () => {
         done: (error: any, user: User | undefined) => void
       ) => {
         const user = await User.findOne({ where: { email } });
-        const error = user ? null : new Error('No matching user');
-        done(error, user);
+
+        if (!user) {
+          return done(
+            new Error('No user found with that email address'),
+            undefined
+          );
+        }
+
+        const passwordIsValid = bcrypt.compare(password, user.hashedPassword);
+
+        if (passwordIsValid) {
+          return done(null, user);
+        } else {
+          return done(new Error('Invalid password'), undefined);
+        }
       }
     )
   );

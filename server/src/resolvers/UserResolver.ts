@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import { Resolver, Query, Mutation, Arg, Ctx } from 'type-graphql';
 import { User } from 'entities/User';
 import { SignUpInput, LogInInput } from 'resolvers/inputs/UserInputs';
@@ -17,7 +18,12 @@ export class UserResolver {
 
   @Mutation(() => User)
   async signUp(@Arg('data') data: SignUpInput, @Ctx() ctx: CustomContext) {
-    const user = User.create(data);
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+    const user = User.create({
+      email: data.email,
+      username: data.username,
+      hashedPassword
+    });
     await user.save();
 
     await ctx.login(user);
@@ -34,8 +40,7 @@ export class UserResolver {
 
     if (user) {
       await ctx.login(user);
+      return user;
     }
-
-    return user;
   }
 }
