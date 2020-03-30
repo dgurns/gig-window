@@ -18,7 +18,7 @@ export class UserResolver {
 
   @Query(() => User, { nullable: true })
   getCurrentUser(@Ctx() ctx: CustomContext) {
-    return ctx.req.user;
+    return ctx.getUser();
   }
 
   @Mutation(() => User)
@@ -54,5 +54,11 @@ export class UserResolver {
       await ctx.login(user);
       return user;
     }
+  }
+
+  @Mutation(() => Boolean)
+  logOut(@Ctx() ctx: CustomContext) {
+    ctx.logout();
+    return true;
   }
 }
