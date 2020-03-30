@@ -1,7 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useQuery, gql } from '@apollo/client';
 import { Grid, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+
+const GET_CURRENT_USER = gql`
+  {
+    getCurrentUser {
+      id
+    }
+  }
+`;
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -21,6 +31,10 @@ const useStyles = makeStyles(theme => ({
 const Header = () => {
   const classes = useStyles();
 
+  const { loading, data } = useQuery(GET_CURRENT_USER);
+  const userIsLoggedOut = !loading && !data.getCurrentUser;
+  const userIsLoggedIn = !loading && data.getCurrentUser;
+
   return (
     <>
       <Grid
@@ -38,8 +52,17 @@ const Header = () => {
           />
         </Link>
         <Grid item>
-          <Button className={classes.button}>Log in</Button>
-          <Button className={classes.button}>Sign up</Button>
+          {userIsLoggedOut && (
+            <>
+              <Button className={classes.button}>Log in</Button>
+              <Button className={classes.button}>Sign up</Button>
+            </>
+          )}
+          {userIsLoggedIn && (
+            <Link to={`/user/${data.getCurrentUser.id}`}>
+              <AccountCircleIcon color="secondary" fontSize="large" />
+            </Link>
+          )}
         </Grid>
       </Grid>
     </>
