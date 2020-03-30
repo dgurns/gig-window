@@ -11,13 +11,25 @@ export class UserResolver {
     return User.find();
   }
 
-  @Query(() => User)
+  @Query(() => User, { nullable: true })
   getUser(@Arg('id') id: string) {
     return User.findOne({ where: { id } });
   }
 
+  @Query(() => User, { nullable: true })
+  getCurrentUser(@Ctx() ctx: CustomContext) {
+    return ctx.req.user;
+  }
+
   @Mutation(() => User)
   async signUp(@Arg('data') data: SignUpInput, @Ctx() ctx: CustomContext) {
+    const existingUser = await User.findOne({ where: { email: data.email } });
+    if (existingUser) {
+      throw new Error(
+        'There is already an account under that email address. Please log in or use another email.'
+      );
+    }
+
     const hashedPassword = await bcrypt.hash(data.password, 10);
     const user = User.create({
       email: data.email,
