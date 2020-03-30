@@ -5,6 +5,8 @@ import { Grid, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
+import useDialog from 'hooks/useDialog';
+
 const GET_CURRENT_USER = gql`
   {
     getCurrentUser {
@@ -35,6 +37,8 @@ const Header = () => {
   const userIsLoggedOut = !loading && !data.getCurrentUser;
   const userIsLoggedIn = !loading && data.getCurrentUser;
 
+  const [AuthDialog, setAuthDialogIsVisible] = useDialog();
+
   return (
     <>
       <Grid
@@ -54,7 +58,12 @@ const Header = () => {
         <Grid item>
           {userIsLoggedOut && (
             <>
-              <Button className={classes.button}>Log in</Button>
+              <Button
+                className={classes.button}
+                onClick={() => setAuthDialogIsVisible(true)}
+              >
+                Log in
+              </Button>
               <Button className={classes.button}>Sign up</Button>
             </>
           )}
@@ -65,6 +74,8 @@ const Header = () => {
           )}
         </Grid>
       </Grid>
+
+      <AuthDialog />
     </>
   );
 };
