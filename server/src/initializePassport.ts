@@ -29,7 +29,10 @@ export const initializePassport = () => {
           );
         }
 
-        const passwordIsValid = bcrypt.compare(password, user.hashedPassword);
+        const passwordIsValid = await bcrypt.compare(
+          password,
+          user.hashedPassword
+        );
 
         if (passwordIsValid) {
           return done(null, user);
