@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 import useDialog from 'hooks/useDialog';
+import LogInForm from 'components/LogInForm';
 
 const GET_CURRENT_USER = gql`
   {
@@ -37,7 +38,8 @@ const Header = () => {
   const userIsLoggedOut = !loading && !data.getCurrentUser;
   const userIsLoggedIn = !loading && data.getCurrentUser;
 
-  const [AuthDialog, setAuthDialogIsVisible] = useDialog();
+  const [LogInDialog, setLogInDialogIsVisible] = useDialog();
+  const [SignUpDialog, setSignUpDialogIsVisible] = useDialog();
 
   return (
     <>
@@ -60,22 +62,30 @@ const Header = () => {
             <>
               <Button
                 className={classes.button}
-                onClick={() => setAuthDialogIsVisible(true)}
+                onClick={setLogInDialogIsVisible}
               >
                 Log in
               </Button>
-              <Button className={classes.button}>Sign up</Button>
+              <Button
+                className={classes.button}
+                onClick={setSignUpDialogIsVisible}
+              >
+                Sign up
+              </Button>
             </>
           )}
           {userIsLoggedIn && (
-            <Link to={`/user/${data.getCurrentUser.id}`}>
+            <Link to={'/artist'}>
               <AccountCircleIcon color="secondary" fontSize="large" />
             </Link>
           )}
         </Grid>
       </Grid>
 
-      <AuthDialog />
+      <LogInDialog>
+        <LogInForm />
+      </LogInDialog>
+      <SignUpDialog>Sign up</SignUpDialog>
     </>
   );
 };

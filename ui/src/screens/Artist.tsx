@@ -1,11 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import { useMutation, gql } from '@apollo/client';
 import { Paper, Container, Link, Typography, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Subheader from 'components/Subheader';
 import TipButton from 'components/TipButton';
 import ChatBox from 'components/ChatBox';
+
+const LOG_OUT = gql`
+  mutation LogOut {
+    logOut
+  }
+`;
 
 const useStyles = makeStyles(theme => ({
   pageContent: {
@@ -57,6 +64,15 @@ const useStyles = makeStyles(theme => ({
 
 const Artist = () => {
   const classes = useStyles();
+  const [logOut, { data }] = useMutation(LOG_OUT, {
+    errorPolicy: 'all'
+  });
+
+  useEffect(() => {
+    if (data?.logOut) {
+      window.location.reload();
+    }
+  }, [data]);
 
   return (
     <>
@@ -92,6 +108,14 @@ const Artist = () => {
           className={classes.subheaderLink}
         >
           Transactions
+        </Link>
+        <Link
+          href="#"
+          onClick={() => logOut()}
+          variant="body1"
+          className={classes.subheaderLink}
+        >
+          Log out
         </Link>
       </Subheader>
       <Container disableGutters maxWidth={false}>
