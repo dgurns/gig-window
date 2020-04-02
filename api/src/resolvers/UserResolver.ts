@@ -23,6 +23,11 @@ export class UserResolver {
 
   @Mutation(() => User)
   async signUp(@Arg('data') data: SignUpInput, @Ctx() ctx: CustomContext) {
+    const { email, username, password } = data;
+    if (!email || !username || !password) {
+      throw new Error('Please fill out all the fields');
+    }
+
     const existingUser = await User.findOne({ where: { email: data.email } });
     if (existingUser) {
       throw new Error(

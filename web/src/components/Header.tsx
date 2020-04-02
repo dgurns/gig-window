@@ -7,6 +7,7 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 import useDialog from 'hooks/useDialog';
 import LogInForm from 'components/LogInForm';
+import SignUpForm from 'components/SignUpForm';
 
 const GET_CURRENT_USER = gql`
   {
@@ -85,7 +86,9 @@ const Header = () => {
       <LogInDialog>
         <LogInForm />
       </LogInDialog>
-      <SignUpDialog>Sign up</SignUpDialog>
+      <SignUpDialog>
+        <SignUpForm />
+      </SignUpDialog>
     </>
   );
 };
