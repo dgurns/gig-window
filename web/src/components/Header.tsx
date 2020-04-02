@@ -1,6 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Grid, Button } from '@material-ui/core';
+import { Link as RouterLink } from 'react-router-dom';
+import { Grid, Button, Link, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
@@ -20,10 +20,13 @@ const useStyles = makeStyles(theme => ({
     marginTop: 3
   },
   button: {
-    color: theme.palette.common.white,
-    '&:hover': {
-      textDecoration: 'none'
-    }
+    color: theme.palette.common.white
+  },
+  userLink: {
+    color: theme.palette.common.white
+  },
+  userIcon: {
+    marginLeft: theme.spacing(1)
   }
 }));
 
@@ -45,13 +48,13 @@ const Header = () => {
         alignItems="center"
         justify="space-between"
       >
-        <Link to="/">
+        <RouterLink to="/">
           <img
             className={classes.logo}
             src="/images/cw_logo.png"
             alt="Concert Window logo"
           />
-        </Link>
+        </RouterLink>
         <Grid item>
           {userIsLoggedOut && (
             <>
@@ -70,8 +73,19 @@ const Header = () => {
             </>
           )}
           {currentUser && (
-            <Link to={'/user'}>
-              <AccountCircleIcon color="secondary" fontSize="large" />
+            <Link
+              to="/user"
+              component={RouterLink}
+              className={classes.userLink}
+            >
+              <Grid container direction="row" alignItems="center">
+                <Typography>{currentUser.username}</Typography>
+                <AccountCircleIcon
+                  color="secondary"
+                  fontSize="large"
+                  className={classes.userIcon}
+                />
+              </Grid>
             </Link>
           )}
         </Grid>
