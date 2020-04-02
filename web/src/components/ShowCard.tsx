@@ -35,7 +35,7 @@ const ShowCard = () => {
   const classes = useStyles();
 
   return (
-    <Link to="/artist" className={classes.cardLink}>
+    <Link to="/user" className={classes.cardLink}>
       <Card className={classes.card} elevation={3}>
         <CardMedia
           image="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.daytonlocal.com%2Fimages%2Fmusic%2Fdayton-celtic-festival-gaelic-storm.jpg&f=1&nofb=1"

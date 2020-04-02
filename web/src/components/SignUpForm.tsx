@@ -61,7 +61,7 @@ const SignUpForm = () => {
 
   return (
     <Paper>
-      <Grid container className={classes.container}>
+      <Grid container xs={12} className={classes.container}>
         <Typography variant="h4" className={classes.title}>
           Sign up
         </Typography>

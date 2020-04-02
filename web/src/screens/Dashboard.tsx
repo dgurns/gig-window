@@ -5,7 +5,6 @@ import { Paper, Container, Link, Typography, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Subheader from 'components/Subheader';
-import TipButton from 'components/TipButton';
 import ChatBox from 'components/ChatBox';
 
 const LOG_OUT = gql`
@@ -62,7 +61,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Artist = () => {
+const Dashboard = () => {
   const classes = useStyles();
   const [logOut, { data }] = useMutation(LOG_OUT, {
     errorPolicy: 'all'
@@ -122,7 +121,7 @@ const Artist = () => {
         <Grid container direction="row" className={classes.artistInfoContainer}>
           <img
             src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.daytonlocal.com%2Fimages%2Fmusic%2Fdayton-celtic-festival-gaelic-storm.jpg&f=1&nofb=1"
-            alt="Artist"
+            alt="User"
             className={classes.artistImage}
           />
           <Grid item className={classes.artistText}>
@@ -144,27 +143,9 @@ const Artist = () => {
             </Grid>
           </Grid>
         </Paper>
-        <Grid
-          container
-          direction="row"
-          justify="flex-start"
-          className={classes.tools}
-        >
-          <Grid
-            item
-            container
-            direction="row"
-            xs={12}
-            sm={8}
-            md={9}
-            justify="flex-end"
-          >
-            <TipButton />
-          </Grid>
-        </Grid>
       </Container>
     </>
   );
 };
 
-export default Artist;
+export default Dashboard;

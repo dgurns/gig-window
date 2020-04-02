@@ -1,21 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useQuery, gql } from '@apollo/client';
 import { Grid, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
+import useCurrentUser from 'hooks/useCurrentUser';
 import useDialog from 'hooks/useDialog';
 import LogInForm from 'components/LogInForm';
 import SignUpForm from 'components/SignUpForm';
-
-const GET_CURRENT_USER = gql`
-  {
-    getCurrentUser {
-      id
-    }
-  }
-`;
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -35,9 +27,8 @@ const useStyles = makeStyles(theme => ({
 const Header = () => {
   const classes = useStyles();
 
-  const { loading, data } = useQuery(GET_CURRENT_USER);
-  const userIsLoggedOut = !loading && !data.getCurrentUser;
-  const userIsLoggedIn = !loading && data.getCurrentUser;
+  const [currentUser, currentUserLoading] = useCurrentUser();
+  const userIsLoggedOut = !currentUser && !currentUserLoading;
 
   const [LogInDialog, setLogInDialogIsVisible] = useDialog();
   const [SignUpDialog, setSignUpDialogIsVisible] = useDialog();
@@ -75,8 +66,8 @@ const Header = () => {
               </Button>
             </>
           )}
-          {userIsLoggedIn && (
-            <Link to={'/artist'}>
+          {currentUser && (
+            <Link to={'/user'}>
               <AccountCircleIcon color="secondary" fontSize="large" />
             </Link>
           )}

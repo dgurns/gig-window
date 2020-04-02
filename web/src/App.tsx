@@ -1,11 +1,16 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
+import useCurrentUser from 'hooks/useCurrentUser';
+
 import Header from 'components/Header';
 import Home from 'screens/Home';
-import Artist from 'screens/Artist';
+import Watch from 'screens/Watch';
+import Dashboard from 'screens/Dashboard';
 
 function App() {
+  const [currentUser] = useCurrentUser();
+
   useEffect(() => {
     // Remove any styles left over from server side rendering
     const jssStyles = document.querySelector('#jss-server-side');
@@ -18,12 +23,10 @@ function App() {
     <Router>
       <Header />
       <Switch>
-        <Route path="/artist">
-          <Artist />
-        </Route>
-        <Route path="/">
+        <Route exact path="/">
           <Home />
         </Route>
+        <Route path="/user">{currentUser ? <Dashboard /> : <Watch />}</Route>
       </Switch>
     </Router>
   );
