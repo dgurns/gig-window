@@ -40,12 +40,25 @@ export default createMuiTheme({
   typography: {
     fontFamily: ['Lato', '"Helvetica Neue"', 'Arial', 'sans-serif'].join(',')
   },
+  props: {
+    MuiButton: {
+      disableRipple: true
+    }
+  },
   overrides: {
     MuiButton: {
       root: {
         borderRadius: 7,
         fontSize: '1rem',
         textTransform: 'none'
+      },
+      text: {
+        color: deepOrange[700],
+        padding: 0,
+        '&:hover': {
+          backgroundColor: 'transparent',
+          textDecoration: 'underline'
+        }
       },
       sizeSmall: {
         fontSize: '1rem'

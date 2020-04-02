@@ -20,7 +20,10 @@ const useStyles = makeStyles(theme => ({
     marginTop: 3
   },
   button: {
-    color: theme.palette.common.white
+    color: theme.palette.common.white,
+    '&:hover': {
+      textDecoration: 'none'
+    }
   }
 }));
 

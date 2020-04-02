@@ -1,7 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { useMutation, gql } from '@apollo/client';
-import { Paper, Container, Link, Typography, Grid } from '@material-ui/core';
+import {
+  Paper,
+  Container,
+  Link,
+  Button,
+  Typography,
+  Grid
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Subheader from 'components/Subheader';
@@ -43,12 +50,34 @@ const useStyles = makeStyles(theme => ({
   artistText: {
     flexDirection: 'column'
   },
-  watchChatContainer: {
+  streamStatusBanner: {
+    backgroundColor: theme.palette.common.white,
+    padding: theme.spacing(1),
+    [theme.breakpoints.down('xs')]: {
+      textAlign: 'center'
+    }
+  },
+  previewModeColorBand: {
+    backgroundColor: theme.palette.warning.main,
+    height: 3
+  },
+  publicModeColorBand: {
+    backgroundColor: theme.palette.success.main,
+    height: 3
+  },
+  switchStreamModeButton: {
+    marginLeft: theme.spacing(2)
+  },
+  videoChatContainer: {
     height: 520
   },
-  watch: {
+  video: {
     backgroundColor: theme.palette.common.black,
-    backgroundSize: 'cover'
+    backgroundSize: 'cover',
+    minHeight: 250
+  },
+  streamPreviewMessage: {
+    color: theme.palette.common.white
   },
   chat: {
     backgroundColor: theme.palette.common.white
@@ -72,6 +101,8 @@ const Dashboard = () => {
       window.location.reload();
     }
   }, [data]);
+
+  const [isPublicMode, setIsPublicMode] = useState(false);
 
   return (
     <>
@@ -108,14 +139,9 @@ const Dashboard = () => {
         >
           Transactions
         </Link>
-        <Link
-          href="#"
-          onClick={() => logOut()}
-          variant="body1"
-          className={classes.subheaderLink}
-        >
+        <Button onClick={() => logOut()} className={classes.subheaderLink}>
           Log out
-        </Link>
+        </Button>
       </Subheader>
       <Container disableGutters maxWidth={false}>
         <Grid container direction="row" className={classes.artistInfoContainer}>
@@ -133,12 +159,63 @@ const Dashboard = () => {
         </Grid>
         <Paper elevation={3}>
           <Grid
+            xs={12}
+            className={
+              isPublicMode
+                ? classes.publicModeColorBand
+                : classes.previewModeColorBand
+            }
+          />
+          <Grid
+            container
+            xs={12}
+            justify="center"
+            alignItems="center"
+            className={classes.streamStatusBanner}
+          >
+            <Typography variant="body1">
+              {isPublicMode
+                ? 'You are broadcasting live in public mode'
+                : "Preview your stream in private mode (your fans won't be able to see)"}
+            </Typography>
+            <Button
+              onClick={() => setIsPublicMode(!isPublicMode)}
+              className={classes.switchStreamModeButton}
+            >
+              {`Switch to ${isPublicMode ? 'private' : 'public'}`}
+            </Button>
+          </Grid>
+          <Grid
             container
             direction="row"
-            className={classes.watchChatContainer}
+            className={classes.videoChatContainer}
           >
-            <Grid item xs={12} sm={8} md={9} className={classes.watch} />
-            <Grid item xs={false} sm={4} md={3} lg={3} className={classes.chat}>
+            <Grid
+              item
+              container
+              xs={12}
+              sm={8}
+              md={9}
+              justify="center"
+              alignItems="center"
+              className={classes.video}
+            >
+              <Typography
+                variant="body1"
+                className={classes.streamPreviewMessage}
+              >
+                No stream detected
+              </Typography>
+            </Grid>
+            <Grid
+              item
+              container
+              xs={false}
+              sm={4}
+              md={3}
+              lg={3}
+              className={classes.chat}
+            >
               <ChatBox />
             </Grid>
           </Grid>
