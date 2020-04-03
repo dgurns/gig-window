@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import { Resolver, Query, Mutation, Arg, Ctx } from 'type-graphql';
+import { getManager } from 'typeorm';
 import { User } from 'entities/User';
 import { SignUpInput, LogInInput } from 'resolvers/inputs/UserInputs';
 import { CustomContext } from 'authChecker';
@@ -28,16 +29,25 @@ export class UserResolver {
       throw new Error('Please fill out all the fields');
     }
 
-    const existingUser = await User.findOne({ where: { email: data.email } });
+    const urlSlug = username.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+
+    const existingUser = await getManager()
+      .createQueryBuilder(User, 'user')
+      .where(
+        'user.email = :email OR user.username = :username OR user.urlSlug = :urlSlug',
+        { email, username, urlSlug }
+      )
+      .getOne();
     if (existingUser) {
+      const emailAlreadyExists = existingUser.email === email;
       throw new Error(
-        'There is already an account under that email address. Please log in or use another email.'
+        emailAlreadyExists
+          ? 'There is already an account under that email address. Please log in'
+          : 'That username is taken, please pick another one'
       );
     }
 
-    const urlSlug = username.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
     const hashedPassword = await bcrypt.hash(data.password, 10);
-
     const user = User.create({
       email: data.email,
       username: data.username,
@@ -45,7 +55,6 @@ export class UserResolver {
       hashedPassword
     });
     await user.save();
-
     await ctx.login(user);
 
     return user;
