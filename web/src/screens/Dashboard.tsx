@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
-import { Paper, Container, Typography, Grid } from '@material-ui/core';
+import {
+  Paper,
+  Grid,
+  Link,
+  Container,
+  Typography,
+  TextField
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import classnames from 'classnames';
 
 import DashboardSubheader from 'components/DashboardSubheader';
 import TextButton from 'components/TextButton';
@@ -67,6 +75,18 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.down('sm')]: {
       padding: `0 ${theme.spacing(2)}px`
     }
+  },
+  howTo: {
+    padding: `${theme.spacing(4)}px ${theme.spacing(4)}px`,
+    [theme.breakpoints.down('xs')]: {
+      padding: `${theme.spacing(3)}px ${theme.spacing(3)}px`
+    }
+  },
+  howToItem: {
+    marginBottom: 11
+  },
+  rtmpField: {
+    maxWidth: 350
   }
 }));
 
@@ -88,7 +108,7 @@ const Dashboard = () => {
           />
           <Grid item className={classes.artistText}>
             <Typography variant="h6">Paul Bigelow</Typography>
-            <Typography variant="body1" color="textSecondary">
+            <Typography color="textSecondary">
               Today at 7pm: Covers and Improv
             </Typography>
           </Grid>
@@ -108,7 +128,7 @@ const Dashboard = () => {
             alignItems="center"
             className={classes.streamStatusBanner}
           >
-            <Typography variant="body1">
+            <Typography>
               {isPublicMode
                 ? 'You are broadcasting live in public mode'
                 : "Preview your stream in private mode (your fans won't be able to see)"}
@@ -155,6 +175,38 @@ const Dashboard = () => {
             </Grid>
           </Grid>
         </Paper>
+
+        <Grid
+          container
+          direction="column"
+          xs={12}
+          md={9}
+          className={classes.howTo}
+        >
+          <Typography variant="h6" className={classes.howToItem}>
+            How to broadcast:
+          </Typography>
+          <Typography className={classes.howToItem}>
+            1. You can use any streaming software which supports sending to an
+            RTMP URL. Many people like{' '}
+            <Link href="https://obsproject.com/">OBS</Link> (laptop/desktop) or{' '}
+            <Link href="https://streamlabs.com/">Streamlabs</Link>{' '}
+            (iOS/Android), which are free and open source. Both have plenty of
+            help resources and guides for getting started.
+          </Typography>
+          <Typography className={classes.howToItem}>
+            2. Send your stream to this custom RTMP URL:
+          </Typography>
+          <TextField
+            value="rtmp://coronawindow.com/abc123"
+            variant="outlined"
+            size="small"
+            className={classnames([classes.howToItem, classes.rtmpField])}
+          />
+          <Typography className={classes.howToItem}>
+            3. When you’re broadcasting, you’ll see the stream appear above.
+          </Typography>
+        </Grid>
       </Container>
     </>
   );
