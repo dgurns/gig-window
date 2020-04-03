@@ -153,7 +153,6 @@ const Dashboard = () => {
         </Grid>
         <Paper elevation={3}>
           <Grid
-            xs={12}
             className={
               isPublicMode
                 ? classes.publicModeColorBand
@@ -162,7 +161,6 @@ const Dashboard = () => {
           />
           <Grid
             container
-            xs={12}
             justify="center"
             alignItems="center"
             className={classes.streamStatusBanner}

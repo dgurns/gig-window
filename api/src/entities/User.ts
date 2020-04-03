@@ -13,8 +13,12 @@ export class User extends BaseEntity {
   email: string;
 
   @Field(() => String)
-  @Column()
+  @Column({ unique: true })
   username: string;
+
+  @Field(() => String)
+  @Column({ unique: true })
+  urlSlug: string;
 
   @Column()
   hashedPassword: string;

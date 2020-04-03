@@ -75,7 +75,7 @@ const Header = () => {
           )}
           {currentUser && (
             <Link
-              to="/user"
+              to={`/${currentUser.urlSlug}`}
               component={RouterLink}
               className={classes.userLink}
             >

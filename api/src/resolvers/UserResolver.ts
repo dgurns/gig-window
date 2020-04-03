@@ -35,10 +35,13 @@ export class UserResolver {
       );
     }
 
+    const urlSlug = username.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
     const hashedPassword = await bcrypt.hash(data.password, 10);
+
     const user = User.create({
       email: data.email,
       username: data.username,
+      urlSlug,
       hashedPassword
     });
     await user.save();

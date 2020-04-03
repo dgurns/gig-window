@@ -26,7 +26,14 @@ function App() {
         <Route exact path="/">
           <Home />
         </Route>
-        <Route path="/user">{currentUser ? <Dashboard /> : <Watch />}</Route>
+        <Route
+          path="/:userUrlSlug"
+          render={({ match: { params } }) => {
+            const isCurrentUserDashboard =
+              currentUser?.urlSlug === params.userUrlSlug;
+            return isCurrentUserDashboard ? <Dashboard /> : <Watch />;
+          }}
+        ></Route>
       </Switch>
     </Router>
   );

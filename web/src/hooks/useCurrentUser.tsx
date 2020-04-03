@@ -1,10 +1,5 @@
 import { useQuery, gql, ApolloError } from '@apollo/client';
-
-type User = {
-  id: string;
-  email: string;
-  username: string;
-};
+import { User } from '../../../api/src/entities/User';
 
 const GET_CURRENT_USER = gql`
   {
@@ -12,6 +7,7 @@ const GET_CURRENT_USER = gql`
       id
       email
       username
+      urlSlug
     }
   }
 `;
