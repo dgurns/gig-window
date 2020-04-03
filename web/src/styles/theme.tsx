@@ -40,11 +40,6 @@ export default createMuiTheme({
   typography: {
     fontFamily: ['Lato', '"Helvetica Neue"', 'Arial', 'sans-serif'].join(',')
   },
-  props: {
-    MuiButton: {
-      disableRipple: true
-    }
-  },
   overrides: {
     MuiButton: {
       root: {

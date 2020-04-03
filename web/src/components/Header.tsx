@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { Grid, Button, Link, Typography } from '@material-ui/core';
+import { Grid, Link, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
@@ -8,6 +8,7 @@ import useCurrentUser from 'hooks/useCurrentUser';
 import useDialog from 'hooks/useDialog';
 import LogInForm from 'components/LogInForm';
 import SignUpForm from 'components/SignUpForm';
+import TextButton from 'components/TextButton';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -58,18 +59,18 @@ const Header = () => {
         <Grid item>
           {userIsLoggedOut && (
             <>
-              <Button
+              <TextButton
                 className={classes.button}
                 onClick={setLogInDialogIsVisible}
               >
                 Log in
-              </Button>
-              <Button
+              </TextButton>
+              <TextButton
                 className={classes.button}
                 onClick={setSignUpDialogIsVisible}
               >
                 Sign up
-              </Button>
+              </TextButton>
             </>
           )}
           {currentUser && (

@@ -1,17 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { useMutation, gql } from '@apollo/client';
-import {
-  Paper,
-  Container,
-  Link,
-  Button,
-  Typography,
-  Grid
-} from '@material-ui/core';
+import { Paper, Container, Link, Typography, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Subheader from 'components/Subheader';
+import TextButton from 'components/TextButton';
 import ChatBox from 'components/ChatBox';
 
 const LOG_OUT = gql`
@@ -139,9 +133,9 @@ const Dashboard = () => {
         >
           Transactions
         </Link>
-        <Button onClick={() => logOut()} className={classes.subheaderLink}>
+        <TextButton onClick={() => logOut()} className={classes.subheaderLink}>
           Log out
-        </Button>
+        </TextButton>
       </Subheader>
       <Container disableGutters maxWidth={false}>
         <Grid container direction="row" className={classes.artistInfoContainer}>
@@ -178,12 +172,12 @@ const Dashboard = () => {
                 ? 'You are broadcasting live in public mode'
                 : "Preview your stream in private mode (your fans won't be able to see)"}
             </Typography>
-            <Button
+            <TextButton
               onClick={() => setIsPublicMode(!isPublicMode)}
               className={classes.switchStreamModeButton}
             >
               {`Switch to ${isPublicMode ? 'private' : 'public'}`}
-            </Button>
+            </TextButton>
           </Grid>
           <Grid
             container
