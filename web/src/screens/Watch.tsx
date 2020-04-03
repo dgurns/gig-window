@@ -35,15 +35,17 @@ const useStyles = makeStyles(theme => ({
   userText: {
     flexDirection: 'column'
   },
-  watchChatContainer: {
+  videoChatContainer: {
     height: 520
   },
-  watch: {
+  video: {
     backgroundColor: theme.palette.common.black,
-    backgroundSize: 'cover'
+    backgroundSize: 'cover',
+    minHeight: 100
   },
   chat: {
-    backgroundColor: theme.palette.common.white
+    backgroundColor: theme.palette.common.white,
+    height: 520
   },
   tools: {
     marginTop: theme.spacing(2),
@@ -72,8 +74,8 @@ const Watch = () => {
         </Grid>
       </Grid>
       <Paper elevation={3}>
-        <Grid container direction="row" className={classes.watchChatContainer}>
-          <Grid item xs={12} sm={8} md={9} className={classes.watch} />
+        <Grid container direction="row" className={classes.videoChatContainer}>
+          <Grid item xs={12} sm={8} md={9} className={classes.video} />
           <Grid item xs={false} sm={4} md={3} lg={3} className={classes.chat}>
             <ChatBox />
           </Grid>

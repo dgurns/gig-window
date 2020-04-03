@@ -1,29 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-import { useMutation, gql } from '@apollo/client';
-import { Paper, Container, Link, Typography, Grid } from '@material-ui/core';
+import React, { useState } from 'react';
+import { Paper, Container, Typography, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-import Subheader from 'components/Subheader';
+import DashboardSubheader from 'components/DashboardSubheader';
 import TextButton from 'components/TextButton';
 import ChatBox from 'components/ChatBox';
-
-const LOG_OUT = gql`
-  mutation LogOut {
-    logOut
-  }
-`;
 
 const useStyles = makeStyles(theme => ({
   pageContent: {
     paddingTop: 35,
     width: '100%'
-  },
-  subheaderLink: {
-    margin: `0 ${theme.spacing(3)}px`,
-    [theme.breakpoints.down('xs')]: {
-      margin: `${theme.spacing(1)}px ${theme.spacing(3)}px`
-    }
   },
   artistInfoContainer: {
     alignItems: 'center',
@@ -86,57 +72,13 @@ const useStyles = makeStyles(theme => ({
 
 const Dashboard = () => {
   const classes = useStyles();
-  const [logOut, { data }] = useMutation(LOG_OUT, {
-    errorPolicy: 'all'
-  });
-
-  useEffect(() => {
-    if (data?.logOut) {
-      window.location.reload();
-    }
-  }, [data]);
 
   const [isPublicMode, setIsPublicMode] = useState(false);
 
   return (
     <>
-      <Subheader>
-        <Link
-          to="/"
-          variant="body1"
-          component={RouterLink}
-          className={classes.subheaderLink}
-        >
-          Edit profile
-        </Link>
-        <Link
-          to="/"
-          variant="body1"
-          component={RouterLink}
-          className={classes.subheaderLink}
-        >
-          Schedule show
-        </Link>
-        <Link
-          to="/"
-          variant="body1"
-          component={RouterLink}
-          className={classes.subheaderLink}
-        >
-          Edit shows
-        </Link>
-        <Link
-          to="/"
-          variant="body1"
-          component={RouterLink}
-          className={classes.subheaderLink}
-        >
-          Transactions
-        </Link>
-        <TextButton onClick={() => logOut()} className={classes.subheaderLink}>
-          Log out
-        </TextButton>
-      </Subheader>
+      <DashboardSubheader />
+
       <Container disableGutters maxWidth={false}>
         <Grid container direction="row" className={classes.artistInfoContainer}>
           <img
@@ -151,6 +93,7 @@ const Dashboard = () => {
             </Typography>
           </Grid>
         </Grid>
+
         <Paper elevation={3}>
           <Grid
             className={

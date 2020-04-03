@@ -8,7 +8,7 @@ import TipMessage from 'components/TipMessage';
 const useStyles = makeStyles(theme => ({
   container: {
     flexDirection: 'column',
-    minHeight: '100%'
+    height: '100%'
   },
   chats: {
     flex: 1,
