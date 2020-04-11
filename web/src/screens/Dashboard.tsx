@@ -160,9 +160,9 @@ const Dashboard = () => {
                 variant="body1"
                 className={classes.streamPreviewMessage}
               >
-                Ready to send a stream?
+                Ready to send a stream from your streaming software?
               </Typography>
-              <TextButton>Click here to activate the channel</TextButton>
+              <TextButton>Click here</TextButton>
             </Grid>
             <Grid
               item
