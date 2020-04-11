@@ -5,7 +5,7 @@ import {
   Link,
   Container,
   Typography,
-  TextField
+  TextField,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import classnames from 'classnames';
@@ -14,10 +14,10 @@ import DashboardSubheader from 'components/DashboardSubheader';
 import TextButton from 'components/TextButton';
 import ChatBox from 'components/ChatBox';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   pageContent: {
     paddingTop: 35,
-    width: '100%'
+    width: '100%',
   },
   artistInfoContainer: {
     alignItems: 'center',
@@ -25,69 +25,69 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.down('xs')]: {
       alignItems: 'flex-start',
       flexDirection: 'column-reverse',
-      padding: `${theme.spacing(3)}px ${theme.spacing(3)}px`
-    }
+      padding: `${theme.spacing(3)}px ${theme.spacing(3)}px`,
+    },
   },
   artistImage: {
     height: 72,
     marginRight: theme.spacing(2),
     [theme.breakpoints.down('xs')]: {
-      marginTop: theme.spacing(2)
-    }
+      marginTop: theme.spacing(2),
+    },
   },
   artistText: {
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
   streamStatusBanner: {
     backgroundColor: theme.palette.common.white,
     padding: theme.spacing(1),
     [theme.breakpoints.down('xs')]: {
-      textAlign: 'center'
-    }
+      textAlign: 'center',
+    },
   },
   previewModeColorBand: {
     backgroundColor: theme.palette.warning.main,
-    height: 3
+    height: 3,
   },
   publicModeColorBand: {
     backgroundColor: theme.palette.success.main,
-    height: 3
+    height: 3,
   },
   switchStreamModeButton: {
-    marginLeft: theme.spacing(2)
+    marginLeft: theme.spacing(2),
   },
   videoChatContainer: {
-    height: 520
+    height: 520,
   },
   video: {
     backgroundColor: theme.palette.common.black,
     backgroundSize: 'cover',
-    minHeight: 250
+    minHeight: 250,
   },
   streamPreviewMessage: {
-    color: theme.palette.common.white
+    color: theme.palette.common.white,
   },
   chat: {
-    backgroundColor: theme.palette.common.white
+    backgroundColor: theme.palette.common.white,
   },
   tools: {
     marginTop: theme.spacing(2),
     [theme.breakpoints.down('sm')]: {
-      padding: `0 ${theme.spacing(2)}px`
-    }
+      padding: `0 ${theme.spacing(2)}px`,
+    },
   },
   howTo: {
     padding: `${theme.spacing(4)}px ${theme.spacing(4)}px`,
     [theme.breakpoints.down('xs')]: {
-      padding: `${theme.spacing(3)}px ${theme.spacing(3)}px`
-    }
+      padding: `${theme.spacing(3)}px ${theme.spacing(3)}px`,
+    },
   },
   howToItem: {
-    marginBottom: 11
+    marginBottom: 11,
   },
   rtmpField: {
-    maxWidth: 350
-  }
+    maxWidth: 350,
+  },
 }));
 
 const Dashboard = () => {
@@ -130,8 +130,8 @@ const Dashboard = () => {
           >
             <Typography>
               {isPublicMode
-                ? 'You are broadcasting live in public mode'
-                : "Preview your stream in private mode (your fans won't be able to see)"}
+                ? "You're in public mode (everyone can see your stream)"
+                : "You're in private mode (nobody can see your stream)"}
             </Typography>
             <TextButton
               onClick={() => setIsPublicMode(!isPublicMode)}
@@ -187,8 +187,8 @@ const Dashboard = () => {
             How to broadcast:
           </Typography>
           <Typography className={classes.howToItem}>
-            1. You can use any streaming software which supports sending to an
-            RTMP URL. Many people like{' '}
+            1. Pick some streaming software - anything that lets you stream to
+            an RTMP URL. Many people like{' '}
             <Link href="https://obsproject.com/">OBS</Link> (laptop/desktop) or{' '}
             <Link href="https://streamlabs.com/">Streamlabs</Link>{' '}
             (iOS/Android), which are free and open source. Both have plenty of
