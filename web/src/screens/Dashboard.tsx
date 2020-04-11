@@ -66,6 +66,7 @@ const useStyles = makeStyles((theme) => ({
   },
   streamPreviewMessage: {
     color: theme.palette.common.white,
+    marginRight: theme.spacing(2),
   },
   chat: {
     backgroundColor: theme.palette.common.white,
@@ -159,8 +160,9 @@ const Dashboard = () => {
                 variant="body1"
                 className={classes.streamPreviewMessage}
               >
-                No stream detected
+                Ready to send a stream?
               </Typography>
+              <TextButton>Click here</TextButton>
             </Grid>
             <Grid
               item
