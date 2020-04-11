@@ -162,7 +162,7 @@ const Dashboard = () => {
               >
                 Ready to send a stream?
               </Typography>
-              <TextButton>Click here</TextButton>
+              <TextButton>Click here to activate the channel</TextButton>
             </Grid>
             <Grid
               item
@@ -197,7 +197,10 @@ const Dashboard = () => {
             help resources and guides for getting started.
           </Typography>
           <Typography className={classes.howToItem}>
-            2. Send your stream to this custom RTMP URL:
+            2. Click above to activate the channel
+          </Typography>
+          <Typography className={classes.howToItem}>
+            3. Send your stream to this custom RTMP URL:
           </Typography>
           <TextField
             value="rtmp://coronawindow.com/abc123"
@@ -206,7 +209,7 @@ const Dashboard = () => {
             className={classnames([classes.howToItem, classes.rtmpField])}
           />
           <Typography className={classes.howToItem}>
-            3. When you’re broadcasting, you’ll see the stream appear above.
+            4. When you’re broadcasting, you’ll see the stream appear above.
           </Typography>
         </Grid>
       </Container>
