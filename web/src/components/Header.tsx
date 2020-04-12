@@ -10,25 +10,25 @@ import LogInForm from 'components/LogInForm';
 import SignUpForm from 'components/SignUpForm';
 import TextButton from 'components/TextButton';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   container: {
     backgroundColor: theme.palette.common.black,
     height: 56,
-    padding: '0 10px 0 6px'
+    padding: '0 10px 0 6px',
   },
   logo: {
     height: 50,
-    marginTop: 3
+    marginTop: 3,
   },
   button: {
-    color: theme.palette.common.white
+    color: theme.palette.common.white,
   },
   userLink: {
-    color: theme.palette.common.white
+    color: theme.palette.common.white,
   },
   userIcon: {
-    marginLeft: theme.spacing(1)
-  }
+    marginLeft: theme.spacing(1),
+  },
 }));
 
 const Header = () => {
@@ -47,15 +47,8 @@ const Header = () => {
         className={classes.container}
         direction="row"
         alignItems="center"
-        justify="space-between"
+        justify="flex-end"
       >
-        <RouterLink to="/">
-          <img
-            className={classes.logo}
-            src="/images/cw_logo.png"
-            alt="Concert Window logo"
-          />
-        </RouterLink>
         <Grid item>
           {userIsLoggedOut && (
             <>
