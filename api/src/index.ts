@@ -26,7 +26,7 @@ async function start() {
     app.use(
       cookieSession({
         maxAge: 30 * 24 * 60 * 60 * 1000,
-        keys: [process.env.COOKIE_SESSION_KEY || 'defaultCookieSessionKey']
+        keys: [process.env.COOKIE_SESSION_KEY || 'defaultCookieSessionKey'],
       })
     );
     app.use(passport.initialize());
@@ -35,17 +35,17 @@ async function start() {
     const schema = await buildSchema({
       resolvers: [UserResolver],
       authChecker,
-      validate: false
+      validate: false,
     });
     const server = new ApolloServer({
       schema,
       validationRules: [depthLimit(7)],
-      context: ({ req, res }) => buildContext({ req, res, User })
+      context: ({ req, res }) => buildContext({ req, res, User }),
     });
 
     server.applyMiddleware({
       app,
-      cors: { origin: process.env.UI_ORIGIN, credentials: true }
+      cors: { origin: process.env.UI_ORIGIN, credentials: true },
     });
 
     app.listen({ port: 4000 }, () =>
