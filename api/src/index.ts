@@ -32,6 +32,11 @@ async function start() {
     app.use(passport.initialize());
     app.use(passport.session());
 
+    app.get('/rtmp', (req, res) => {
+      console.log(req.query);
+      res.status(200).send();
+    });
+
     const schema = await buildSchema({
       resolvers: [UserResolver],
       authChecker,
