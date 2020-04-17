@@ -10,5 +10,6 @@ services:
     environment:
       - HTTP_PORT=80
       - RTMP_PORT=1935
+      - API_RTMP_EVENT_URL=http://corona-window-api.ngrok.io/rtmp-event
     volumes:
       - ./certs:/opt/certs

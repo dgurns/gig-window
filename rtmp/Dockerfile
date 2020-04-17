@@ -64,6 +64,7 @@ LABEL MAINTAINER Alfred Gutierrez <alf.g.jr@gmail.com>
 ENV HTTP_PORT 80
 ENV HTTPS_PORT 443
 ENV RTMP_PORT 1935
+ENV API_RTMP_EVENT_URL host.docker.internal:4000/rtmp-event
 
 RUN apk add --update \
   ca-certificates \

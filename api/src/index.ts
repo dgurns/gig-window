@@ -2,6 +2,7 @@ require('dotenv').config();
 import 'reflect-metadata';
 
 import express from 'express';
+import cors from 'cors';
 import compression from 'compression';
 import cookieSession from 'cookie-session';
 import passport from 'passport';
@@ -12,6 +13,7 @@ import depthLimit from 'graphql-depth-limit';
 import { buildContext } from 'graphql-passport';
 
 import { initializePassport } from './initializePassport';
+import { restRouter } from './restRouter';
 import { authChecker } from './authChecker';
 import { User } from 'entities/User';
 import { UserResolver } from 'resolvers/UserResolver';
@@ -22,6 +24,19 @@ async function start() {
     initializePassport();
 
     const app = express();
+    const allowedOrigins = [process.env.RTMP_ORIGIN, process.env.UI_ORIGIN];
+    app.use(
+      cors({
+        origin: function (origin, callback) {
+          if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+            callback(null, true);
+          } else {
+            callback(new Error('Request blocked by CORS'));
+          }
+        },
+        optionsSuccessStatus: 200,
+      })
+    );
     app.use(compression());
     app.use(
       cookieSession({
@@ -31,11 +46,7 @@ async function start() {
     );
     app.use(passport.initialize());
     app.use(passport.session());
-
-    app.get('/rtmp', (req, res) => {
-      console.log(req.query);
-      res.status(200).send();
-    });
+    app.use(restRouter);
 
     const schema = await buildSchema({
       resolvers: [UserResolver],
