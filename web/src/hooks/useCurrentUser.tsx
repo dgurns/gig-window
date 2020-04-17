@@ -9,6 +9,7 @@ const GET_CURRENT_USER = gql`
       username
       urlSlug
       streamKey
+      isPublishingStream
     }
   }
 `;

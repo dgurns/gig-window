@@ -34,6 +34,7 @@ async function start() {
             callback(new Error('Request blocked by CORS'));
           }
         },
+        credentials: true,
         optionsSuccessStatus: 200,
       })
     );

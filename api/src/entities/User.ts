@@ -26,4 +26,8 @@ export class User extends BaseEntity {
   @Field(() => String)
   @Column()
   streamKey: string;
+
+  @Field(() => Boolean)
+  @Column({ default: false })
+  isPublishingStream: boolean;
 }

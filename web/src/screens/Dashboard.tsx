@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useQuery, gql } from '@apollo/client';
 import {
   Paper,
   Grid,
@@ -6,6 +7,7 @@ import {
   Container,
   Typography,
   TextField,
+  CircularProgress,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import classnames from 'classnames';
@@ -15,6 +17,14 @@ import useCurrentUser from 'hooks/useCurrentUser';
 import DashboardSubheader from 'components/DashboardSubheader';
 import TextButton from 'components/TextButton';
 import ChatBox from 'components/ChatBox';
+
+const GET_USER_IS_PUBLISHING_STATUS = gql`
+  {
+    getCurrentUser {
+      isPublishingStream
+    }
+  }
+`;
 
 const useStyles = makeStyles((theme) => ({
   pageContent: {
@@ -70,6 +80,10 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.common.white,
     marginRight: theme.spacing(2),
   },
+  startingVideoInfrastructureProgress: {
+    marginTop: theme.spacing(2),
+    width: 100,
+  },
   chat: {
     backgroundColor: theme.palette.common.white,
   },
@@ -96,6 +110,11 @@ const useStyles = makeStyles((theme) => ({
 const Dashboard = () => {
   const classes = useStyles();
   const [currentUser] = useCurrentUser();
+
+  const { data } = useQuery(GET_USER_IS_PUBLISHING_STATUS, {
+    pollInterval: 3000,
+  });
+  const userIsPublishingStream = data?.getCurrentUser.isPublishingStream;
 
   const [isPublicMode, setIsPublicMode] = useState(false);
 
@@ -155,6 +174,7 @@ const Dashboard = () => {
               xs={12}
               sm={8}
               md={9}
+              direction="column"
               justify="center"
               alignItems="center"
               className={classes.video}
@@ -163,8 +183,16 @@ const Dashboard = () => {
                 variant="body1"
                 className={classes.streamPreviewMessage}
               >
-                No stream detected
+                {userIsPublishingStream
+                  ? 'Stream detected! Starting up video infrastructure... (takes about 60 seconds)'
+                  : 'No stream detected'}
               </Typography>
+              {userIsPublishingStream && (
+                <CircularProgress
+                  color="secondary"
+                  className={classes.startingVideoInfrastructureProgress}
+                />
+              )}
             </Grid>
             <Grid
               item

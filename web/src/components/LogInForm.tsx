@@ -12,29 +12,29 @@ const LOG_IN = gql`
   }
 `;
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   container: {
     flexDirection: 'column',
     padding: theme.spacing(3),
-    width: 400
+    width: 400,
   },
   title: {
-    marginBottom: theme.spacing(3)
+    marginBottom: theme.spacing(3),
   },
   formField: {
-    marginBottom: theme.spacing(3)
+    marginBottom: theme.spacing(3),
   },
   error: {
     marginBottom: theme.spacing(3),
-    textAlign: 'center'
-  }
+    textAlign: 'center',
+  },
 }));
 
 const LogInForm = () => {
   const classes = useStyles();
   const history = useHistory();
   const [logIn, { loading, data, error }] = useMutation(LOG_IN, {
-    errorPolicy: 'all'
+    errorPolicy: 'all',
   });
 
   const [email, setEmail] = useState('');
@@ -52,7 +52,7 @@ const LogInForm = () => {
 
   return (
     <Paper>
-      <Grid container xs={12} className={classes.container}>
+      <Grid container item xs={12} className={classes.container}>
         <Typography variant="h4" className={classes.title}>
           Log in
         </Typography>
