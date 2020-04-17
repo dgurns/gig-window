@@ -22,4 +22,8 @@ export class User extends BaseEntity {
 
   @Column()
   hashedPassword: string;
+
+  @Field(() => String)
+  @Column()
+  streamKey: string;
 }

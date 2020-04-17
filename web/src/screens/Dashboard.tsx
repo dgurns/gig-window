@@ -10,6 +10,8 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import classnames from 'classnames';
 
+import useCurrentUser from 'hooks/useCurrentUser';
+
 import DashboardSubheader from 'components/DashboardSubheader';
 import TextButton from 'components/TextButton';
 import ChatBox from 'components/ChatBox';
@@ -93,6 +95,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Dashboard = () => {
   const classes = useStyles();
+  const [currentUser] = useCurrentUser();
 
   const [isPublicMode, setIsPublicMode] = useState(false);
 
@@ -196,10 +199,19 @@ const Dashboard = () => {
             help resources and guides for getting started.
           </Typography>
           <Typography className={classes.howToItem}>
-            2. Send your stream to this custom RTMP URL:
+            2. Send your stream to this RTMP URL:
           </Typography>
           <TextField
             value="rtmp://coronawindow.com/abc123"
+            variant="outlined"
+            size="small"
+            className={classnames([classes.howToItem, classes.rtmpField])}
+          />
+          <Typography className={classes.howToItem}>
+            ...with this stream key (keep it secret!):
+          </Typography>
+          <TextField
+            value={currentUser?.streamKey || ''}
             variant="outlined"
             size="small"
             className={classnames([classes.howToItem, classes.rtmpField])}

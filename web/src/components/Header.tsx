@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
   container: {
     backgroundColor: theme.palette.common.black,
     height: 56,
-    padding: '0 10px 0 6px',
+    padding: '0 10px',
   },
   logo: {
     height: 50,
@@ -47,8 +47,11 @@ const Header = () => {
         className={classes.container}
         direction="row"
         alignItems="center"
-        justify="flex-end"
+        justify="space-between"
       >
+        <Link to="/" component={RouterLink} className={classes.userLink}>
+          <Typography>Home</Typography>
+        </Link>
         <Grid item>
           {userIsLoggedOut && (
             <>

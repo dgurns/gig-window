@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt';
+import { v4 as uuidv4 } from 'uuid';
 import { Resolver, Query, Mutation, Arg, Ctx } from 'type-graphql';
 import { getManager } from 'typeorm';
 import { User } from 'entities/User';
@@ -48,11 +49,14 @@ export class UserResolver {
     }
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
+    const streamKey = uuidv4().replace(/-/g, '');
+
     const user = User.create({
       email: data.email,
       username: data.username,
+      hashedPassword,
       urlSlug,
-      hashedPassword
+      streamKey,
     });
     await user.save();
     await ctx.login(user);
@@ -64,7 +68,7 @@ export class UserResolver {
   async logIn(@Arg('data') data: LogInInput, @Ctx() ctx: CustomContext) {
     const { user } = await ctx.authenticate('graphql-local', {
       email: data.email,
-      password: data.password
+      password: data.password,
     });
 
     if (user) {

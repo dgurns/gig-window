@@ -8,6 +8,7 @@ const GET_CURRENT_USER = gql`
       email
       username
       urlSlug
+      streamKey
     }
   }
 `;
