@@ -182,6 +182,7 @@ const Dashboard = () => {
 
         <Grid
           container
+          item
           direction="column"
           xs={12}
           md={9}
@@ -191,8 +192,8 @@ const Dashboard = () => {
             How to broadcast:
           </Typography>
           <Typography className={classes.howToItem}>
-            1. Pick some streaming software - anything that lets you stream to
-            an RTMP URL. Many people like{' '}
+            1. Pick a streaming software - anything that lets you stream to an
+            RTMP URL. Many people like{' '}
             <Link href="https://obsproject.com/">OBS</Link> (laptop/desktop) or{' '}
             <Link href="https://streamlabs.com/">Streamlabs</Link>{' '}
             (iOS/Android), which are free and open source. Both have plenty of
@@ -202,7 +203,7 @@ const Dashboard = () => {
             2. Send your stream to this RTMP URL:
           </Typography>
           <TextField
-            value="rtmp://coronawindow.com/abc123"
+            value={process.env.REACT_APP_RTMP_URL}
             variant="outlined"
             size="small"
             className={classnames([classes.howToItem, classes.rtmpField])}
