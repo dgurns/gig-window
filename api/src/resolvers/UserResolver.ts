@@ -5,6 +5,7 @@ import { getManager } from 'typeorm';
 import { User } from 'entities/User';
 import { SignUpInput, LogInInput } from 'resolvers/inputs/UserInputs';
 import { CustomContext } from 'authChecker';
+import AwsMediaLive from 'services/AwsMediaLive';
 
 @Resolver()
 export class UserResolver {
@@ -70,6 +71,9 @@ export class UserResolver {
       email: data.email,
       password: data.password,
     });
+
+    const channels = await AwsMediaLive.listChannels();
+    console.log(channels);
 
     if (user) {
       await ctx.login(user);
