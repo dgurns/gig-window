@@ -34,4 +34,12 @@ export class User extends BaseEntity {
   @Field(() => String)
   @Column({ nullable: true, default: null })
   awsMediaLiveInputId: string;
+
+  @Field(() => String)
+  @Column({ nullable: true, default: null })
+  awsMediaLiveChannelId: string;
+
+  @Field(() => String)
+  @Column({ nullable: true, default: null })
+  awsMediaPackageChannelId: string;
 }

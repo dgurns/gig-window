@@ -11,6 +11,8 @@ const GET_CURRENT_USER = gql`
       streamKey
       isPublishingStream
       awsMediaLiveInputId
+      awsMediaLiveChannelId
+      awsMediaPackageChannelId
     }
   }
 `;
