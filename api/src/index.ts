@@ -18,13 +18,19 @@ import { authChecker } from './authChecker';
 import { User } from 'entities/User';
 import { UserResolver } from 'resolvers/UserResolver';
 
+const { RTMP_ORIGIN, UI_ORIGIN, SERVER_PORT, COOKIE_SESSION_KEY } = process.env;
+
 async function start() {
   try {
     await createDatabaseConnection();
     initializePassport();
 
     const app = express();
-    const allowedOrigins = [process.env.RTMP_ORIGIN, process.env.UI_ORIGIN];
+    const allowedOrigins = [
+      RTMP_ORIGIN,
+      UI_ORIGIN,
+      `http://localhost:${SERVER_PORT}`,
+    ];
     app.use(
       cors({
         origin: function (origin, callback) {
@@ -42,7 +48,7 @@ async function start() {
     app.use(
       cookieSession({
         maxAge: 30 * 24 * 60 * 60 * 1000,
-        keys: [process.env.COOKIE_SESSION_KEY || 'defaultCookieSessionKey'],
+        keys: [COOKIE_SESSION_KEY || 'defaultCookieSessionKey'],
       })
     );
     app.use(passport.initialize());
@@ -62,12 +68,12 @@ async function start() {
 
     server.applyMiddleware({
       app,
-      cors: { origin: process.env.UI_ORIGIN, credentials: true },
+      cors: { origin: UI_ORIGIN, credentials: true },
     });
 
-    app.listen({ port: 4000 }, () =>
+    app.listen({ port: SERVER_PORT }, () =>
       console.log(
-        `🚀 Server ready at http://localhost:${process.env.SERVER_PORT}${server.graphqlPath}`
+        `🚀 Server ready at http://localhost:${SERVER_PORT}${server.graphqlPath}`
       )
     );
   } catch (error) {
