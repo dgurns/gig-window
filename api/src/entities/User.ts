@@ -32,14 +32,14 @@ export class User extends BaseEntity {
   isPublishingStream: boolean;
 
   @Field(() => String)
-  @Column({ nullable: true, default: null })
+  @Column({ default: '' })
   awsMediaLiveInputId: string;
 
   @Field(() => String)
-  @Column({ nullable: true, default: null })
+  @Column({ default: '' })
   awsMediaLiveChannelId: string;
 
   @Field(() => String)
-  @Column({ nullable: true, default: null })
+  @Column({ default: '' })
   awsMediaPackageChannelId: string;
 }

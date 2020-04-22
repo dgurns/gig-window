@@ -9,8 +9,12 @@ export const initializePassport = () => {
   });
 
   passport.deserializeUser(async (id, done) => {
-    const user = await User.findOne({ where: { id } });
-    done(null, user);
+    try {
+      const user = await User.findOne({ where: { id } });
+      return done(null, user);
+    } catch (error) {
+      return done(error, null);
+    }
   });
 
   passport.use(
