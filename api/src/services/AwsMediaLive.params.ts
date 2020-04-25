@@ -509,8 +509,8 @@ export const buildCreateChannelParams = (user: User) => ({
   },
   InputAttachments: [
     {
-      InputAttachmentName: '1',
-      InputId: '1642392',
+      InputAttachmentName: String(user.id),
+      InputId: user.awsMediaLiveInputId,
       InputSettings: {
         AudioSelectors: [],
         CaptionSelectors: [],
@@ -528,7 +528,7 @@ export const buildCreateChannelParams = (user: User) => ({
     Resolution: 'HD',
   },
   LogLevel: 'DISABLED',
-  Name: user.id,
+  Name: String(user.id),
   RoleArn: 'arn:aws:iam::727441280422:role/MediaLiveAccessRole',
   Tags: {},
 });

@@ -11,9 +11,13 @@ export const initializePassport = () => {
   passport.deserializeUser(async (id, done) => {
     try {
       const user = await User.findOne({ where: { id } });
-      return done(null, user);
+      if (user) {
+        return done(null, user);
+      } else {
+        return done(null, false);
+      }
     } catch (error) {
-      return done(error, null);
+      return done(error);
     }
   });
 
