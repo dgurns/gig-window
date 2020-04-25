@@ -42,4 +42,16 @@ export class User extends BaseEntity {
   @Field(() => String)
   @Column({ default: '' })
   awsMediaPackageChannelId: string;
+
+  @Field(() => String)
+  @Column({ default: '' })
+  awsMediaPackageChannelIngestUrl: string;
+
+  @Field(() => String)
+  @Column({ default: '' })
+  awsMediaPackageChannelIngestUsername: string;
+
+  @Field(() => String)
+  @Column({ default: '' })
+  awsMediaPackageChannelIngestPasswordParam: string;
 }

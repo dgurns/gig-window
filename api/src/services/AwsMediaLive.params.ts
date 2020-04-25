@@ -8,10 +8,9 @@ export const buildCreateChannelParams = (user: User) => ({
       MediaPackageSettings: [],
       Settings: [
         {
-          PasswordParam: '/medialive/media-package-channel-input-password-1',
-          Url:
-            'https://44e88ca212fa91fb.mediapackage.us-east-1.amazonaws.com/in/v2/9e2c698846a341199b4beb0758612f01/9e2c698846a341199b4beb0758612f01/channel',
-          Username: 'd646f3ec77954ac4b43e526e255cc7cc',
+          Url: user.awsMediaPackageChannelIngestUrl,
+          Username: user.awsMediaPackageChannelIngestUsername,
+          PasswordParam: user.awsMediaPackageChannelIngestPasswordParam,
         },
       ],
     },

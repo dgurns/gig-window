@@ -44,17 +44,13 @@ const maybeCreateRtmpPullInputForUser = async (
     Type: 'RTMP_PULL',
     Sources: [{ Url: `${RTMP_ORIGIN}${RTMP_PATH}/${user.streamKey}` }],
   };
-  try {
-    const input = await MediaLive.createInput(inputParams).promise();
-    if (input.Input && input.Input.Id) {
-      user.awsMediaLiveInputId = input.Input.Id;
-      await user.save();
-      return input.Input;
-    } else {
-      throw new Error('Error creating input');
-    }
-  } catch (error) {
-    return error;
+  const input = await MediaLive.createInput(inputParams).promise();
+  if (input.Input && input.Input.Id) {
+    user.awsMediaLiveInputId = input.Input.Id;
+    await user.save();
+    return input.Input;
+  } else {
+    throw new Error('Error creating RTMP pull input');
   }
 };
 
@@ -64,41 +60,32 @@ const maybeCreateChannelForUser = async (
   DescribeChannelResponse | CreateChannelResponse['Channel'] | AWSError
 > => {
   if (user.awsMediaLiveChannelId) {
+    // Check that channel is still valid. If so, return.
     try {
-      const existingChannel = await MediaLive.describeChannel({
-        ChannelId: user.awsMediaLiveChannelId,
-      }).promise();
-      if (existingChannel) {
-        return existingChannel;
-      }
+      const existingChannel = await describeChannel(user.awsMediaLiveChannelId);
+      return existingChannel;
     } catch {}
   }
 
+  // If not, create a new channel
   const params = buildCreateChannelParams(user);
-  try {
-    const channel = await MediaLive.createChannel(params).promise();
-
-    if (channel.Channel && channel.Channel.Id) {
-      user.awsMediaLiveChannelId = channel.Channel.Id;
-      await user.save();
-      return channel.Channel;
-    }
-  } catch (error) {
-    return error;
+  const channel = await MediaLive.createChannel(params).promise();
+  if (channel.Channel && channel.Channel.Id) {
+    user.awsMediaLiveChannelId = channel.Channel.Id;
+    await user.save();
+    return channel.Channel;
+  } else {
+    throw new Error('Error creating MediaLive channel');
   }
 };
 
 const describeChannel = async (
   channelId: string
 ): Promise<DescribeChannelResponse | AWSError> => {
-  try {
-    const channel = await MediaLive.describeChannel({
-      ChannelId: channelId,
-    }).promise();
-    return channel;
-  } catch (error) {
-    return error;
-  }
+  const channel = await MediaLive.describeChannel({
+    ChannelId: channelId,
+  }).promise();
+  return channel;
 };
 
 export default {

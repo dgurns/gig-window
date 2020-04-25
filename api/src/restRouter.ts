@@ -12,20 +12,30 @@ restRouter.get('/rtmp-event', async (req: Request, res: Response) => {
     return res.status(401).send();
   }
 
-  const eventType = req.query.call;
-  if (eventType === 'publish') {
-    user.isPublishingStream = true;
-    await user.save();
+  try {
+    const eventType = req.query.call;
+    if (eventType === 'publish') {
+      user.isPublishingStream = true;
+      await user.save();
 
-    await AwsMediaLive.maybeCreateRtmpPullInputForUser(user);
-    await AwsMediaPackage.maybeCreateChannelForUser(user);
-    await AwsMediaLive.maybeCreateChannelForUser(user);
-  } else if (eventType === 'publish_done') {
+      await AwsMediaLive.maybeCreateRtmpPullInputForUser(user);
+      await AwsMediaPackage.maybeCreateChannelForUser(user);
+      await AwsMediaLive.maybeCreateChannelForUser(user);
+    } else if (eventType === 'publish_done' || eventType === 'disconnect') {
+      user.isPublishingStream = false;
+      await user.save();
+    }
+
+    return res.status(200).send();
+  } catch (error) {
+    console.log(error);
+    // We're about to reject this publish request, so
+    // we can set isPublishingStream to false
     user.isPublishingStream = false;
     await user.save();
-  }
 
-  return res.status(200).send();
+    return res.status(500).send();
+  }
 });
 
 export { restRouter };
