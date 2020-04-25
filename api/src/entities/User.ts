@@ -41,6 +41,10 @@ export class User extends BaseEntity {
 
   @Field(() => String)
   @Column({ default: '' })
+  awsMediaLiveChannelState: string;
+
+  @Field(() => String)
+  @Column({ default: '' })
   awsMediaPackageChannelId: string;
 
   @Field(() => String)
@@ -54,4 +58,12 @@ export class User extends BaseEntity {
   @Field(() => String)
   @Column({ default: '' })
   awsMediaPackageChannelIngestPasswordParam: string;
+
+  @Field(() => String)
+  @Column({ default: '' })
+  awsMediaPackageOriginEndpointId: string;
+
+  @Field(() => String)
+  @Column({ default: '' })
+  awsMediaPackageOriginEndpointUrl: string;
 }

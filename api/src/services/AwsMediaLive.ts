@@ -3,8 +3,11 @@ import AwsMediaLive, {
   CreateInputResponse,
   DescribeChannelResponse,
   CreateChannelResponse,
+  StartChannelResponse,
+  ChannelState,
 } from 'aws-sdk/clients/medialive';
 import { AWSError } from 'aws-sdk';
+import { PromiseResult } from 'aws-sdk/lib/request';
 import { User } from 'entities/User';
 import { buildCreateChannelParams } from './AwsMediaLive.params';
 
@@ -54,11 +57,17 @@ const maybeCreateRtmpPullInputForUser = async (
   }
 };
 
+const describeChannel = (
+  channelId: string
+): Promise<PromiseResult<DescribeChannelResponse, AWSError>> => {
+  return MediaLive.describeChannel({
+    ChannelId: channelId,
+  }).promise();
+};
+
 const maybeCreateChannelForUser = async (
   user: User
-): Promise<
-  DescribeChannelResponse | CreateChannelResponse['Channel'] | AWSError
-> => {
+): Promise<DescribeChannelResponse | CreateChannelResponse | AWSError> => {
   if (user.awsMediaLiveChannelId) {
     // Check that channel is still valid. If so, return.
     try {
@@ -73,23 +82,41 @@ const maybeCreateChannelForUser = async (
   if (channel.Channel && channel.Channel.Id) {
     user.awsMediaLiveChannelId = channel.Channel.Id;
     await user.save();
-    return channel.Channel;
+    return channel;
   } else {
     throw new Error('Error creating MediaLive channel');
   }
 };
 
-const describeChannel = async (
-  channelId: string
-): Promise<DescribeChannelResponse | AWSError> => {
-  const channel = await MediaLive.describeChannel({
-    ChannelId: channelId,
-  }).promise();
-  return channel;
+const maybeStartChannelForUser = async (
+  user: User
+): Promise<DescribeChannelResponse | StartChannelResponse | AWSError> => {
+  if (user.awsMediaLiveChannelId) {
+    // If channel is in '-ING' state, return and don't attempt to start.
+    try {
+      const describeChannelResponse = await MediaLive.describeChannel({
+        ChannelId: user.awsMediaLiveChannelId,
+      }).promise();
+      if (
+        describeChannelResponse.State &&
+        describeChannelResponse.State.indexOf('ING') > -1
+      ) {
+        return describeChannelResponse;
+      }
+    } catch {}
+
+    // Otherwise, start channel
+    return await MediaLive.startChannel({
+      ChannelId: user.awsMediaLiveChannelId,
+    }).promise();
+  } else {
+    throw new Error('User has no channel under that ID');
+  }
 };
 
 export default {
   maybeCreateRtmpPullInputForUser,
-  maybeCreateChannelForUser,
   describeChannel,
+  maybeCreateChannelForUser,
+  maybeStartChannelForUser,
 };

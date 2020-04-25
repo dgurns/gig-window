@@ -20,7 +20,9 @@ restRouter.get('/rtmp-event', async (req: Request, res: Response) => {
 
       await AwsMediaLive.maybeCreateRtmpPullInputForUser(user);
       await AwsMediaPackage.maybeCreateChannelForUser(user);
+      await AwsMediaPackage.maybeCreateOriginEndpointForUser(user);
       await AwsMediaLive.maybeCreateChannelForUser(user);
+      await AwsMediaLive.maybeStartChannelForUser(user);
     } else if (eventType === 'publish_done' || eventType === 'disconnect') {
       user.isPublishingStream = false;
       await user.save();

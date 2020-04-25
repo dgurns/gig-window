@@ -2,10 +2,13 @@ import AwsMediaPackage, {
   DescribeChannelResponse,
   CreateChannelResponse,
   IngestEndpoint,
+  DescribeOriginEndpointResponse,
+  CreateOriginEndpointResponse,
 } from 'aws-sdk/clients/mediapackage';
 import { AWSError } from 'aws-sdk';
 import { User } from 'entities/User';
 import AwsSystemsManager from './AwsSystemsManager';
+import { buildCreateOriginEndpointParams } from './AwsMediaPackage.params';
 
 const { AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } = process.env;
 
@@ -15,6 +18,14 @@ const MediaPackage = new AwsMediaPackage({
   accessKeyId: AWS_ACCESS_KEY_ID,
   secretAccessKey: AWS_SECRET_ACCESS_KEY,
 });
+
+const describeChannel = (
+  channelId: string
+): Promise<DescribeChannelResponse | AWSError> => {
+  return MediaPackage.describeChannel({
+    Id: channelId,
+  }).promise();
+};
 
 const saveIngestEndpointToUser = async (
   ingestEndpoint: IngestEndpoint,
@@ -70,16 +81,46 @@ const maybeCreateChannelForUser = async (
   }
 };
 
-const describeChannel = async (
-  channelId: string
-): Promise<DescribeChannelResponse | AWSError> => {
-  const describeChannelResponse = await MediaPackage.describeChannel({
-    Id: channelId,
+const describeOriginEndpoint = (
+  originEndpointId: string
+): Promise<DescribeOriginEndpointResponse | AWSError> => {
+  return MediaPackage.describeOriginEndpoint({
+    Id: originEndpointId,
   }).promise();
-  return describeChannelResponse;
+};
+
+const maybeCreateOriginEndpointForUser = async (
+  user: User
+): Promise<
+  DescribeOriginEndpointResponse | CreateOriginEndpointResponse | AWSError
+> => {
+  if (user.awsMediaPackageOriginEndpointId) {
+    // Check that origin endpoint is still valid. If so, return.
+    try {
+      const existingOriginEndpoint = await describeOriginEndpoint(
+        user.awsMediaPackageOriginEndpointId
+      );
+      return existingOriginEndpoint;
+    } catch {}
+  }
+
+  // If not, continue to create a new origin endpoint and save it to user.
+  const params = buildCreateOriginEndpointParams(user);
+  const newOriginEndpoint = await MediaPackage.createOriginEndpoint(
+    params
+  ).promise();
+  if (newOriginEndpoint.Id) {
+    user.awsMediaPackageOriginEndpointId = newOriginEndpoint.Id;
+    await user.save();
+    return newOriginEndpoint;
+  } else {
+    throw new Error('Error creating MediaPackage origin endpoint');
+  }
 };
 
 export default {
-  maybeCreateChannelForUser,
   describeChannel,
+  maybeCreateChannelForUser,
+  describeOriginEndpoint,
+  maybeCreateOriginEndpointForUser,
 };
