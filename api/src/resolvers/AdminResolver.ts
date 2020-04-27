@@ -3,9 +3,9 @@ import LiveVideoInfrastructure from 'services/LiveVideoInfrastructure';
 
 @Resolver()
 export class AdminResolver {
-  @Mutation(() => Boolean)
+  @Mutation(() => String)
   async deleteStaleResources() {
-    await LiveVideoInfrastructure.deleteStaleResources();
-    return true;
+    const numberOfResourcesDeleted = await LiveVideoInfrastructure.deleteStaleResources();
+    return `Deleted ${numberOfResourcesDeleted} resources`;
   }
 }

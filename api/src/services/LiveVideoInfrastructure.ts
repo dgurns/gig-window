@@ -60,7 +60,7 @@ const checkUserIsStreamingLive = async (user: User) => {
   return false;
 };
 
-const deleteStaleResources = async (): Promise<void> => {
+const deleteStaleResources = async (): Promise<number> => {
   const usersWithStaleMediaLiveChannels = await Admin.getUsersWithStaleMediaLiveChannels();
   usersWithStaleMediaLiveChannels.forEach(async (user) => {
     await AwsMediaLive.stopChannel(user.awsMediaLiveChannelId);
@@ -68,6 +68,8 @@ const deleteStaleResources = async (): Promise<void> => {
     user.awsMediaLiveChannelId = '';
     await user.save();
   });
+
+  return usersWithStaleMediaLiveChannels.length;
 };
 
 export default {
