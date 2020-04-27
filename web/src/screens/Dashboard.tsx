@@ -18,10 +18,11 @@ import DashboardSubheader from 'components/DashboardSubheader';
 import TextButton from 'components/TextButton';
 import ChatBox from 'components/ChatBox';
 
-const GET_USER_IS_PUBLISHING_STATUS = gql`
+const GET_USER_LIVE_VIDEO_STATUS = gql`
   {
     getCurrentUser {
       isPublishingStream
+      liveVideoInfrastructureError
     }
   }
 `;
@@ -111,12 +112,41 @@ const Dashboard = () => {
   const classes = useStyles();
   const [currentUser] = useCurrentUser();
 
-  const { data } = useQuery(GET_USER_IS_PUBLISHING_STATUS, {
+  const { data } = useQuery(GET_USER_LIVE_VIDEO_STATUS, {
     pollInterval: 3000,
   });
-  const userIsPublishingStream = data?.getCurrentUser.isPublishingStream;
 
   const [isPublicMode, setIsPublicMode] = useState(false);
+
+  const renderStreamMessage = () => {
+    const { isPublishingStream, liveVideoInfrastructureError } =
+      data?.getCurrentUser || {};
+
+    if (liveVideoInfrastructureError) {
+      return (
+        <Typography variant="body1" className={classes.streamPreviewMessage}>
+          Error starting live video infrastructure. Please restart your
+          broadcast on your encoder.
+        </Typography>
+      );
+    }
+
+    return (
+      <>
+        <Typography variant="body1" className={classes.streamPreviewMessage}>
+          {isPublishingStream
+            ? 'Stream detected! Starting up video infrastructure... (takes about 60 seconds)'
+            : 'No stream detected'}
+        </Typography>
+        {isPublishingStream && (
+          <CircularProgress
+            color="secondary"
+            className={classes.startingVideoInfrastructureProgress}
+          />
+        )}
+      </>
+    );
+  };
 
   return (
     <>
@@ -179,20 +209,7 @@ const Dashboard = () => {
               alignItems="center"
               className={classes.video}
             >
-              <Typography
-                variant="body1"
-                className={classes.streamPreviewMessage}
-              >
-                {userIsPublishingStream
-                  ? 'Stream detected! Starting up video infrastructure... (takes about 60 seconds)'
-                  : 'No stream detected'}
-              </Typography>
-              {userIsPublishingStream && (
-                <CircularProgress
-                  color="secondary"
-                  className={classes.startingVideoInfrastructureProgress}
-                />
-              )}
+              {renderStreamMessage()}
             </Grid>
             <Grid
               item

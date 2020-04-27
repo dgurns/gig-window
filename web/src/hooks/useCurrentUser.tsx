@@ -10,6 +10,7 @@ const GET_CURRENT_USER = gql`
       urlSlug
       streamKey
       isPublishingStream
+      liveVideoInfrastructureError
       awsMediaLiveInputId
       awsMediaLiveChannelId
       awsMediaPackageChannelId
