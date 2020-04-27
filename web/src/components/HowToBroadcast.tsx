@@ -19,7 +19,7 @@ const HowToBroadcast = () => {
   const [currentUser] = useCurrentUser();
 
   return (
-    <Grid container direction="column" xs={12}>
+    <Grid container direction="column">
       <Typography variant="h6" className={classes.howToItem}>
         How to broadcast:
       </Typography>

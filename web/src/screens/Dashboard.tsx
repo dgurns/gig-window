@@ -10,6 +10,7 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 
 import DashboardSubheader from 'components/DashboardSubheader';
+import LiveVideoPlayer from 'components/LiveVideoPlayer';
 import TextButton from 'components/TextButton';
 import ChatBox from 'components/ChatBox';
 import HowToBroadcast from 'components/HowToBroadcast';
@@ -19,6 +20,7 @@ const GET_USER_PUBLISHING_STREAM_STATUS = gql`
     getCurrentUser {
       isPublishingStream
       liveVideoInfrastructureError
+      awsMediaPackageOriginEndpointUrl
     }
   }
 `;
@@ -112,6 +114,9 @@ const Dashboard = () => {
       pollInterval: 3000,
     }
   );
+  const publishingStreamStatus =
+    publishingStreamStatusQuery.data?.getCurrentUser || {};
+
   const isStreamingLiveQuery = useQuery(CHECK_USER_IS_STREAMING_LIVE, {
     pollInterval: 3000,
   });
@@ -119,8 +124,10 @@ const Dashboard = () => {
   const [isPublicMode, setIsPublicMode] = useState(false);
 
   const renderStreamPreviewMessage = () => {
-    const { isPublishingStream, liveVideoInfrastructureError } =
-      publishingStreamStatusQuery.data?.getCurrentUser || {};
+    const {
+      isPublishingStream,
+      liveVideoInfrastructureError,
+    } = publishingStreamStatus;
 
     if (liveVideoInfrastructureError) {
       return (
@@ -212,9 +219,15 @@ const Dashboard = () => {
               alignItems="center"
               className={classes.video}
             >
-              {userIsStreamingLive
-                ? 'Render video player'
-                : renderStreamPreviewMessage()}
+              {userIsStreamingLive ? (
+                <LiveVideoPlayer
+                  hlsUrl={
+                    publishingStreamStatus.awsMediaPackageOriginEndpointUrl
+                  }
+                />
+              ) : (
+                renderStreamPreviewMessage()
+              )}
             </Grid>
             <Grid
               item
