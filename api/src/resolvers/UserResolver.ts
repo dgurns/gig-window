@@ -5,6 +5,7 @@ import { getManager } from 'typeorm';
 import { User } from 'entities/User';
 import { SignUpInput, LogInInput } from 'resolvers/inputs/UserInputs';
 import { CustomContext } from 'authChecker';
+import LiveVideoInfrastructure from 'services/LiveVideoInfrastructure';
 
 @Resolver()
 export class UserResolver {
@@ -21,6 +22,14 @@ export class UserResolver {
   @Query(() => User, { nullable: true })
   getCurrentUser(@Ctx() ctx: CustomContext) {
     return ctx.getUser();
+  }
+
+  @Query(() => Boolean)
+  async checkUserIsStreamingLive(@Ctx() ctx: CustomContext) {
+    const user = ctx.getUser();
+    if (!user) return false;
+
+    return LiveVideoInfrastructure.checkUserIsStreamingLive(user);
   }
 
   @Mutation(() => User)

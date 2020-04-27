@@ -2,9 +2,7 @@ import { User } from 'entities/User';
 import AwsMediaLive from 'services/aws/MediaLive';
 import AwsMediaPackage from 'services/aws/MediaPackage';
 
-const startLiveVideoInfrastructureForUser = async (
-  user: User
-): Promise<void> => {
+const startInfrastructureForUser = async (user: User): Promise<void> => {
   try {
     user.liveVideoInfrastructureError = '';
     await user.save();
@@ -21,6 +19,44 @@ const startLiveVideoInfrastructureForUser = async (
   }
 };
 
+const checkInfrastructureIsConfiguredForUser = async (user: User) => {
+  if (
+    user.awsMediaLiveInputId &&
+    user.awsMediaLiveChannelId &&
+    user.awsMediaPackageChannelId &&
+    user.awsMediaPackageChannelIngestUrl &&
+    user.awsMediaPackageChannelIngestUsername &&
+    user.awsMediaPackageChannelIngestPasswordParam &&
+    user.awsMediaPackageOriginEndpointId &&
+    user.awsMediaPackageOriginEndpointUrl
+  ) {
+    return true;
+  }
+  return false;
+};
+
+const checkUserIsStreamingLive = async (user: User) => {
+  if (!user.isPublishingStream) return false;
+
+  const infrastructureIsConfigured = checkInfrastructureIsConfiguredForUser(
+    user
+  );
+  if (!infrastructureIsConfigured) return false;
+
+  const describeChannelResponse = await AwsMediaLive.describeChannel(
+    user.awsMediaLiveChannelId
+  );
+  if (describeChannelResponse.State === 'RUNNING') {
+    // If user is publishing stream, infrastructure is ready, and channel
+    // is 'RUNNING', we know user is streaming live
+    return true;
+  }
+
+  return false;
+};
+
 export default {
-  startLiveVideoInfrastructureForUser,
+  startInfrastructureForUser,
+  checkInfrastructureIsConfiguredForUser,
+  checkUserIsStreamingLive,
 };

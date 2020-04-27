@@ -17,7 +17,7 @@ restRouter.get('/rtmp-event', async (req: Request, res: Response) => {
       user.isPublishingStream = true;
       await user.save();
 
-      LiveVideoInfrastucture.startLiveVideoInfrastructureForUser(user);
+      LiveVideoInfrastucture.startInfrastructureForUser(user);
     } else if (eventType === 'publish_done' || eventType === 'disconnect') {
       user.isPublishingStream = false;
       await user.save();
