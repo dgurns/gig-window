@@ -1,6 +1,5 @@
 import AwsSystemsManager, { PutParameterResult } from 'aws-sdk/clients/ssm';
 import { AWSError } from 'aws-sdk';
-import { User } from 'entities/User';
 
 const { AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } = process.env;
 

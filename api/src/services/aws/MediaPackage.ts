@@ -7,8 +7,8 @@ import AwsMediaPackage, {
 } from 'aws-sdk/clients/mediapackage';
 import { AWSError } from 'aws-sdk';
 import { User } from 'entities/User';
-import AwsSystemsManager from './AwsSystemsManager';
-import { buildCreateOriginEndpointParams } from './AwsMediaPackage.params';
+import AwsSystemsManager from 'services/aws/SystemsManager';
+import { buildCreateOriginEndpointParams } from 'services/aws/MediaPackage.params';
 
 const { AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } = process.env;
 

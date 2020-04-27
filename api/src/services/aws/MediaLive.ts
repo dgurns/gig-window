@@ -4,12 +4,11 @@ import AwsMediaLive, {
   DescribeChannelResponse,
   CreateChannelResponse,
   StartChannelResponse,
-  ChannelState,
 } from 'aws-sdk/clients/medialive';
 import { AWSError } from 'aws-sdk';
 import { PromiseResult } from 'aws-sdk/lib/request';
 import { User } from 'entities/User';
-import { buildCreateChannelParams } from './AwsMediaLive.params';
+import { buildCreateChannelParams } from 'services/aws/MediaLive.params';
 
 const {
   AWS_REGION,
@@ -92,20 +91,22 @@ const maybeStartChannelForUser = async (
   user: User
 ): Promise<DescribeChannelResponse | StartChannelResponse | AWSError> => {
   if (user.awsMediaLiveChannelId) {
-    // If channel is in '-ING' state, return and don't attempt to start.
     try {
+      // Get current channel state
       const describeChannelResponse = await MediaLive.describeChannel({
         ChannelId: user.awsMediaLiveChannelId,
       }).promise();
-      if (
-        describeChannelResponse.State &&
-        describeChannelResponse.State.indexOf('ING') > -1
-      ) {
+      const channelState = describeChannelResponse.State;
+
+      if (channelState === 'RUNNING') {
         return describeChannelResponse;
+      } else if (channelState === 'CREATING') {
+        await MediaLive.waitFor('channelCreated', {
+          ChannelId: user.awsMediaLiveChannelId,
+        }).promise();
       }
     } catch {}
 
-    // Otherwise, start channel
     return await MediaLive.startChannel({
       ChannelId: user.awsMediaLiveChannelId,
     }).promise();

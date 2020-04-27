@@ -33,6 +33,10 @@ export class User extends BaseEntity {
 
   @Field(() => String)
   @Column({ default: '' })
+  liveVideoInfrastructureError: string;
+
+  @Field(() => String)
+  @Column({ default: '' })
   awsMediaLiveInputId: string;
 
   @Field(() => String)

@@ -61,39 +61,39 @@ export const buildCreateChannelParams = (user: User) => ({
         AudioTypeControl: 'FOLLOW_INPUT',
         CodecSettings: {
           AacSettings: {
-            Bitrate: 96000,
+            Bitrate: 128000,
             RawFormat: 'NONE',
             Spec: 'MPEG4',
           },
         },
         LanguageCodeControl: 'FOLLOW_INPUT',
-        Name: 'audio_1_aac96',
+        Name: 'audio_3_aac128',
       },
       {
         AudioSelectorName: 'default',
         AudioTypeControl: 'FOLLOW_INPUT',
         CodecSettings: {
           AacSettings: {
-            Bitrate: 96000,
+            Bitrate: 128000,
             RawFormat: 'NONE',
             Spec: 'MPEG4',
           },
         },
         LanguageCodeControl: 'FOLLOW_INPUT',
-        Name: 'audio_2_aac96',
+        Name: 'audio_1_aac128',
       },
       {
         AudioSelectorName: 'default',
         AudioTypeControl: 'FOLLOW_INPUT',
         CodecSettings: {
           AacSettings: {
-            Bitrate: 96000,
+            Bitrate: 128000,
             RawFormat: 'NONE',
             Spec: 'MPEG4',
           },
         },
         LanguageCodeControl: 'FOLLOW_INPUT',
-        Name: 'audio_3_aac96',
+        Name: 'audio_2_aac128',
       },
     ],
     CaptionDescriptions: [],
@@ -125,7 +125,7 @@ export const buildCreateChannelParams = (user: User) => ({
             InputLossAction: 'EMIT_OUTPUT',
             IvInManifest: 'INCLUDE',
             IvSource: 'FOLLOWS_SEGMENT_NUMBER',
-            KeepSegments: 12,
+            KeepSegments: 21,
             ManifestCompression: 'NONE',
             ManifestDurationFormat: 'FLOATING_POINT',
             Mode: 'LIVE',
@@ -144,7 +144,7 @@ export const buildCreateChannelParams = (user: User) => ({
         },
         Outputs: [
           {
-            AudioDescriptionNames: ['audio_2_aac96'],
+            AudioDescriptionNames: ['audio_1_aac128'],
             CaptionDescriptionNames: [],
             OutputSettings: {
               HlsOutputSettings: {
@@ -174,7 +174,7 @@ export const buildCreateChannelParams = (user: User) => ({
             VideoDescriptionName: 'video_960_540',
           },
           {
-            AudioDescriptionNames: ['audio_3_aac96'],
+            AudioDescriptionNames: ['audio_2_aac128'],
             CaptionDescriptionNames: [],
             OutputSettings: {
               HlsOutputSettings: {
@@ -194,7 +194,7 @@ export const buildCreateChannelParams = (user: User) => ({
                     },
                   },
                 },
-                NameModifier: '_1280x720_3300k',
+                NameModifier: '_1280x720_3100k',
               },
             },
             VideoDescriptionName: 'video_1280_720_1',
@@ -278,7 +278,7 @@ export const buildCreateChannelParams = (user: User) => ({
             VideoDescriptionName: 'video_640_360',
           },
           {
-            AudioDescriptionNames: ['audio_1_aac96'],
+            AudioDescriptionNames: ['audio_3_aac128'],
             CaptionDescriptionNames: [],
             OutputSettings: {
               HlsOutputSettings: {
@@ -298,7 +298,7 @@ export const buildCreateChannelParams = (user: User) => ({
                     },
                   },
                 },
-                NameModifier: '_768x432_1200k',
+                NameModifier: '_768x432_1100k',
               },
             },
             VideoDescriptionName: 'video_768_432',
@@ -407,7 +407,7 @@ export const buildCreateChannelParams = (user: User) => ({
         CodecSettings: {
           H264Settings: {
             AdaptiveQuantization: 'HIGH',
-            Bitrate: 1200000,
+            Bitrate: 1100000,
             ColorMetadata: 'INSERT',
             EntropyEncoding: 'CABAC',
             FlickerAq: 'ENABLED',
@@ -439,7 +439,7 @@ export const buildCreateChannelParams = (user: User) => ({
           H264Settings: {
             AdaptiveQuantization: 'HIGH',
             AfdSignaling: 'NONE',
-            Bitrate: 2200000,
+            Bitrate: 2000000,
             ColorMetadata: 'INSERT',
             EntropyEncoding: 'CABAC',
             FlickerAq: 'ENABLED',
@@ -478,7 +478,7 @@ export const buildCreateChannelParams = (user: User) => ({
         CodecSettings: {
           H264Settings: {
             AdaptiveQuantization: 'HIGH',
-            Bitrate: 3300000,
+            Bitrate: 3100000,
             ColorMetadata: 'INSERT',
             EntropyEncoding: 'CABAC',
             FlickerAq: 'ENABLED',

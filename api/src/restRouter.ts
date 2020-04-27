@@ -1,7 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { User } from 'entities/User';
-import AwsMediaLive from 'services/AwsMediaLive';
-import AwsMediaPackage from 'services/AwsMediaPackage';
+import LiveVideoInfrastucture from 'services/LiveVideoInfrastructure';
 
 const restRouter = Router();
 
@@ -18,11 +17,7 @@ restRouter.get('/rtmp-event', async (req: Request, res: Response) => {
       user.isPublishingStream = true;
       await user.save();
 
-      await AwsMediaLive.maybeCreateRtmpPullInputForUser(user);
-      await AwsMediaPackage.maybeCreateChannelForUser(user);
-      await AwsMediaPackage.maybeCreateOriginEndpointForUser(user);
-      await AwsMediaLive.maybeCreateChannelForUser(user);
-      await AwsMediaLive.maybeStartChannelForUser(user);
+      LiveVideoInfrastucture.startLiveVideoInfrastructureForUser(user);
     } else if (eventType === 'publish_done' || eventType === 'disconnect') {
       user.isPublishingStream = false;
       await user.save();
@@ -30,9 +25,8 @@ restRouter.get('/rtmp-event', async (req: Request, res: Response) => {
 
     return res.status(200).send();
   } catch (error) {
-    console.log(error);
     // We're about to reject this publish request, so
-    // we can set isPublishingStream to false
+    // we set isPublishingStream to false
     user.isPublishingStream = false;
     await user.save();
 
