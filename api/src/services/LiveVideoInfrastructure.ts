@@ -12,7 +12,7 @@ const startInfrastructureForUser = async (user: User): Promise<void> => {
     await AwsMediaPackage.maybeCreateOriginEndpointForUser(user);
     await AwsMediaLive.maybeCreateChannelForUser(user);
     await AwsMediaLive.maybeStartChannelForUser(user);
-  } catch (error) {
+  } catch {
     user.liveVideoInfrastructureError =
       'Error starting live video infrastructure';
     await user.save();

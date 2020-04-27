@@ -34,7 +34,7 @@ const maybeCreateRtmpPullInputForUser = async (
       const input = await MediaLive.describeInput({
         InputId: user.awsMediaLiveInputId,
       }).promise();
-      if (input.Id) {
+      if (input.State !== 'DELETED' && input.State !== 'DELETING') {
         return input;
       }
     } catch {}
@@ -71,7 +71,12 @@ const maybeCreateChannelForUser = async (
     // Check that channel is still valid. If so, return.
     try {
       const existingChannel = await describeChannel(user.awsMediaLiveChannelId);
-      return existingChannel;
+      if (
+        existingChannel.State !== 'DELETING' &&
+        existingChannel.State !== 'DELETED'
+      ) {
+        return existingChannel;
+      }
     } catch {}
   }
 
@@ -98,7 +103,7 @@ const maybeStartChannelForUser = async (
       }).promise();
       const channelState = describeChannelResponse.State;
 
-      if (channelState === 'RUNNING') {
+      if (channelState === 'STARTING' || channelState === 'RUNNING') {
         return describeChannelResponse;
       } else if (channelState === 'CREATING') {
         await MediaLive.waitFor('channelCreated', {

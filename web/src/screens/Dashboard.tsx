@@ -78,6 +78,7 @@ const useStyles = makeStyles((theme) => ({
   video: {
     backgroundColor: theme.palette.common.black,
     backgroundSize: 'cover',
+    maxHeight: 520,
     minHeight: 250,
   },
   streamPreviewMessage: {
@@ -114,22 +115,24 @@ const Dashboard = () => {
       pollInterval: 3000,
     }
   );
-  const publishingStreamStatus =
-    publishingStreamStatusQuery.data?.getCurrentUser || {};
+  const {
+    isPublishingStream,
+    liveVideoInfrastructureError,
+    awsMediaPackageOriginEndpointUrl,
+  } = publishingStreamStatusQuery.data?.getCurrentUser || {};
 
   const isStreamingLiveQuery = useQuery(CHECK_USER_IS_STREAMING_LIVE, {
-    pollInterval: 3000,
+    pollInterval: 10000,
   });
+  const userIsStreamingLive =
+    isStreamingLiveQuery.data?.checkUserIsStreamingLive;
 
   const [isPublicMode, setIsPublicMode] = useState(false);
 
   const renderStreamPreviewMessage = () => {
-    const {
-      isPublishingStream,
-      liveVideoInfrastructureError,
-    } = publishingStreamStatus;
+    const { loading } = publishingStreamStatusQuery;
 
-    if (liveVideoInfrastructureError) {
+    if (isPublishingStream && liveVideoInfrastructureError) {
       return (
         <Typography variant="body1" className={classes.streamPreviewMessage}>
           Error starting live video infrastructure. Please restart your
@@ -141,9 +144,10 @@ const Dashboard = () => {
     return (
       <>
         <Typography variant="body1" className={classes.streamPreviewMessage}>
-          {isPublishingStream
-            ? 'Stream detected! Starting up video infrastructure... (takes about 60 seconds)'
-            : 'No stream detected'}
+          {!isPublishingStream && !loading && 'No stream detected'}
+          {isPublishingStream &&
+            !awsMediaPackageOriginEndpointUrl &&
+            'Stream detected! Starting up video infrastructure... (takes about 60 seconds)'}
         </Typography>
         {isPublishingStream && (
           <CircularProgress
@@ -154,9 +158,6 @@ const Dashboard = () => {
       </>
     );
   };
-
-  const userIsStreamingLive =
-    isStreamingLiveQuery.data?.checkUserIsStreamingLive;
 
   return (
     <>
@@ -220,11 +221,7 @@ const Dashboard = () => {
               className={classes.video}
             >
               {userIsStreamingLive ? (
-                <LiveVideoPlayer
-                  hlsUrl={
-                    publishingStreamStatus.awsMediaPackageOriginEndpointUrl
-                  }
-                />
+                <LiveVideoPlayer hlsUrl={awsMediaPackageOriginEndpointUrl} />
               ) : (
                 renderStreamPreviewMessage()
               )}

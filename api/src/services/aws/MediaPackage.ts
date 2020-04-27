@@ -109,8 +109,9 @@ const maybeCreateOriginEndpointForUser = async (
   const newOriginEndpoint = await MediaPackage.createOriginEndpoint(
     params
   ).promise();
-  if (newOriginEndpoint.Id) {
+  if (newOriginEndpoint.Id && newOriginEndpoint.Url) {
     user.awsMediaPackageOriginEndpointId = newOriginEndpoint.Id;
+    user.awsMediaPackageOriginEndpointUrl = newOriginEndpoint.Url;
     await user.save();
     return newOriginEndpoint;
   } else {
