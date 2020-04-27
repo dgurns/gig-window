@@ -3,27 +3,28 @@ import { useQuery, gql } from '@apollo/client';
 import {
   Paper,
   Grid,
-  Link,
   Container,
   Typography,
-  TextField,
   CircularProgress,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import classnames from 'classnames';
-
-import useCurrentUser from 'hooks/useCurrentUser';
 
 import DashboardSubheader from 'components/DashboardSubheader';
 import TextButton from 'components/TextButton';
 import ChatBox from 'components/ChatBox';
+import HowToBroadcast from 'components/HowToBroadcast';
 
-const GET_USER_LIVE_VIDEO_STATUS = gql`
+const GET_USER_PUBLISHING_STREAM_STATUS = gql`
   {
     getCurrentUser {
       isPublishingStream
       liveVideoInfrastructureError
     }
+  }
+`;
+const CHECK_USER_IS_STREAMING_LIVE = gql`
+  {
+    checkUserIsStreamingLive
   }
 `;
 
@@ -100,27 +101,26 @@ const useStyles = makeStyles((theme) => ({
       padding: `${theme.spacing(3)}px ${theme.spacing(3)}px`,
     },
   },
-  howToItem: {
-    marginBottom: 11,
-  },
-  rtmpField: {
-    maxWidth: 350,
-  },
 }));
 
 const Dashboard = () => {
   const classes = useStyles();
-  const [currentUser] = useCurrentUser();
 
-  const { data } = useQuery(GET_USER_LIVE_VIDEO_STATUS, {
+  const publishingStreamStatusQuery = useQuery(
+    GET_USER_PUBLISHING_STREAM_STATUS,
+    {
+      pollInterval: 3000,
+    }
+  );
+  const isStreamingLiveQuery = useQuery(CHECK_USER_IS_STREAMING_LIVE, {
     pollInterval: 3000,
   });
 
   const [isPublicMode, setIsPublicMode] = useState(false);
 
-  const renderStreamMessage = () => {
+  const renderStreamPreviewMessage = () => {
     const { isPublishingStream, liveVideoInfrastructureError } =
-      data?.getCurrentUser || {};
+      publishingStreamStatusQuery.data?.getCurrentUser || {};
 
     if (liveVideoInfrastructureError) {
       return (
@@ -147,6 +147,9 @@ const Dashboard = () => {
       </>
     );
   };
+
+  const userIsStreamingLive =
+    isStreamingLiveQuery.data?.checkUserIsStreamingLive;
 
   return (
     <>
@@ -209,7 +212,9 @@ const Dashboard = () => {
               alignItems="center"
               className={classes.video}
             >
-              {renderStreamMessage()}
+              {userIsStreamingLive
+                ? 'Render video player'
+                : renderStreamPreviewMessage()}
             </Grid>
             <Grid
               item
@@ -233,38 +238,7 @@ const Dashboard = () => {
           md={9}
           className={classes.howTo}
         >
-          <Typography variant="h6" className={classes.howToItem}>
-            How to broadcast:
-          </Typography>
-          <Typography className={classes.howToItem}>
-            1. Pick a streaming software - anything that lets you stream to an
-            RTMP URL. Many people like{' '}
-            <Link href="https://obsproject.com/">OBS</Link> (laptop/desktop) or{' '}
-            <Link href="https://streamlabs.com/">Streamlabs</Link>{' '}
-            (iOS/Android), which are free and open source. Both have plenty of
-            help resources and guides for getting started.
-          </Typography>
-          <Typography className={classes.howToItem}>
-            2. Send your stream to this RTMP URL:
-          </Typography>
-          <TextField
-            value={process.env.REACT_APP_RTMP_URL}
-            variant="outlined"
-            size="small"
-            className={classnames([classes.howToItem, classes.rtmpField])}
-          />
-          <Typography className={classes.howToItem}>
-            ...with this stream key (keep it secret!):
-          </Typography>
-          <TextField
-            value={currentUser?.streamKey || ''}
-            variant="outlined"
-            size="small"
-            className={classnames([classes.howToItem, classes.rtmpField])}
-          />
-          <Typography className={classes.howToItem}>
-            3. When you’re broadcasting, you’ll see the stream appear above.
-          </Typography>
+          <HowToBroadcast />
         </Grid>
       </Container>
     </>

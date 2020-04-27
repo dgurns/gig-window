@@ -20,6 +20,10 @@ const startInfrastructureForUser = async (user: User): Promise<void> => {
 };
 
 const checkInfrastructureIsConfiguredForUser = async (user: User) => {
+  if (user.liveVideoInfrastructureError) {
+    return false;
+  }
+
   if (
     user.awsMediaLiveInputId &&
     user.awsMediaLiveChannelId &&
