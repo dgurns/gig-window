@@ -31,6 +31,10 @@ export class User extends BaseEntity {
   @Column({ default: false })
   isPublishingStream: boolean;
 
+  @Field(() => Number)
+  @Column({ default: '' })
+  lastPublishedStreamEndTimestamp: number;
+
   @Field(() => String)
   @Column({ default: '' })
   liveVideoInfrastructureError: string;
@@ -42,10 +46,6 @@ export class User extends BaseEntity {
   @Field(() => String)
   @Column({ default: '' })
   awsMediaLiveChannelId: string;
-
-  @Field(() => String)
-  @Column({ default: '' })
-  awsMediaLiveChannelState: string;
 
   @Field(() => String)
   @Column({ default: '' })

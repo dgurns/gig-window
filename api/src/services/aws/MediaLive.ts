@@ -4,6 +4,8 @@ import AwsMediaLive, {
   DescribeChannelResponse,
   CreateChannelResponse,
   StartChannelResponse,
+  StopChannelResponse,
+  DeleteChannelResponse,
 } from 'aws-sdk/clients/medialive';
 import { AWSError } from 'aws-sdk';
 import { PromiseResult } from 'aws-sdk/lib/request';
@@ -54,14 +56,6 @@ const maybeCreateRtmpPullInputForUser = async (
   } else {
     throw new Error('Error creating RTMP pull input');
   }
-};
-
-const describeChannel = (
-  channelId: string
-): Promise<PromiseResult<DescribeChannelResponse, AWSError>> => {
-  return MediaLive.describeChannel({
-    ChannelId: channelId,
-  }).promise();
 };
 
 const maybeCreateChannelForUser = async (
@@ -120,9 +114,29 @@ const maybeStartChannelForUser = async (
   }
 };
 
+const describeChannel = (
+  channelId: string
+): Promise<PromiseResult<DescribeChannelResponse, AWSError>> => {
+  return MediaLive.describeChannel({ ChannelId: channelId }).promise();
+};
+
+const stopChannel = (
+  channelId: string
+): Promise<PromiseResult<StopChannelResponse, AWSError>> => {
+  return MediaLive.stopChannel({ ChannelId: channelId }).promise();
+};
+
+const deleteChannel = (
+  channelId: string
+): Promise<PromiseResult<DeleteChannelResponse, AWSError>> => {
+  return MediaLive.deleteChannel({ ChannelId: channelId }).promise();
+};
+
 export default {
   maybeCreateRtmpPullInputForUser,
-  describeChannel,
   maybeCreateChannelForUser,
   maybeStartChannelForUser,
+  describeChannel,
+  stopChannel,
+  deleteChannel,
 };

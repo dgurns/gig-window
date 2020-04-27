@@ -1,6 +1,7 @@
 import { User } from 'entities/User';
 import AwsMediaLive from 'services/aws/MediaLive';
 import AwsMediaPackage from 'services/aws/MediaPackage';
+import Admin from 'services/Admin';
 
 const startInfrastructureForUser = async (user: User): Promise<void> => {
   try {
@@ -59,8 +60,19 @@ const checkUserIsStreamingLive = async (user: User) => {
   return false;
 };
 
+const deleteStaleResources = async (): Promise<void> => {
+  const usersWithStaleMediaLiveChannels = await Admin.getUsersWithStaleMediaLiveChannels();
+  usersWithStaleMediaLiveChannels.forEach(async (user) => {
+    await AwsMediaLive.stopChannel(user.awsMediaLiveChannelId);
+    await AwsMediaLive.deleteChannel(user.awsMediaLiveChannelId);
+    user.awsMediaLiveChannelId = '';
+    await user.save();
+  });
+};
+
 export default {
   startInfrastructureForUser,
   checkInfrastructureIsConfiguredForUser,
   checkUserIsStreamingLive,
+  deleteStaleResources,
 };
