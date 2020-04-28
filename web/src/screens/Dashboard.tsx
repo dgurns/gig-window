@@ -18,6 +18,7 @@ import HowToBroadcast from 'components/HowToBroadcast';
 const GET_USER_PUBLISHING_STREAM_STATUS = gql`
   {
     getCurrentUser {
+      urlSlug
       isPublishingStream
       liveVideoInfrastructureError
       awsMediaPackageOriginEndpointUrl
@@ -116,6 +117,7 @@ const Dashboard = () => {
     }
   );
   const {
+    urlSlug,
     isPublishingStream,
     liveVideoInfrastructureError,
     awsMediaPackageOriginEndpointUrl,
@@ -235,7 +237,7 @@ const Dashboard = () => {
               lg={3}
               className={classes.chat}
             >
-              <ChatBox />
+              <ChatBox urlSlug={urlSlug} />
             </Grid>
           </Grid>
         </Paper>

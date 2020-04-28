@@ -73,9 +73,7 @@ async function start() {
     });
 
     app.listen({ port: SERVER_PORT }, () =>
-      console.log(
-        `🚀 Server ready at http://localhost:${SERVER_PORT}${server.graphqlPath}`
-      )
+      console.log(`🚀 api ready on port ${SERVER_PORT}`)
     );
   } catch (error) {
     console.log(error);

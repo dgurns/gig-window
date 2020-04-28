@@ -1,20 +1,21 @@
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 import { Paper, Container, Typography, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import TipButton from 'components/TipButton';
 import ChatBox from 'components/ChatBox';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   pageContent: {
     paddingTop: 35,
-    width: '100%'
+    width: '100%',
   },
   subheaderLink: {
     margin: `0 ${theme.spacing(3)}px`,
     [theme.breakpoints.down('xs')]: {
-      margin: `${theme.spacing(1)}px ${theme.spacing(3)}px`
-    }
+      margin: `${theme.spacing(1)}px ${theme.spacing(3)}px`,
+    },
   },
   userInfoContainer: {
     alignItems: 'center',
@@ -22,41 +23,43 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.down('xs')]: {
       alignItems: 'flex-start',
       flexDirection: 'column-reverse',
-      padding: `${theme.spacing(3)}px ${theme.spacing(3)}px`
-    }
+      padding: `${theme.spacing(3)}px ${theme.spacing(3)}px`,
+    },
   },
   userImage: {
     height: 72,
     marginRight: theme.spacing(2),
     [theme.breakpoints.down('xs')]: {
-      marginTop: theme.spacing(2)
-    }
+      marginTop: theme.spacing(2),
+    },
   },
   userText: {
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
   videoChatContainer: {
-    height: 520
+    height: 520,
   },
   video: {
     backgroundColor: theme.palette.common.black,
     backgroundSize: 'cover',
-    minHeight: 100
+    minHeight: 100,
   },
   chat: {
     backgroundColor: theme.palette.common.white,
-    height: 520
+    height: 520,
   },
   tools: {
     marginTop: theme.spacing(2),
     [theme.breakpoints.down('sm')]: {
-      padding: `0 ${theme.spacing(2)}px`
-    }
-  }
+      padding: `0 ${theme.spacing(2)}px`,
+    },
+  },
 }));
 
 const Watch = () => {
   const classes = useStyles();
+  const { pathname } = useLocation();
+  const urlSlug = pathname.split('/')[1];
 
   return (
     <Container disableGutters maxWidth={false}>
@@ -77,7 +80,7 @@ const Watch = () => {
         <Grid container direction="row" className={classes.videoChatContainer}>
           <Grid item xs={12} sm={8} md={9} className={classes.video} />
           <Grid item xs={false} sm={4} md={3} lg={3} className={classes.chat}>
-            <ChatBox />
+            <ChatBox urlSlug={urlSlug} />
           </Grid>
         </Grid>
       </Paper>

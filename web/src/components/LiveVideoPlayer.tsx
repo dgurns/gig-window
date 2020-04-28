@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactPlayer from 'react-player';
 
-type Props = {
+interface LiveVideoPlayerProps {
   hlsUrl?: string;
-};
+}
 
-const LiveVideoPlayer = (props: Props) => {
+const LiveVideoPlayer = (props: LiveVideoPlayerProps) => {
   if (!props.hlsUrl) {
     return null;
   }

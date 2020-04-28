@@ -3,7 +3,11 @@ import { v4 as uuidv4 } from 'uuid';
 import { Resolver, Query, Mutation, Arg, Ctx } from 'type-graphql';
 import { getManager } from 'typeorm';
 import { User } from 'entities/User';
-import { SignUpInput, LogInInput } from 'resolvers/inputs/UserInputs';
+import {
+  GetUserInput,
+  SignUpInput,
+  LogInInput,
+} from 'resolvers/inputs/UserInputs';
 import { CustomContext } from 'authChecker';
 import LiveVideoInfrastructure from 'services/LiveVideoInfrastructure';
 
@@ -15,8 +19,14 @@ export class UserResolver {
   }
 
   @Query(() => User, { nullable: true })
-  getUser(@Arg('id') id: string) {
-    return User.findOne({ where: { id } });
+  getUser(@Arg('data') data: GetUserInput) {
+    const { id, urlSlug } = data;
+    if (id) {
+      return User.findOne({ where: { id } });
+    } else if (urlSlug) {
+      return User.findOne({ where: { urlSlug } });
+    }
+    return null;
   }
 
   @Query(() => User, { nullable: true })
