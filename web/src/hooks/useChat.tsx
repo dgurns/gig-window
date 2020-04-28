@@ -12,40 +12,52 @@ const useChat = (urlSlug?: string): [Message[], SendMessageFunction] => {
   // Needed to force the component to rerender
   const [, setMessageCount] = useState(0);
 
-  const defaultMessagesValue: Message[] = [];
-  const messages = useRef(defaultMessagesValue);
+  const defaultMessages: Message[] = [];
+  const messages = useRef(defaultMessages);
+  const defaultSendMessage: SendMessageFunction = () => {};
+  const sendMessage = useRef(defaultSendMessage);
 
-  const socket = useMemo(() => io.connect(REACT_APP_CHAT_URL || ''), []);
-
-  const updateMessages = (updatedMessages: Message[]) => {
-    messages.current = updatedMessages;
-    setMessageCount(updatedMessages.length);
-  };
+  const socket = useMemo(() => {
+    console.log('connecting socket for ', urlSlug);
+    return io.connect(REACT_APP_CHAT_URL || '');
+  }, []);
 
   useEffect(() => {
     if (!urlSlug) {
       return;
     }
-    socket.on('connect', () => socket.emit('join_room', urlSlug));
+
+    console.log('socket is connected', socket.connected);
+
+    const updateMessages = (updatedMessages: Message[]) => {
+      messages.current = updatedMessages;
+      console.log('updating messages');
+      setMessageCount(updatedMessages.length);
+    };
+
+    socket.on('connect', () => {
+      console.log('connect event for ', urlSlug);
+      socket.emit('join_room', urlSlug);
+    });
     socket.on('new_message', (data: Message) => {
-      console.log('new message for', urlSlug);
+      console.log('new message event for ', urlSlug);
       updateMessages([...messages.current, data]);
     });
 
-    // Need to clean up?
-  }, [urlSlug, socket]);
-
-  const sendMessage = useCallback(
-    (message: Message | undefined): void => {
-      if (!message) {
+    sendMessage.current = (message: Message | undefined): void => {
+      if (!message || !urlSlug) {
         return;
       }
       socket.emit('new_message', message);
-    },
-    [socket]
-  );
+    };
 
-  return [messages.current, sendMessage];
+    return () => {
+      socket.off('connect');
+      socket.off('new_message');
+    };
+  }, [socket, urlSlug]);
+
+  return [messages.current, sendMessage.current];
 };
 
 export default useChat;
