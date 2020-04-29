@@ -17,6 +17,7 @@ import { restRouter } from './restRouter';
 import { authChecker } from './authChecker';
 import { User } from 'entities/User';
 import { UserResolver } from 'resolvers/UserResolver';
+import { ChatEventResolver } from 'resolvers/ChatEventResolver';
 import { AdminResolver } from 'resolvers/AdminResolver';
 
 const { RTMP_ORIGIN, UI_ORIGIN, SERVER_PORT, COOKIE_SESSION_KEY } = process.env;
@@ -57,7 +58,7 @@ async function start() {
     app.use(restRouter);
 
     const schema = await buildSchema({
-      resolvers: [UserResolver, AdminResolver],
+      resolvers: [UserResolver, ChatEventResolver, AdminResolver],
       authChecker,
       validate: false,
     });
