@@ -4,28 +4,28 @@ import { Grid, Link, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 interface ChatMessageProps {
-  imageUrl: string;
-  profileUrl: string;
+  userImageUrl: string;
+  userUrlSlug: string;
   username: string;
-  message: string;
+  message?: string;
 }
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   container: {
     marginBottom: theme.spacing(1),
-    marginTop: theme.spacing(1)
+    marginTop: theme.spacing(1),
   },
   userImage: {
     borderRadius: 20,
     height: 40,
     marginRight: theme.spacing(1),
     backgroundSize: 'cover',
-    width: 40
+    width: 40,
   },
   textContainer: {
     flex: 1,
-    flexDirection: 'column'
-  }
+    flexDirection: 'column',
+  },
 }));
 
 const ChatMessage = (props: ChatMessageProps) => {
@@ -36,10 +36,15 @@ const ChatMessage = (props: ChatMessageProps) => {
       <Grid
         item
         className={classes.userImage}
-        style={{ backgroundImage: `url(${props.imageUrl})` }}
+        style={{ backgroundImage: `url(${props.userImageUrl})` }}
       />
       <Grid item className={classes.textContainer}>
-        <Link variant="body1" component={RouterLink} to="/" color="textPrimary">
+        <Link
+          variant="body1"
+          component={RouterLink}
+          to={props.userUrlSlug}
+          color="textPrimary"
+        >
           {props.username}
         </Link>
         <Typography variant="body1" color="textSecondary">

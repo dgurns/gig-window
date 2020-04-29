@@ -1,17 +1,17 @@
 import { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
 import { SocketEvent } from 'types/SocketEvent';
-import { ChatMessage } from 'types/ChatMessage';
+import { Message } from 'types/Message';
 
 const { REACT_APP_CHAT_URL } = process.env;
 
-type SendMessageFunction = (message: ChatMessage | undefined) => void;
+type SendMessageFunction = (message: Message | undefined) => void;
 
-const useChat = (urlSlug?: string): [ChatMessage[], SendMessageFunction] => {
+const useChat = (urlSlug?: string): [Message[], SendMessageFunction] => {
   // Needed to force the component to rerender
   const [, setMessageCount] = useState(0);
 
-  const defaultMessages: ChatMessage[] = [];
+  const defaultMessages: Message[] = [];
   const messages = useRef(defaultMessages);
   const defaultSendMessage: SendMessageFunction = () => {};
   const sendMessage = useRef(defaultSendMessage);
@@ -25,7 +25,7 @@ const useChat = (urlSlug?: string): [ChatMessage[], SendMessageFunction] => {
 
     const socket = io.connect(REACT_APP_CHAT_URL || '');
 
-    const updateMessages = (updatedMessages: ChatMessage[]) => {
+    const updateMessages = (updatedMessages: Message[]) => {
       if (!isMounted) {
         return;
       }
@@ -38,13 +38,13 @@ const useChat = (urlSlug?: string): [ChatMessage[], SendMessageFunction] => {
         socket.emit(SocketEvent.JoinRoom, urlSlug);
       }
     });
-    socket.on(SocketEvent.NewMessage, (data: ChatMessage) => {
+    socket.on(SocketEvent.NewMessage, (data: Message) => {
       if (isMounted) {
         updateMessages([...messages.current, data]);
       }
     });
 
-    sendMessage.current = (message: ChatMessage | undefined): void => {
+    sendMessage.current = (message: Message | undefined): void => {
       if (!message || !urlSlug || !isMounted) {
         return;
       }

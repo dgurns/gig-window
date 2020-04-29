@@ -5,32 +5,32 @@ import { green } from '@material-ui/core/colors';
 import { makeStyles } from '@material-ui/core/styles';
 
 interface TipMessageProps {
-  imageUrl: string;
-  profileUrl: string;
+  userImageUrl: string;
+  userUrlSlug: string;
   username: string;
   tipAmount: number;
 }
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   container: {
     marginBottom: theme.spacing(1),
-    marginTop: theme.spacing(1)
+    marginTop: theme.spacing(1),
   },
   userImage: {
     borderRadius: 20,
     height: 40,
     marginRight: theme.spacing(1),
     backgroundSize: 'cover',
-    width: 40
+    width: 40,
   },
   username: {
-    color: green[500]
+    color: green[500],
   },
   tipMessage: {
     color: green[500],
     display: 'inline',
-    flex: 1
-  }
+    flex: 1,
+  },
 }));
 
 const TipMessage = (props: TipMessageProps) => {
@@ -41,13 +41,13 @@ const TipMessage = (props: TipMessageProps) => {
       <Grid
         item
         className={classes.userImage}
-        style={{ backgroundImage: `url(${props.imageUrl})` }}
+        style={{ backgroundImage: `url(${props.userImageUrl})` }}
       />
       <Typography variant="body1" className={classes.tipMessage}>
         <Link
           variant="body1"
           component={RouterLink}
-          to="/"
+          to={props.userUrlSlug}
           className={classes.username}
         >
           {props.username}
