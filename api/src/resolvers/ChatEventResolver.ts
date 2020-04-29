@@ -27,7 +27,7 @@ export class ChatEventResolver {
     const user = ctx.getUser();
     if (!user) {
       throw new Error('User must be logged in to chat');
-    } else if (data.type! in ChatEventType) {
+    } else if (!(<any>Object).values(ChatEventType).includes(data.type)) {
       throw new Error('Invalid chat event type');
     }
 
