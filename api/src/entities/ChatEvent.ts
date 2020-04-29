@@ -41,7 +41,7 @@ export class ChatEvent extends BaseEntity {
   @Column()
   type: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   @Column({ nullable: true, default: null })
   message?: string;
 }

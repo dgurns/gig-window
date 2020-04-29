@@ -13,8 +13,6 @@ export class ChatEventResolver {
     });
     if (!parentUser) return [];
 
-    console.log('parentUser', parentUser);
-
     const chatEvents = await ChatEvent.find({
       where: { parentUserId: parentUser.id },
     });

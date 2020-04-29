@@ -100,7 +100,7 @@ const ChatBox = (props: ChatBoxProps) => {
         variables: {
           parentUrlSlug: props.urlSlug || '',
           type: 'message',
-          message: 'hello',
+          message: inputMessage,
         },
       });
       setInputMessage('');
