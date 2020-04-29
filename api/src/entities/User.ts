@@ -32,42 +32,42 @@ export class User extends BaseEntity {
   isPublishingStream: boolean;
 
   @Field(() => Number)
-  @Column({ default: '' })
+  @Column({ nullable: true, default: null })
   lastPublishedStreamEndTimestamp: number;
 
   @Field(() => String)
-  @Column({ default: '' })
+  @Column({ nullable: true, default: null })
   liveVideoInfrastructureError: string;
 
   @Field(() => String)
-  @Column({ default: '' })
+  @Column({ nullable: true, default: null })
   awsMediaLiveInputId: string;
 
   @Field(() => String)
-  @Column({ default: '' })
+  @Column({ nullable: true, default: null })
   awsMediaLiveChannelId: string;
 
   @Field(() => String)
-  @Column({ default: '' })
+  @Column({ nullable: true, default: null })
   awsMediaPackageChannelId: string;
 
   @Field(() => String)
-  @Column({ default: '' })
+  @Column({ nullable: true, default: null })
   awsMediaPackageChannelIngestUrl: string;
 
   @Field(() => String)
-  @Column({ default: '' })
+  @Column({ nullable: true, default: null })
   awsMediaPackageChannelIngestUsername: string;
 
   @Field(() => String)
-  @Column({ default: '' })
+  @Column({ nullable: true, default: null })
   awsMediaPackageChannelIngestPasswordParam: string;
 
   @Field(() => String)
-  @Column({ default: '' })
+  @Column({ nullable: true, default: null })
   awsMediaPackageOriginEndpointId: string;
 
   @Field(() => String)
-  @Column({ default: '' })
+  @Column({ nullable: true, default: null })
   awsMediaPackageOriginEndpointUrl: string;
 }

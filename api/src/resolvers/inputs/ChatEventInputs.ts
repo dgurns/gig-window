@@ -10,7 +10,4 @@ export class CreateChatEventInput {
 
   @Field({ nullable: true })
   message?: string;
-
-  @Field({ nullable: true })
-  tipAmount?: number;
 }

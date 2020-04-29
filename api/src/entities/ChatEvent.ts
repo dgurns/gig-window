@@ -5,7 +5,6 @@ import {
   Column,
   JoinColumn,
   ManyToOne,
-  CreateDateColumn,
 } from 'typeorm';
 import { ObjectType, Field, Int } from 'type-graphql';
 import { User } from './User';
@@ -24,13 +23,19 @@ export class ChatEvent extends BaseEntity {
 
   @Field(() => User)
   @ManyToOne(() => User)
-  @JoinColumn()
   user: User;
 
+  @Field(() => Int)
+  @Column()
+  userId: number;
+
   @Field(() => User)
-  @ManyToOne(() => User)
-  @JoinColumn()
+  @ManyToOne((type) => User)
   parentUser: User;
+
+  @Field(() => Int)
+  @Column()
+  parentUserId: number;
 
   @Field(() => String)
   @Column()
@@ -39,8 +44,4 @@ export class ChatEvent extends BaseEntity {
   @Field(() => String)
   @Column({ nullable: true, default: null })
   message?: string;
-
-  @Field(() => Number)
-  @Column({ nullable: true, default: null })
-  tipAmount?: number;
 }

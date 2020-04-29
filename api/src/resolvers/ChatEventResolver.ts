@@ -11,7 +11,9 @@ export class ChatEventResolver {
     const parentUser = await User.findOne({
       where: { urlSlug: parentUrlSlug },
     });
-    if (!parentUser) throw new Error('Could not find the parent user');
+    if (!parentUser) return [];
+
+    console.log('parentUser', parentUser);
 
     const chatEvents = await ChatEvent.find({
       where: { parentUserId: parentUser.id },
@@ -43,7 +45,6 @@ export class ChatEventResolver {
     chatEvent.parentUser = parentUser;
     chatEvent.type = data.type;
     chatEvent.message = data.message;
-    chatEvent.tipAmount = data.tipAmount;
     await chatEvent.save();
 
     return chatEvent;

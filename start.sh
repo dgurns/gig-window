@@ -2,7 +2,6 @@
 
 # Start web
 # Start api
-# Start chat
 # Make rtmp port publicly accessible
 # Start rtmp
 
@@ -14,6 +13,5 @@
 concurrently \
   "cd web && yarn start" \
   "cd api && yarn start" \
-  "cd chat && yarn start" \
   "ngrok tcp --remote-addr 1.tcp.ngrok.io:29644 1935" \
   "docker-compose -f rtmp/docker-compose.yml up --build"

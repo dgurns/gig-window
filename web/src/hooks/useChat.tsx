@@ -1,65 +1,98 @@
-import { useState, useEffect, useRef } from 'react';
-import io from 'socket.io-client';
-import { SocketEvent } from 'types/SocketEvent';
-import { Message } from 'types/Message';
+import { useCallback } from 'react';
+import {
+  useQuery,
+  useMutation,
+  gql,
+  QueryResult,
+  MutationResult,
+  MutationTuple,
+} from '@apollo/client';
+import { ChatEvent } from '../../../api/src/entities/ChatEvent';
 
-const { REACT_APP_CHAT_URL } = process.env;
+interface GetChatEventsData {
+  getChatEventsForParent: ChatEvent[];
+}
+interface GetChatEventsVars {
+  parentUrlSlug: string;
+}
+interface CreateChatEventData {
+  createChatEvent: ChatEvent;
+}
+interface CreateChatEventVars {
+  parentUrlSlug?: string;
+  type: string;
+  message?: string;
+  tipAmount?: number;
+}
 
-type SendMessageFunction = (message: Message | undefined) => void;
-
-const useChat = (urlSlug?: string): [Message[], SendMessageFunction] => {
-  // Needed to force the component to rerender
-  const [, setMessageCount] = useState(0);
-
-  const defaultMessages: Message[] = [];
-  const messages = useRef(defaultMessages);
-  const defaultSendMessage: SendMessageFunction = () => {};
-  const sendMessage = useRef(defaultSendMessage);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    if (!urlSlug) {
-      return;
+const GET_CHAT_EVENTS = gql`
+  query GetChatEventsForParent($parentUrlSlug: String!) {
+    getChatEventsForParent(parentUrlSlug: $parentUrlSlug) {
+      id
+      type
+      user {
+        id
+        urlSlug
+      }
+      parentUser {
+        id
+        username
+      }
+      message
+      tipAmount
     }
+  }
+`;
 
-    const socket = io.connect(REACT_APP_CHAT_URL || '');
-
-    const updateMessages = (updatedMessages: Message[]) => {
-      if (!isMounted) {
-        return;
+const CREATE_CHAT_EVENT = gql`
+  mutation CreateChatEvent(
+    $parentUrlSlug: String!
+    $type: String!
+    $message: String
+    $tipAmount: Number
+  ) {
+    createChatEvent(
+      data: {
+        parentUrlSlug: $parentUrlSlug
+        type: $type
+        message: $message
+        tipAmount: $tipAmount
       }
-      messages.current = updatedMessages;
-      setMessageCount(updatedMessages.length);
-    };
-
-    socket.on(SocketEvent.Connect, () => {
-      if (isMounted) {
-        socket.emit(SocketEvent.JoinRoom, urlSlug);
+    ) {
+      id
+      type
+      user {
+        id
+        urlSlug
       }
-    });
-    socket.on(SocketEvent.NewMessage, (data: Message) => {
-      if (isMounted) {
-        updateMessages([...messages.current, data]);
+      parentUser {
+        id
+        urlSlug
       }
-    });
+      message
+      tipAmount
+    }
+  }
+`;
 
-    sendMessage.current = (message: Message | undefined): void => {
-      if (!message || !urlSlug || !isMounted) {
-        return;
-      }
-      socket.emit(SocketEvent.NewMessage, message);
-    };
+const useChat = (
+  parentUrlSlug?: string
+): [
+  QueryResult<GetChatEventsData, GetChatEventsVars>,
+  MutationTuple<CreateChatEventData, CreateChatEventVars>
+] => {
+  const getChatEventsQuery = useQuery<GetChatEventsData, GetChatEventsVars>(
+    GET_CHAT_EVENTS,
+    {
+      variables: { parentUrlSlug: parentUrlSlug || '' },
+    }
+  );
+  const createChatEventMutation = useMutation<CreateChatEventData>(
+    CREATE_CHAT_EVENT,
+    { errorPolicy: 'all' }
+  );
 
-    return () => {
-      isMounted = false;
-      socket.off(SocketEvent.Connect);
-      socket.off(SocketEvent.NewMessage);
-      socket.disconnect();
-    };
-  }, [urlSlug]);
-
-  return [messages.current, sendMessage.current];
+  return [getChatEventsQuery, createChatEventMutation];
 };
 
 export default useChat;
