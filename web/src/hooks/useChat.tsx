@@ -1,18 +1,17 @@
 import { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
-import { TipMessage } from '../../../chat/src/types/TipMessage';
-import { ChatMessage } from '../../../chat/src/types/ChatMessage';
+import { SocketEvent } from 'types/SocketEvent';
+import { ChatMessage } from 'types/ChatMessage';
 
 const { REACT_APP_CHAT_URL } = process.env;
 
-type Message = ChatMessage | TipMessage;
-type SendMessageFunction = (message: Message | undefined) => void;
+type SendMessageFunction = (message: ChatMessage | undefined) => void;
 
-const useChat = (urlSlug?: string): [Message[], SendMessageFunction] => {
+const useChat = (urlSlug?: string): [ChatMessage[], SendMessageFunction] => {
   // Needed to force the component to rerender
   const [, setMessageCount] = useState(0);
 
-  const defaultMessages: Message[] = [];
+  const defaultMessages: ChatMessage[] = [];
   const messages = useRef(defaultMessages);
   const defaultSendMessage: SendMessageFunction = () => {};
   const sendMessage = useRef(defaultSendMessage);
@@ -26,7 +25,7 @@ const useChat = (urlSlug?: string): [Message[], SendMessageFunction] => {
 
     const socket = io.connect(REACT_APP_CHAT_URL || '');
 
-    const updateMessages = (updatedMessages: Message[]) => {
+    const updateMessages = (updatedMessages: ChatMessage[]) => {
       if (!isMounted) {
         return;
       }
@@ -34,28 +33,28 @@ const useChat = (urlSlug?: string): [Message[], SendMessageFunction] => {
       setMessageCount(updatedMessages.length);
     };
 
-    socket.on('connect', () => {
+    socket.on(SocketEvent.Connect, () => {
       if (isMounted) {
-        socket.emit('join_room', urlSlug);
+        socket.emit(SocketEvent.JoinRoom, urlSlug);
       }
     });
-    socket.on('new_message', (data: Message) => {
+    socket.on(SocketEvent.NewMessage, (data: ChatMessage) => {
       if (isMounted) {
         updateMessages([...messages.current, data]);
       }
     });
 
-    sendMessage.current = (message: Message | undefined): void => {
+    sendMessage.current = (message: ChatMessage | undefined): void => {
       if (!message || !urlSlug || !isMounted) {
         return;
       }
-      socket.emit('new_message', message);
+      socket.emit(SocketEvent.NewMessage, message);
     };
 
     return () => {
       isMounted = false;
-      socket.off('connect');
-      socket.off('new_message');
+      socket.off(SocketEvent.Connect);
+      socket.off(SocketEvent.NewMessage);
       socket.disconnect();
     };
   }, [urlSlug]);

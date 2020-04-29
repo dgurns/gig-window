@@ -3,6 +3,8 @@ import express from 'express';
 import cors from 'cors';
 import socketIo from 'socket.io';
 
+import { SocketEvent } from 'types/SocketEvent';
+
 const app = express();
 const allowedOrigins = [process.env.UI_ORIGIN];
 app.use(
@@ -22,14 +24,16 @@ app.use(
 const server = require('http').createServer(app);
 const io = socketIo(server);
 
-io.on('connection', (socket) => {
+io.on(SocketEvent.Connection, (socket) => {
   let room: string;
-  socket.on('join_room', (urlSlug) => {
+  socket.on(SocketEvent.JoinRoom, (urlSlug: string) => {
     room = urlSlug;
     socket.join(urlSlug);
   });
-  socket.on('new_message', (message) => {
-    io.to(room).emit('new_message', message);
+  socket.on(SocketEvent.NewMessage, (message) => {
+    if (room) {
+      io.to(room).emit(SocketEvent.NewMessage, message);
+    }
   });
 });
 
