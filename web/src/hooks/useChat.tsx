@@ -17,45 +17,44 @@ const useChat = (urlSlug?: string): [Message[], SendMessageFunction] => {
   const defaultSendMessage: SendMessageFunction = () => {};
   const sendMessage = useRef(defaultSendMessage);
 
-  const socket = useMemo(() => {
-    console.log('connecting socket for ', urlSlug);
-    return io.connect(REACT_APP_CHAT_URL || '');
-  }, []);
-
   useEffect(() => {
+    let isMounted = true;
+
     if (!urlSlug) {
       return;
     }
 
-    console.log('socket is connected', socket.connected);
+    const socket = io.connect(REACT_APP_CHAT_URL || '');
 
     const updateMessages = (updatedMessages: Message[]) => {
+      if (!isMounted) return;
       messages.current = updatedMessages;
-      console.log('updating messages');
       setMessageCount(updatedMessages.length);
     };
 
     socket.on('connect', () => {
-      console.log('connect event for ', urlSlug);
-      socket.emit('join_room', urlSlug);
+      if (isMounted) {
+        socket.emit('join_room', urlSlug);
+      }
     });
     socket.on('new_message', (data: Message) => {
-      console.log('new message event for ', urlSlug);
       updateMessages([...messages.current, data]);
     });
 
     sendMessage.current = (message: Message | undefined): void => {
-      if (!message || !urlSlug) {
+      if (!message || !urlSlug || !isMounted) {
         return;
       }
       socket.emit('new_message', message);
     };
 
     return () => {
+      isMounted = false;
       socket.off('connect');
       socket.off('new_message');
+      socket.disconnect();
     };
-  }, [socket, urlSlug]);
+  }, [urlSlug]);
 
   return [messages.current, sendMessage.current];
 };

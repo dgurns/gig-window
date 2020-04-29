@@ -1,4 +1,5 @@
-import { useQuery, gql, ApolloError } from '@apollo/client';
+import { useEffect } from 'react';
+import { useLazyQuery, gql, ApolloError } from '@apollo/client';
 import { User } from '../../../api/src/entities/User';
 
 const GET_CURRENT_USER = gql`
@@ -23,7 +24,19 @@ const useCurrentUser = (): [
   boolean,
   ApolloError | undefined
 ] => {
-  const { data, loading, error } = useQuery(GET_CURRENT_USER);
+  const [getCurrentUser, { data, loading, error }] = useLazyQuery(
+    GET_CURRENT_USER
+  );
+
+  let isMounted = true;
+  useEffect(() => {
+    if (isMounted) {
+      getCurrentUser();
+    }
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   let currentUser;
   if (data?.getCurrentUser) {
