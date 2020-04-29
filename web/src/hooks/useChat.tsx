@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
 import { TipMessage } from '../../../chat/src/types/TipMessage';
 import { ChatMessage } from '../../../chat/src/types/ChatMessage';
@@ -27,7 +27,9 @@ const useChat = (urlSlug?: string): [Message[], SendMessageFunction] => {
     const socket = io.connect(REACT_APP_CHAT_URL || '');
 
     const updateMessages = (updatedMessages: Message[]) => {
-      if (!isMounted) return;
+      if (!isMounted) {
+        return;
+      }
       messages.current = updatedMessages;
       setMessageCount(updatedMessages.length);
     };
@@ -38,7 +40,9 @@ const useChat = (urlSlug?: string): [Message[], SendMessageFunction] => {
       }
     });
     socket.on('new_message', (data: Message) => {
-      updateMessages([...messages.current, data]);
+      if (isMounted) {
+        updateMessages([...messages.current, data]);
+      }
     });
 
     sendMessage.current = (message: Message | undefined): void => {

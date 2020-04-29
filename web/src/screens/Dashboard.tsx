@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useLazyQuery, gql } from '@apollo/client';
+import React, { useState } from 'react';
+import { useQuery, gql } from '@apollo/client';
 import {
   Paper,
   Grid,
@@ -18,6 +18,7 @@ import HowToBroadcast from 'components/HowToBroadcast';
 const GET_USER_PUBLISHING_STREAM_STATUS = gql`
   {
     getCurrentUser {
+      id
       urlSlug
       isPublishingStream
       liveVideoInfrastructureError
@@ -110,7 +111,7 @@ const useStyles = makeStyles((theme) => ({
 const Dashboard = () => {
   const classes = useStyles();
 
-  const [getPublishingStreamStatus, publishingStreamStatusQuery] = useLazyQuery(
+  const publishingStreamStatusQuery = useQuery(
     GET_USER_PUBLISHING_STREAM_STATUS,
     {
       pollInterval: 3000,
@@ -123,25 +124,11 @@ const Dashboard = () => {
     awsMediaPackageOriginEndpointUrl,
   } = publishingStreamStatusQuery.data?.getCurrentUser || {};
 
-  const [checkIsStreamingLive, isStreamingLiveQuery] = useLazyQuery(
-    CHECK_USER_IS_STREAMING_LIVE,
-    {
-      pollInterval: 10000,
-    }
-  );
+  const isStreamingLiveQuery = useQuery(CHECK_USER_IS_STREAMING_LIVE, {
+    pollInterval: 10000,
+  });
   const userIsStreamingLive =
     isStreamingLiveQuery.data?.checkUserIsStreamingLive;
-
-  let isMounted = true;
-  useEffect(() => {
-    if (isMounted) {
-      getPublishingStreamStatus();
-      checkIsStreamingLive();
-    }
-    return () => {
-      isMounted = false;
-    };
-  }, []);
 
   const [isPublicMode, setIsPublicMode] = useState(false);
 
