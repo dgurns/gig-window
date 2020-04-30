@@ -12,29 +12,29 @@ const SIGN_UP = gql`
   }
 `;
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   container: {
     flexDirection: 'column',
     padding: theme.spacing(3),
-    width: 400
+    width: 400,
   },
   title: {
-    marginBottom: theme.spacing(3)
+    marginBottom: theme.spacing(3),
   },
   formField: {
-    marginBottom: theme.spacing(3)
+    marginBottom: theme.spacing(3),
   },
   error: {
     marginBottom: theme.spacing(3),
-    textAlign: 'center'
-  }
+    textAlign: 'center',
+  },
 }));
 
 const SignUpForm = () => {
   const classes = useStyles();
   const history = useHistory();
   const [signUp, { loading, data, error }] = useMutation(SIGN_UP, {
-    errorPolicy: 'all'
+    errorPolicy: 'all',
   });
 
   const [email, setEmail] = useState('');
@@ -61,7 +61,7 @@ const SignUpForm = () => {
 
   return (
     <Paper>
-      <Grid container xs={12} className={classes.container}>
+      <Grid container className={classes.container}>
         <Typography variant="h4" className={classes.title}>
           Sign up
         </Typography>

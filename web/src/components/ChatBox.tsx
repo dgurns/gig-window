@@ -16,27 +16,19 @@ const GET_CHATS = gql`
   query GetChats($parentUrlSlug: String!) {
     getChats(parentUrlSlug: $parentUrlSlug) {
       id
-      type
-      user {
-        id
-        urlSlug
-      }
-      parentUser {
-        id
-        username
-      }
+      userId
+      parentUserId
       message
-      tipAmount
     }
   }
 `;
 
 const CREATE_CHAT = gql`
   mutation CreateChat($parentUrlSlug: String!, $message: String!) {
-    createChat(
-      data: { parentUrlSlug: $parentUrlSlug, type: $type, message: $message }
-    ) {
+    createChat(data: { parentUrlSlug: $parentUrlSlug, message: $message }) {
       id
+      userId
+      parentUserId
       message
     }
   }

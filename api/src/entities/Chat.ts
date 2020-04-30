@@ -36,7 +36,7 @@ export class Chat extends BaseEntity {
   @Column()
   message: string;
 
-  @Field(() => Int)
+  @Field()
   @CreateDateColumn()
-  createdAt: number;
+  createdAt: Date;
 }

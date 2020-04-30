@@ -20,7 +20,7 @@ restRouter.get('/rtmp-event', async (req: Request, res: Response) => {
       LiveVideoInfrastucture.startInfrastructureForUser(user);
     } else if (eventType === 'publish_done' || eventType === 'disconnect') {
       user.isPublishingStream = false;
-      user.lastPublishedStreamEndTimestamp = Date.now();
+      user.lastPublishedStreamEndTimestamp = new Date();
       await user.save();
     }
 
@@ -29,7 +29,7 @@ restRouter.get('/rtmp-event', async (req: Request, res: Response) => {
     // We're about to reject this publish request, so
     // we set isPublishingStream to false
     user.isPublishingStream = false;
-    user.lastPublishedStreamEndTimestamp = Date.now();
+    user.lastPublishedStreamEndTimestamp = new Date();
     await user.save();
 
     return res.status(500).send();

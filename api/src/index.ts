@@ -60,6 +60,7 @@ async function start() {
     const schema = await buildSchema({
       resolvers: [UserResolver, ChatResolver, AdminResolver],
       authChecker,
+      dateScalarMode: 'isoDate',
       validate: false,
     });
     const server = new ApolloServer({

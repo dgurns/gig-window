@@ -1,4 +1,11 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  BaseEntity,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  Column,
+} from 'typeorm';
 import { ObjectType, Field, Int } from 'type-graphql';
 
 @Entity()
@@ -31,9 +38,9 @@ export class User extends BaseEntity {
   @Column({ default: false })
   isPublishingStream: boolean;
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => Date, { nullable: true })
   @Column({ nullable: true, default: null })
-  lastPublishedStreamEndTimestamp: number;
+  lastPublishedStreamEndTimestamp: Date;
 
   @Field(() => String, { nullable: true })
   @Column({ nullable: true, default: null })
@@ -70,4 +77,12 @@ export class User extends BaseEntity {
   @Field(() => String, { nullable: true })
   @Column({ nullable: true, default: null })
   awsMediaPackageOriginEndpointUrl: string;
+
+  @Field()
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @Field()
+  @UpdateDateColumn()
+  updatedAt: Date;
 }
