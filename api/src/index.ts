@@ -25,8 +25,8 @@ const { RTMP_ORIGIN, UI_ORIGIN, SERVER_PORT, COOKIE_SESSION_KEY } = process.env;
 async function start() {
   try {
     const connection = await createDatabaseConnection();
-    // TODO: Only needed for SQLite - this syncing should
-    // be disabled in production
+    // TODO: Only needed for using SQLite during development
+    //       Remove this for production
     await connection.query('PRAGMA foreign_keys=OFF');
     await connection.synchronize();
     await connection.query('PRAGMA foreign_keys=ON');

@@ -8,3 +8,7 @@ export class CreateChatInput {
   @Field()
   message: string;
 }
+
+export interface NewChatEventArgs {
+  parentUrlSlug: string;
+}

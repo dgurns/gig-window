@@ -1,8 +1,19 @@
-import { Resolver, Query, Mutation, Arg, Ctx } from 'type-graphql';
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Subscription,
+  PubSub,
+  Publisher,
+  Root,
+  Args,
+  Arg,
+  Ctx,
+} from 'type-graphql';
 import { CustomContext } from 'authChecker';
 import { Chat } from 'entities/Chat';
 import { User } from 'entities/User';
-import { CreateChatInput } from './inputs/ChatInputs';
+import { CreateChatInput, NewChatEventArgs } from './types/ChatResolver';
 
 @Resolver()
 export class ChatResolver {
@@ -23,7 +34,8 @@ export class ChatResolver {
   @Mutation(() => Chat)
   async createChat(
     @Arg('data') data: CreateChatInput,
-    @Ctx() ctx: CustomContext
+    @Ctx() ctx: CustomContext,
+    @PubSub('CHAT_CREATED') publish: Publisher<Chat>
   ) {
     const user = ctx.getUser();
     if (!user) {
@@ -44,6 +56,20 @@ export class ChatResolver {
     });
     await chat.save();
 
+    await publish(chat);
+
     return chat;
+  }
+
+  @Subscription({
+    topics: ['CHAT_CREATED'],
+    filter: ({ payload, args }) => {
+      console.log('filtering payload and args', payload, args);
+      return true;
+    },
+  })
+  newChatEvent(@Root() payload: Chat, @Args() args: NewChatEventArgs): Chat {
+    console.log('args', args);
+    return payload;
   }
 }

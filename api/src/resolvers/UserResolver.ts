@@ -7,7 +7,7 @@ import {
   GetUserInput,
   SignUpInput,
   LogInInput,
-} from 'resolvers/inputs/UserInputs';
+} from 'resolvers/types/UserResolver';
 import { CustomContext } from 'authChecker';
 import LiveVideoInfrastructure from 'services/LiveVideoInfrastructure';
 
