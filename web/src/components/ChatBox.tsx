@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, gql } from '@apollo/client';
 import { Grid, TextField } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -15,6 +15,19 @@ interface ChatBoxProps {
 const GET_CHAT_EVENTS = gql`
   query GetChatEvents($parentUrlSlug: String!) {
     getChatEvents(parentUrlSlug: $parentUrlSlug) {
+      id
+      user {
+        urlSlug
+        username
+      }
+      message
+    }
+  }
+`;
+
+const CHAT_EVENTS_SUBSCRIPTION = gql`
+  subscription ChatEventsSubscription($parentUrlSlug: String!) {
+    newChatEvent(parentUrlSlug: $parentUrlSlug) {
       id
       user {
         urlSlug
@@ -61,14 +74,35 @@ const ChatBox = (props: ChatBoxProps) => {
   const classes = useStyles();
 
   const [currentUser] = useCurrentUser();
-  const getChatEventsResult = useQuery(GET_CHAT_EVENTS, {
-    variables: { parentUrlSlug: props.urlSlug },
-  });
-  const [createChat, createChatResult] = useMutation(CREATE_CHAT, {
+  const { subscribeToMore, ...getChatEventsResult } = useQuery(
+    GET_CHAT_EVENTS,
+    {
+      variables: { parentUrlSlug: props.urlSlug },
+      skip: !props.urlSlug,
+    }
+  );
+  const chatEvents = getChatEventsResult.data?.getChatEvents || [];
+  const [createChat] = useMutation(CREATE_CHAT, {
     errorPolicy: 'all',
   });
 
   const [inputMessage, setInputMessage] = useState('');
+
+  useEffect(() => {
+    if (!props.urlSlug) return;
+    const unsubscribe = subscribeToMore({
+      document: CHAT_EVENTS_SUBSCRIPTION,
+      variables: { parentUrlSlug: props.urlSlug },
+      updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData.data) return prev;
+        const { newChatEvent } = subscriptionData.data;
+        return Object.assign({}, prev, {
+          getChatEvents: [...prev.getChatEvents, newChatEvent],
+        });
+      },
+    });
+    return () => unsubscribe();
+  }, [props.urlSlug]);
 
   const onInputMessageChanged = (
     event: React.ChangeEvent<HTMLTextAreaElement>
@@ -94,22 +128,20 @@ const ChatBox = (props: ChatBoxProps) => {
     }
   };
 
-  const renderChatEvent = (chatEvent: any) => {
-    console.log('render chatEvent', chatEvent);
-    // if (chatEvent.message) {
-    // return (
-    //   <ChatMessage
-    //     userImageUrl={chatEvent.userImageUrl}
-    //     userUrlSlug={chatEvent.userUrlSlug}
-    //     username={chatEvent.username}
-    //     message={message.message}
-    //     key={index}
-    //   />
-    // );
-    // }
+  const renderChatEvent = (chatEvent: any, index: number) => {
+    const { message, user } = chatEvent;
+    if (message) {
+      return (
+        <ChatMessage
+          userImageUrl="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fm.media-amazon.com%2Fimages%2FM%2FMV5BOTk1MzAzMDUxMF5BMl5BanBnXkFtZTgwODgyMTQxNjM%40._V1_UY98_CR3%2C0%2C67%2C98_AL_.jpg&f=1&nofb=1"
+          userUrlSlug={user.urlSlug}
+          username={user.username}
+          message={message}
+          key={index}
+        />
+      );
+    }
   };
-
-  const chatEvents = getChatEventsResult.data?.getChatEvents || [];
 
   return (
     <Grid container className={classes.container}>

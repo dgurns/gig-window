@@ -1,6 +1,7 @@
 require('dotenv').config();
 import 'reflect-metadata';
 
+import http from 'http';
 import express from 'express';
 import cors from 'cors';
 import compression from 'compression';
@@ -79,10 +80,14 @@ async function start() {
       app,
       cors: { origin: UI_ORIGIN, credentials: true },
     });
+    const httpServer = http.createServer(app);
+    server.installSubscriptionHandlers(httpServer);
 
-    app.listen({ port: SERVER_PORT }, () =>
-      console.log(`🚀 api ready on port ${SERVER_PORT}`)
-    );
+    httpServer.listen({ port: SERVER_PORT }, () => {
+      console.log(`🚀 api ready on port ${SERVER_PORT}}`);
+      console.log(`GraphQL http:// at ${server.graphqlPath}`);
+      console.log(`GraphQL ws:// at ${server.subscriptionsPath}`);
+    });
   } catch (error) {
     console.log(error);
   }

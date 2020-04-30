@@ -1,4 +1,5 @@
 import { InputType, Field } from 'type-graphql';
+import { User } from 'entities/User';
 
 @InputType()
 export class CreateChatInput {
@@ -9,6 +10,7 @@ export class CreateChatInput {
   message: string;
 }
 
-export interface NewChatEventArgs {
-  parentUrlSlug: string;
+export interface NewChatEventPayload {
+  user: User;
+  message?: string;
 }

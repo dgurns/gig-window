@@ -6,14 +6,13 @@ import {
   PubSub,
   Publisher,
   Root,
-  Args,
   Arg,
   Ctx,
 } from 'type-graphql';
 import { CustomContext } from 'authChecker';
 import { Chat } from 'entities/Chat';
 import { User } from 'entities/User';
-import { CreateChatInput, NewChatEventArgs } from './types/ChatResolver';
+import { CreateChatInput, NewChatEventPayload } from './types/ChatResolver';
 
 @Resolver()
 export class ChatResolver {
@@ -59,6 +58,8 @@ export class ChatResolver {
     });
     await chat.save();
 
+    chat.user = user;
+    chat.parentUser = parentUser;
     await publish(chat);
 
     return chat;
@@ -67,12 +68,16 @@ export class ChatResolver {
   @Subscription({
     topics: ['CHAT_CREATED'],
     filter: ({ payload, args }) => {
-      console.log('filtering payload and args', payload, args);
-      return true;
+      if (payload.parentUser.urlSlug === args.parentUrlSlug) {
+        return true;
+      }
+      return false;
     },
   })
-  newChatEvent(@Root() payload: Chat, @Args() args: NewChatEventArgs): Chat {
-    console.log('args', args);
+  newChatEvent(
+    @Root() payload: Chat,
+    @Arg('parentUrlSlug') parentUrlSlug: string
+  ): Chat {
     return payload;
   }
 }
