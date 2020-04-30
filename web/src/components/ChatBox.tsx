@@ -9,7 +9,7 @@ import useChat from 'hooks/useChat';
 import ChatMessage from 'components/ChatMessage';
 
 interface ChatBoxProps {
-  urlSlug: string;
+  urlSlug?: string;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -46,11 +46,13 @@ const ChatBox = (props: ChatBoxProps) => {
   const onKeyPressed = async (
     event: React.KeyboardEvent<HTMLTextAreaElement>
   ) => {
-    if (event.key === 'Enter' && inputMessage) {
+    if (event.key === 'Enter') {
       event.preventDefault();
 
       if (!currentUser) {
         return window.alert('You need to log in to chat');
+      } else if (!inputMessage) {
+        return window.alert('No message entered');
       }
 
       sendChat(inputMessage);
