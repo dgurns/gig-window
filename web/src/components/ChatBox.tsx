@@ -12,15 +12,13 @@ interface ChatBoxProps {
   urlSlug: string;
 }
 
-const GET_CHATS = gql`
-  query GetChats($parentUrlSlug: String!) {
-    getChats(parentUrlSlug: $parentUrlSlug) {
+const GET_CHAT_EVENTS = gql`
+  query GetChatEvents($parentUrlSlug: String!) {
+    getChatEvents(parentUrlSlug: $parentUrlSlug) {
       id
       user {
         urlSlug
-      }
-      parentUser {
-        urlSlug
+        username
       }
       message
     }
@@ -33,9 +31,7 @@ const CREATE_CHAT = gql`
       id
       user {
         urlSlug
-      }
-      parentUser {
-        urlSlug
+        username
       }
       message
     }
@@ -65,14 +61,12 @@ const ChatBox = (props: ChatBoxProps) => {
   const classes = useStyles();
 
   const [currentUser] = useCurrentUser();
-  const getChatsResult = useQuery(GET_CHATS, {
+  const getChatEventsResult = useQuery(GET_CHAT_EVENTS, {
     variables: { parentUrlSlug: props.urlSlug },
   });
   const [createChat, createChatResult] = useMutation(CREATE_CHAT, {
     errorPolicy: 'all',
   });
-  console.log('getChats', getChatsResult.data);
-  console.log('createChat', createChatResult.data);
 
   const [inputMessage, setInputMessage] = useState('');
 
@@ -100,33 +94,28 @@ const ChatBox = (props: ChatBoxProps) => {
     }
   };
 
-  // const renderChatEvent = (chatEvent) => {
-  //   if (chatEvent.type === 'message') {
-  //     return (
-  //       <ChatMessage
-  //         userImageUrl={message.userImageUrl}
-  //         userUrlSlug={message.userUrlSlug}
-  //         username={message.username}
-  //         message={message.message}
-  //         key={index}
-  //       />
-  //     );
-  //   } else if (chatEvent.type === 'tip') {
-  //     return (
-  //       <TipMessage
-  //         userImageUrl={message.userImageUrl}
-  //         userUrlSlug={message.userUrlSlug}
-  //         username={message.username}
-  //         tipAmount={message.tipAmount}
-  //         key={index}
-  //       />
-  //     );
-  //   }
-  // };
+  const renderChatEvent = (chatEvent: any) => {
+    console.log('render chatEvent', chatEvent);
+    // if (chatEvent.message) {
+    // return (
+    //   <ChatMessage
+    //     userImageUrl={chatEvent.userImageUrl}
+    //     userUrlSlug={chatEvent.userUrlSlug}
+    //     username={chatEvent.username}
+    //     message={message.message}
+    //     key={index}
+    //   />
+    // );
+    // }
+  };
+
+  const chatEvents = getChatEventsResult.data?.getChatEvents || [];
 
   return (
     <Grid container className={classes.container}>
-      <Grid item className={classes.chats}></Grid>
+      <Grid item className={classes.chats}>
+        {chatEvents.map(renderChatEvent)}
+      </Grid>
       <TextField
         placeholder="Your message here..."
         multiline

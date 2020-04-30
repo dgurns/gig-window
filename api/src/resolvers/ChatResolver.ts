@@ -18,7 +18,7 @@ import { CreateChatInput, NewChatEventArgs } from './types/ChatResolver';
 @Resolver()
 export class ChatResolver {
   @Query(() => [Chat])
-  async getChats(@Arg('parentUrlSlug') parentUrlSlug: string) {
+  async getChatEvents(@Arg('parentUrlSlug') parentUrlSlug: string) {
     const parentUser = await User.findOne({
       where: { urlSlug: parentUrlSlug },
     });
@@ -28,6 +28,9 @@ export class ChatResolver {
       where: { parentUserId: parentUser.id },
       relations: ['user', 'parentUser'],
     });
+
+    // When tips exist, pull them and combine with chats
+
     return chats;
   }
 
