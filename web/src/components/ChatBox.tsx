@@ -6,7 +6,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import useCurrentUser from 'hooks/useCurrentUser';
 
 import ChatMessage from 'components/ChatMessage';
-import TipMessage from 'components/TipMessage';
 
 interface ChatBoxProps {
   urlSlug: string;
@@ -82,14 +81,10 @@ const ChatBox = (props: ChatBoxProps) => {
     }
   );
   const chatEvents = getChatEventsResult.data?.getChatEvents || [];
-  const [createChat] = useMutation(CREATE_CHAT, {
-    errorPolicy: 'all',
-  });
-
-  const [inputMessage, setInputMessage] = useState('');
 
   useEffect(() => {
     if (!props.urlSlug) return;
+
     const unsubscribe = subscribeToMore({
       document: CHAT_EVENTS_SUBSCRIPTION,
       variables: { parentUrlSlug: props.urlSlug },
@@ -102,7 +97,13 @@ const ChatBox = (props: ChatBoxProps) => {
       },
     });
     return () => unsubscribe();
-  }, [props.urlSlug]);
+  }, [props.urlSlug, subscribeToMore]);
+
+  const [createChat] = useMutation(CREATE_CHAT, {
+    errorPolicy: 'all',
+  });
+
+  const [inputMessage, setInputMessage] = useState('');
 
   const onInputMessageChanged = (
     event: React.ChangeEvent<HTMLTextAreaElement>
