@@ -3,20 +3,15 @@ import {
   BaseEntity,
   PrimaryGeneratedColumn,
   Column,
-  JoinColumn,
+  CreateDateColumn,
   ManyToOne,
 } from 'typeorm';
 import { ObjectType, Field, Int } from 'type-graphql';
 import { User } from './User';
 
-export enum ChatEventType {
-  Message = 'message',
-  Tip = 'tip',
-}
-
 @Entity()
 @ObjectType()
-export class ChatEvent extends BaseEntity {
+export class Chat extends BaseEntity {
   @Field(() => Int)
   @PrimaryGeneratedColumn()
   id: number;
@@ -30,7 +25,7 @@ export class ChatEvent extends BaseEntity {
   userId: number;
 
   @Field(() => User)
-  @ManyToOne((type) => User)
+  @ManyToOne(() => User)
   parentUser: User;
 
   @Field(() => Int)
@@ -39,9 +34,9 @@ export class ChatEvent extends BaseEntity {
 
   @Field(() => String)
   @Column()
-  type: string;
+  message: string;
 
-  @Field(() => String, { nullable: true })
-  @Column({ nullable: true, default: null })
-  message?: string;
+  @Field(() => Int)
+  @CreateDateColumn()
+  createdAt: number;
 }

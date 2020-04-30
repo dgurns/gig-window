@@ -1,34 +1,32 @@
 import { Resolver, Query, Mutation, Arg, Ctx } from 'type-graphql';
 import { CustomContext } from 'authChecker';
-import { ChatEvent, ChatEventType } from 'entities/ChatEvent';
+import { Chat } from 'entities/Chat';
 import { User } from 'entities/User';
-import { CreateChatEventInput } from './inputs/ChatEventInputs';
+import { CreateChatInput } from './inputs/ChatInputs';
 
 @Resolver()
-export class ChatEventResolver {
-  @Query(() => [ChatEvent])
-  async getChatEventsForParent(@Arg('parentUrlSlug') parentUrlSlug: string) {
+export class ChatResolver {
+  @Query(() => [Chat])
+  async getChats(@Arg('parentUrlSlug') parentUrlSlug: string) {
     const parentUser = await User.findOne({
       where: { urlSlug: parentUrlSlug },
     });
     if (!parentUser) return [];
 
-    const chatEvents = await ChatEvent.find({
+    const chats = await Chat.find({
       where: { parentUserId: parentUser.id },
     });
-    return chatEvents;
+    return chats;
   }
 
-  @Mutation(() => ChatEvent)
-  async createChatEvent(
-    @Arg('data') data: CreateChatEventInput,
+  @Mutation(() => Chat)
+  async createChat(
+    @Arg('data') data: CreateChatInput,
     @Ctx() ctx: CustomContext
   ) {
     const user = ctx.getUser();
     if (!user) {
       throw new Error('User must be logged in to chat');
-    } else if (!(<any>Object).values(ChatEventType).includes(data.type)) {
-      throw new Error('Invalid chat event type');
     }
 
     const parentUser = await User.findOne({
@@ -38,10 +36,9 @@ export class ChatEventResolver {
       throw new Error('Could not find parent user');
     }
 
-    const chatEvent = new ChatEvent();
+    const chatEvent = new Chat();
     chatEvent.user = user;
     chatEvent.parentUser = parentUser;
-    chatEvent.type = data.type;
     chatEvent.message = data.message;
     await chatEvent.save();
 

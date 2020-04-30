@@ -12,9 +12,9 @@ interface ChatBoxProps {
   urlSlug: string;
 }
 
-const GET_CHAT_EVENTS = gql`
-  query GetChatEventsForParent($parentUrlSlug: String!) {
-    getChatEventsForParent(parentUrlSlug: $parentUrlSlug) {
+const GET_CHATS = gql`
+  query GetChats($parentUrlSlug: String!) {
+    getChats(parentUrlSlug: $parentUrlSlug) {
       id
       type
       user {
@@ -31,17 +31,12 @@ const GET_CHAT_EVENTS = gql`
   }
 `;
 
-const CREATE_CHAT_EVENT = gql`
-  mutation CreateChatEvent(
-    $parentUrlSlug: String!
-    $type: String!
-    $message: String
-  ) {
-    createChatEvent(
+const CREATE_CHAT = gql`
+  mutation CreateChat($parentUrlSlug: String!, $message: String!) {
+    createChat(
       data: { parentUrlSlug: $parentUrlSlug, type: $type, message: $message }
     ) {
       id
-      type
       message
     }
   }
@@ -70,15 +65,14 @@ const ChatBox = (props: ChatBoxProps) => {
   const classes = useStyles();
 
   const [currentUser] = useCurrentUser();
-  const getChatEventsResult = useQuery(GET_CHAT_EVENTS, {
+  const getChatsResult = useQuery(GET_CHATS, {
     variables: { parentUrlSlug: props.urlSlug },
   });
-  const [
-    createChatEvent,
-    createChatEventResult,
-  ] = useMutation(CREATE_CHAT_EVENT, { errorPolicy: 'all' });
-  console.log('getChatEvents', getChatEventsResult);
-  console.log('createChatEvent', createChatEventResult);
+  const [createChat, createChatResult] = useMutation(CREATE_CHAT, {
+    errorPolicy: 'all',
+  });
+  console.log('getChats', getChatsResult.data);
+  console.log('createChat', createChatResult.data);
 
   const [inputMessage, setInputMessage] = useState('');
 
@@ -89,17 +83,16 @@ const ChatBox = (props: ChatBoxProps) => {
   const onKeyPressed = async (
     event: React.KeyboardEvent<HTMLTextAreaElement>
   ) => {
-    if (event.key === 'Enter') {
+    if (event.key === 'Enter' && inputMessage) {
       event.preventDefault();
 
       if (!currentUser) {
         return window.alert('You need to log in to chat');
       }
 
-      createChatEvent({
+      createChat({
         variables: {
           parentUrlSlug: props.urlSlug || '',
-          type: 'message',
           message: inputMessage,
         },
       });

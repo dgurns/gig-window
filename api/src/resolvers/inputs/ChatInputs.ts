@@ -1,13 +1,10 @@
 import { InputType, Field } from 'type-graphql';
 
 @InputType()
-export class CreateChatEventInput {
+export class CreateChatInput {
   @Field()
   parentUrlSlug: string;
 
   @Field()
-  type: string;
-
-  @Field({ nullable: true })
-  message?: string;
+  message: string;
 }
