@@ -17,10 +17,10 @@ const GET_CHATS = gql`
     getChats(parentUrlSlug: $parentUrlSlug) {
       id
       user {
-        id
+        urlSlug
       }
       parentUser {
-        id
+        urlSlug
       }
       message
     }
@@ -32,10 +32,10 @@ const CREATE_CHAT = gql`
     createChat(data: { parentUrlSlug: $parentUrlSlug, message: $message }) {
       id
       user {
-        id
+        urlSlug
       }
       parentUser {
-        id
+        urlSlug
       }
       message
     }
