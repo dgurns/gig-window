@@ -16,8 +16,12 @@ const GET_CHATS = gql`
   query GetChats($parentUrlSlug: String!) {
     getChats(parentUrlSlug: $parentUrlSlug) {
       id
-      userId
-      parentUserId
+      user {
+        id
+      }
+      parentUser {
+        id
+      }
       message
     }
   }
@@ -27,8 +31,12 @@ const CREATE_CHAT = gql`
   mutation CreateChat($parentUrlSlug: String!, $message: String!) {
     createChat(data: { parentUrlSlug: $parentUrlSlug, message: $message }) {
       id
-      userId
-      parentUserId
+      user {
+        id
+      }
+      parentUser {
+        id
+      }
       message
     }
   }

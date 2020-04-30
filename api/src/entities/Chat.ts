@@ -1,38 +1,35 @@
 import {
   Entity,
   BaseEntity,
-  PrimaryGeneratedColumn,
   Column,
+  PrimaryGeneratedColumn,
   CreateDateColumn,
   ManyToOne,
 } from 'typeorm';
 import { ObjectType, Field, Int } from 'type-graphql';
+import { RelationColumn } from './helpers';
 import { User } from './User';
 
 @Entity()
 @ObjectType()
 export class Chat extends BaseEntity {
-  @Field(() => Int)
+  @Field((type) => Int)
   @PrimaryGeneratedColumn()
-  id: number;
+  readonly id: number;
 
-  @Field(() => User)
-  @ManyToOne(() => User)
+  @Field((type) => User)
+  @ManyToOne((type) => User)
   user: User;
-
-  @Field(() => Int)
-  @Column()
+  @RelationColumn()
   userId: number;
 
-  @Field(() => User)
-  @ManyToOne(() => User)
+  @Field((type) => User)
+  @ManyToOne((type) => User)
   parentUser: User;
-
-  @Field(() => Int)
-  @Column()
+  @RelationColumn()
   parentUserId: number;
 
-  @Field(() => String)
+  @Field((type) => String)
   @Column()
   message: string;
 

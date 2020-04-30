@@ -11,70 +11,70 @@ import { ObjectType, Field, Int } from 'type-graphql';
 @Entity()
 @ObjectType()
 export class User extends BaseEntity {
-  @Field(() => Int)
+  @Field((type) => Int)
   @PrimaryGeneratedColumn()
-  id: number;
+  readonly id: number;
 
-  @Field(() => String)
+  @Field((type) => String)
   @Column({ unique: true })
   email: string;
 
-  @Field(() => String)
+  @Field((type) => String)
   @Column({ unique: true })
   username: string;
 
-  @Field(() => String)
+  @Field((type) => String)
   @Column({ unique: true })
   urlSlug: string;
 
   @Column()
   hashedPassword: string;
 
-  @Field(() => String)
+  @Field((type) => String)
   @Column()
   streamKey: string;
 
-  @Field(() => Boolean)
+  @Field((type) => Boolean)
   @Column({ default: false })
   isPublishingStream: boolean;
 
-  @Field(() => Date, { nullable: true })
+  @Field((type) => Date, { nullable: true })
   @Column({ nullable: true, default: null })
   lastPublishedStreamEndTimestamp: Date;
 
-  @Field(() => String, { nullable: true })
+  @Field((type) => String, { nullable: true })
   @Column({ nullable: true, default: null })
   liveVideoInfrastructureError: string;
 
-  @Field(() => String, { nullable: true })
+  @Field((type) => String, { nullable: true })
   @Column({ nullable: true, default: null })
   awsMediaLiveInputId: string;
 
-  @Field(() => String, { nullable: true })
+  @Field((type) => String, { nullable: true })
   @Column({ nullable: true, default: null })
   awsMediaLiveChannelId: string;
 
-  @Field(() => String, { nullable: true })
+  @Field((type) => String, { nullable: true })
   @Column({ nullable: true, default: null })
   awsMediaPackageChannelId: string;
 
-  @Field(() => String, { nullable: true })
+  @Field((type) => String, { nullable: true })
   @Column({ nullable: true, default: null })
   awsMediaPackageChannelIngestUrl: string;
 
-  @Field(() => String, { nullable: true })
+  @Field((type) => String, { nullable: true })
   @Column({ nullable: true, default: null })
   awsMediaPackageChannelIngestUsername: string;
 
-  @Field(() => String, { nullable: true })
+  @Field((type) => String, { nullable: true })
   @Column({ nullable: true, default: null })
   awsMediaPackageChannelIngestPasswordParam: string;
 
-  @Field(() => String, { nullable: true })
+  @Field((type) => String, { nullable: true })
   @Column({ nullable: true, default: null })
   awsMediaPackageOriginEndpointId: string;
 
-  @Field(() => String, { nullable: true })
+  @Field((type) => String, { nullable: true })
   @Column({ nullable: true, default: null })
   awsMediaPackageOriginEndpointUrl: string;
 

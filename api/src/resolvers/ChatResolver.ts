@@ -14,7 +14,8 @@ export class ChatResolver {
     if (!parentUser) return [];
 
     const chats = await Chat.find({
-      where: { parentUserId: parentUser.id },
+      where: { parentUser: parentUser },
+      relations: ['user', 'parentUser'],
     });
     return chats;
   }
@@ -36,12 +37,13 @@ export class ChatResolver {
       throw new Error('Could not find parent user');
     }
 
-    const chatEvent = new Chat();
-    chatEvent.user = user;
-    chatEvent.parentUser = parentUser;
-    chatEvent.message = data.message;
-    await chatEvent.save();
+    const chat = Chat.create({
+      user,
+      parentUser,
+      message: data.message,
+    });
+    await chat.save();
 
-    return chatEvent;
+    return chat;
   }
 }
