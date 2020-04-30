@@ -1,54 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { useQuery, useMutation, gql } from '@apollo/client';
+import React, { useState } from 'react';
 import { Grid, TextField } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
+import { Chat } from '../../../api/src/entities/Chat';
 import useCurrentUser from 'hooks/useCurrentUser';
+import useChat from 'hooks/useChat';
 
 import ChatMessage from 'components/ChatMessage';
 
 interface ChatBoxProps {
   urlSlug: string;
 }
-
-const GET_CHAT_EVENTS = gql`
-  query GetChatEvents($parentUrlSlug: String!) {
-    getChatEvents(parentUrlSlug: $parentUrlSlug) {
-      id
-      user {
-        urlSlug
-        username
-      }
-      message
-    }
-  }
-`;
-
-const CHAT_EVENTS_SUBSCRIPTION = gql`
-  subscription ChatEventsSubscription($parentUrlSlug: String!) {
-    newChatEvent(parentUrlSlug: $parentUrlSlug) {
-      id
-      user {
-        urlSlug
-        username
-      }
-      message
-    }
-  }
-`;
-
-const CREATE_CHAT = gql`
-  mutation CreateChat($parentUrlSlug: String!, $message: String!) {
-    createChat(data: { parentUrlSlug: $parentUrlSlug, message: $message }) {
-      id
-      user {
-        urlSlug
-        username
-      }
-      message
-    }
-  }
-`;
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -73,35 +35,7 @@ const ChatBox = (props: ChatBoxProps) => {
   const classes = useStyles();
 
   const [currentUser] = useCurrentUser();
-  const { subscribeToMore, ...getChatEventsResult } = useQuery(
-    GET_CHAT_EVENTS,
-    {
-      variables: { parentUrlSlug: props.urlSlug },
-      skip: !props.urlSlug,
-    }
-  );
-  const chatEvents = getChatEventsResult.data?.getChatEvents || [];
-
-  useEffect(() => {
-    if (!props.urlSlug) return;
-
-    const unsubscribe = subscribeToMore({
-      document: CHAT_EVENTS_SUBSCRIPTION,
-      variables: { parentUrlSlug: props.urlSlug },
-      updateQuery: (prev, { subscriptionData }) => {
-        if (!subscriptionData.data) return prev;
-        const { newChatEvent } = subscriptionData.data;
-        return Object.assign({}, prev, {
-          getChatEvents: [...prev.getChatEvents, newChatEvent],
-        });
-      },
-    });
-    return () => unsubscribe();
-  }, [props.urlSlug, subscribeToMore]);
-
-  const [createChat] = useMutation(CREATE_CHAT, {
-    errorPolicy: 'all',
-  });
+  const [chatEvents, sendChat] = useChat(props.urlSlug);
 
   const [inputMessage, setInputMessage] = useState('');
 
@@ -119,17 +53,12 @@ const ChatBox = (props: ChatBoxProps) => {
         return window.alert('You need to log in to chat');
       }
 
-      createChat({
-        variables: {
-          parentUrlSlug: props.urlSlug || '',
-          message: inputMessage,
-        },
-      });
+      sendChat(inputMessage);
       setInputMessage('');
     }
   };
 
-  const renderChatEvent = (chatEvent: any, index: number) => {
+  const renderChatEvent = (chatEvent: Chat, index: number) => {
     const { message, user } = chatEvent;
     if (message) {
       return (
