@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Grid, TextField } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -33,11 +33,21 @@ const useStyles = makeStyles((theme) => ({
 
 const ChatBox = (props: ChatBoxProps) => {
   const classes = useStyles();
+  const chatsRef = useRef<HTMLDivElement>(null);
 
   const [currentUser] = useCurrentUser();
   const [chatEvents, sendChat] = useChat(props.urlSlug);
 
   const [inputMessage, setInputMessage] = useState('');
+
+  useEffect(() => {
+    if (chatsRef.current) {
+      chatsRef.current.scrollTo({
+        top: chatsRef.current.scrollHeight,
+        behavior: 'smooth',
+      });
+    }
+  }, [chatEvents.length, chatsRef]);
 
   const onInputMessageChanged = (
     event: React.ChangeEvent<HTMLTextAreaElement>
@@ -77,7 +87,7 @@ const ChatBox = (props: ChatBoxProps) => {
 
   return (
     <Grid container className={classes.container}>
-      <Grid item className={classes.chats}>
+      <Grid item className={classes.chats} ref={chatsRef}>
         {chatEvents.map(renderChatEvent)}
       </Grid>
       <TextField
