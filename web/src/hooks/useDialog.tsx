@@ -1,11 +1,13 @@
 import React, { useState, useCallback } from 'react';
 import DialogComponent from '@material-ui/core/Dialog';
 
-const useDialog = (): [React.ComponentType, () => void] => {
-  const [isVisible, setIsVisible] = useState(false);
+const useDialog = (
+  isVisibleByDefault: boolean = false
+): [React.ComponentType, () => void] => {
+  const [isVisible, setIsVisible] = useState(isVisibleByDefault);
 
   const Dialog = useCallback(
-    props => (
+    (props) => (
       <DialogComponent
         open={isVisible}
         onClose={() => setIsVisible(false)}

@@ -60,7 +60,7 @@ const ChatBox = (props: ChatBoxProps) => {
       event.preventDefault();
 
       if (!currentUser) {
-        return window.alert('You need to log in to chat');
+        return window.alert('You need to log in or sign up to chat');
       } else if (!inputMessage) {
         return window.alert('No message entered');
       }

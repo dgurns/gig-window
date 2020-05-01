@@ -5,18 +5,18 @@ import { makeStyles } from '@material-ui/core/styles';
 import Subheader from 'components/Subheader';
 import ShowCard from 'components/ShowCard';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   pageContent: {
     padding: theme.spacing(2),
     paddingTop: theme.spacing(4),
-    width: '100%'
+    width: '100%',
   },
   sectionHeading: {
-    marginBottom: 15
+    marginBottom: 15,
   },
   showCards: {
-    marginBottom: 35
-  }
+    marginBottom: 35,
+  },
 }));
 
 const Home = () => {

@@ -26,6 +26,7 @@ export class ChatResolver {
     const chats = await Chat.find({
       where: { parentUserId: parentUser.id },
       relations: ['user', 'parentUser'],
+      take: 10,
     });
 
     // When tips exist, pull them and combine with chats
