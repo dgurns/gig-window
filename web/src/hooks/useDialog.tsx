@@ -3,7 +3,7 @@ import DialogComponent from '@material-ui/core/Dialog';
 
 const useDialog = (
   isVisibleByDefault: boolean = false
-): [React.ComponentType, () => void] => {
+): [React.ComponentType, (isVisible?: boolean) => void] => {
   const [isVisible, setIsVisible] = useState(isVisibleByDefault);
 
   const Dialog = useCallback(

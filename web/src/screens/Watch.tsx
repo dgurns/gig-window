@@ -3,8 +3,11 @@ import { useLocation } from 'react-router-dom';
 import { Paper, Container, Typography, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
+import useDialog from 'hooks/useDialog';
+
 import TipButton from 'components/TipButton';
 import ChatBox from 'components/ChatBox';
+import PaymentForm from 'components/PaymentForm';
 
 const useStyles = makeStyles((theme) => ({
   pageContent: {
@@ -61,6 +64,8 @@ const Watch = () => {
   const { pathname } = useLocation();
   const urlSlug = pathname.split('/')[1];
 
+  const [PaymentDialog, setPaymentDialogIsVisible] = useDialog(true);
+
   return (
     <Container disableGutters maxWidth={false}>
       <Grid container direction="row" className={classes.userInfoContainer}>
@@ -102,6 +107,10 @@ const Watch = () => {
           <TipButton />
         </Grid>
       </Grid>
+
+      <PaymentDialog>
+        <PaymentForm />
+      </PaymentDialog>
     </Container>
   );
 };

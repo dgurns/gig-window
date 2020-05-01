@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
 import { useMutation, gql } from '@apollo/client';
-import { Paper, Grid, Typography, TextField, Button } from '@material-ui/core';
+import { Grid, Typography, TextField, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+
+interface LogInFormProps {
+  submitLabel?: string;
+}
 
 const LOG_IN = gql`
   mutation LogIn($email: String!, $password: String!) {
@@ -13,14 +16,6 @@ const LOG_IN = gql`
 `;
 
 const useStyles = makeStyles((theme) => ({
-  container: {
-    flexDirection: 'column',
-    padding: theme.spacing(3),
-    width: 400,
-  },
-  title: {
-    marginBottom: theme.spacing(3),
-  },
   formField: {
     marginBottom: theme.spacing(3),
   },
@@ -30,64 +25,62 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const LogInForm = () => {
+const LogInForm = (props: LogInFormProps) => {
   const classes = useStyles();
-  const history = useHistory();
   const [logIn, { loading, data, error }] = useMutation(LOG_IN, {
     errorPolicy: 'all',
   });
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
   useEffect(() => {
-    if (data?.logIn?.id) {
+    if (data && data.logIn?.id) {
       window.location.reload();
     }
-  }, [data, history]);
+  }, [data]);
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const onLogInClicked = () => {
     logIn({ variables: { email, password } });
   };
 
   return (
-    <Paper>
-      <Grid container item xs={12} className={classes.container}>
-        <Typography variant="h4" className={classes.title}>
-          Log in
+    <Grid container direction="column">
+      <TextField
+        value={email}
+        onChange={({ target: { value } }) => setEmail(value)}
+        variant="outlined"
+        label="Email"
+        className={classes.formField}
+      />
+      <TextField
+        value={password}
+        onChange={({ target: { value } }) => setPassword(value)}
+        variant="outlined"
+        label="Password"
+        type="password"
+        className={classes.formField}
+      />
+      {error && (
+        <Typography variant="body2" color="error" className={classes.error}>
+          {error.graphQLErrors.map(({ message }) => message)}
         </Typography>
-        <TextField
-          value={email}
-          onChange={({ target: { value } }) => setEmail(value)}
-          variant="outlined"
-          label="Email"
-          className={classes.formField}
-        />
-        <TextField
-          value={password}
-          onChange={({ target: { value } }) => setPassword(value)}
-          variant="outlined"
-          label="Password"
-          type="password"
-          className={classes.formField}
-        />
-        {error && (
-          <Typography variant="body2" color="error" className={classes.error}>
-            {error.graphQLErrors.map(({ message }) => message)}
-          </Typography>
-        )}
-        <Button
-          onClick={onLogInClicked}
-          color="primary"
-          variant="contained"
-          size="medium"
-          disabled={loading}
-        >
-          Log in
-        </Button>
-      </Grid>
-    </Paper>
+      )}
+      <Button
+        onClick={onLogInClicked}
+        color="primary"
+        variant="contained"
+        size="medium"
+        disabled={loading}
+      >
+        {props.submitLabel}
+      </Button>
+    </Grid>
   );
+};
+
+LogInForm.defaultProps = {
+  submitLabel: 'Log in',
 };
 
 export default LogInForm;

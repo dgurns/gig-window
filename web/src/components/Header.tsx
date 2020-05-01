@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Grid, Link, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -6,8 +6,7 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 import useCurrentUser from 'hooks/useCurrentUser';
 import useDialog from 'hooks/useDialog';
-import LogInForm from 'components/LogInForm';
-import SignUpForm from 'components/SignUpForm';
+import AuthForm from 'components/AuthForm';
 import TextButton from 'components/TextButton';
 
 const useStyles = makeStyles((theme) => ({
@@ -34,11 +33,16 @@ const useStyles = makeStyles((theme) => ({
 const Header = () => {
   const classes = useStyles();
 
-  const [currentUser, currentUserLoading] = useCurrentUser();
-  const userIsLoggedOut = !currentUser && !currentUserLoading;
+  const [currentUser, currentUserQuery] = useCurrentUser();
+  const userIsLoggedOut = !currentUser && !currentUserQuery.loading;
 
-  const [LogInDialog, setLogInDialogIsVisible] = useDialog();
-  const [SignUpDialog, setSignUpDialogIsVisible] = useDialog();
+  const [AuthDialog, setAuthDialogIsVisible] = useDialog();
+  const [signUpIsActive, setSignUpIsActive] = useState(true);
+
+  const showAuthDialog = (shouldShowSignUp: boolean = true) => {
+    setSignUpIsActive(shouldShowSignUp);
+    setAuthDialogIsVisible();
+  };
 
   return (
     <>
@@ -57,13 +61,13 @@ const Header = () => {
             <>
               <TextButton
                 className={classes.button}
-                onClick={setLogInDialogIsVisible}
+                onClick={() => showAuthDialog(false)}
               >
                 Log in
               </TextButton>
               <TextButton
                 className={classes.button}
-                onClick={setSignUpDialogIsVisible}
+                onClick={() => showAuthDialog(true)}
               >
                 Sign up
               </TextButton>
@@ -88,12 +92,9 @@ const Header = () => {
         </Grid>
       </Grid>
 
-      <LogInDialog>
-        <LogInForm />
-      </LogInDialog>
-      <SignUpDialog>
-        <SignUpForm />
-      </SignUpDialog>
+      <AuthDialog>
+        <AuthForm showSignUpFirst={signUpIsActive} />
+      </AuthDialog>
     </>
   );
 };
