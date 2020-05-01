@@ -10,6 +10,7 @@ interface AuthFormProps {
   hideTitle?: boolean;
   showSignUpFirst?: boolean;
   customSubmitLabel?: string;
+  onSuccess?: () => void;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -30,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const AuthForm = (props: AuthFormProps) => {
-  const { hideTitle, customSubmitLabel, showSignUpFirst } = props;
+  const { hideTitle, customSubmitLabel, showSignUpFirst, onSuccess } = props;
   const classes = useStyles();
 
   const [showSignUpForm, setShowSignUpForm] = useState(showSignUpFirst);
@@ -67,9 +68,9 @@ const AuthForm = (props: AuthFormProps) => {
           </Typography>
         )}
         {showSignUpForm ? (
-          <SignUpForm submitLabel={customSubmitLabel} />
+          <SignUpForm submitLabel={customSubmitLabel} onSuccess={onSuccess} />
         ) : (
-          <LogInForm submitLabel={customSubmitLabel} />
+          <LogInForm submitLabel={customSubmitLabel} onSuccess={onSuccess} />
         )}
       </Grid>
     </Paper>

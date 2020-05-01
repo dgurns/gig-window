@@ -5,6 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 interface SignUpFormProps {
   submitLabel?: string;
+  onSuccess?: () => void;
 }
 
 const SIGN_UP = gql`
@@ -26,6 +27,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const SignUpForm = (props: SignUpFormProps) => {
+  const { onSuccess } = props;
+
   const classes = useStyles();
   const [signUp, { loading, data, error }] = useMutation(SIGN_UP, {
     errorPolicy: 'all',
@@ -33,9 +36,9 @@ const SignUpForm = (props: SignUpFormProps) => {
 
   useEffect(() => {
     if (data && data.signUp.id) {
-      window.location.reload();
+      onSuccess ? onSuccess() : window.location.reload();
     }
-  }, [data]);
+  }, [data, onSuccess]);
 
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');

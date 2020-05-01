@@ -44,6 +44,11 @@ const Header = () => {
     setAuthDialogIsVisible();
   };
 
+  const onAuthSuccess = () => {
+    setAuthDialogIsVisible(false);
+    currentUserQuery.refetch();
+  };
+
   return (
     <>
       <Grid
@@ -93,7 +98,7 @@ const Header = () => {
       </Grid>
 
       <AuthDialog>
-        <AuthForm showSignUpFirst={signUpIsActive} />
+        <AuthForm showSignUpFirst={signUpIsActive} onSuccess={onAuthSuccess} />
       </AuthDialog>
     </>
   );

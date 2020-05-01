@@ -5,6 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 interface LogInFormProps {
   submitLabel?: string;
+  onSuccess?: () => void;
 }
 
 const LOG_IN = gql`
@@ -26,6 +27,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const LogInForm = (props: LogInFormProps) => {
+  const { onSuccess } = props;
+
   const classes = useStyles();
   const [logIn, { loading, data, error }] = useMutation(LOG_IN, {
     errorPolicy: 'all',
@@ -33,9 +36,9 @@ const LogInForm = (props: LogInFormProps) => {
 
   useEffect(() => {
     if (data && data.logIn?.id) {
-      window.location.reload();
+      onSuccess ? onSuccess() : window.location.reload();
     }
-  }, [data]);
+  }, [data, onSuccess]);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
