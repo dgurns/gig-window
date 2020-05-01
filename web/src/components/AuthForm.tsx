@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import SignUpForm from './SignUpForm';
 import LogInForm from './LogInForm';
+import TextButton from 'components/TextButton';
 
 interface AuthFormProps {
   hideTitle?: boolean;
@@ -18,13 +19,18 @@ const useStyles = makeStyles((theme) => ({
     width: 400,
   },
   title: {
-    marginBottom: theme.spacing(3),
+    marginBottom: theme.spacing(2),
+  },
+  switchModeText: {
+    marginBottom: theme.spacing(1),
+  },
+  switchModeButton: {
+    paddingBottom: 3,
   },
 }));
 
 const AuthForm = (props: AuthFormProps) => {
   const { hideTitle, customSubmitLabel, showSignUpFirst } = props;
-
   const classes = useStyles();
 
   const [showSignUpForm, setShowSignUpForm] = useState(showSignUpFirst);
@@ -39,11 +45,27 @@ const AuthForm = (props: AuthFormProps) => {
             {title}
           </Typography>
         )}
-        <Typography color="secondary">
-          {showSignUpForm
-            ? 'Already have an account? Log in'
-            : 'Need an account? Sign up'}
-        </Typography>
+        {showSignUpForm ? (
+          <Typography color="secondary" className={classes.switchModeText}>
+            Already have an account?{' '}
+            <TextButton
+              onClick={() => setShowSignUpForm(false)}
+              className={classes.switchModeButton}
+            >
+              Log in
+            </TextButton>
+          </Typography>
+        ) : (
+          <Typography color="secondary" className={classes.switchModeText}>
+            Need an account?{' '}
+            <TextButton
+              onClick={() => setShowSignUpForm(true)}
+              className={classes.switchModeButton}
+            >
+              Sign up
+            </TextButton>
+          </Typography>
+        )}
         {showSignUpForm ? (
           <SignUpForm submitLabel={customSubmitLabel} />
         ) : (
