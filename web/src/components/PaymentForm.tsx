@@ -4,11 +4,24 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import useCurrentUser from 'hooks/useCurrentUser';
 
+import MoneyInputField from './MoneyInputField';
 import AuthForm from './AuthForm';
+
+interface PaymentFormProps {
+  prefilledPaymentAmount?: string;
+}
 
 const useStyles = makeStyles((theme) => ({
   title: {
     marginBottom: theme.spacing(1),
+  },
+  moneyInput: {
+    marginBottom: theme.spacing(1),
+    marginTop: theme.spacing(1),
+  },
+  moneyInputField: {
+    marginRight: theme.spacing(1),
+    width: 80,
   },
   divider: {
     margin: `${theme.spacing(2)}px 0 10px`,
@@ -19,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PaymentForm = () => {
+const PaymentForm = (props: PaymentFormProps) => {
   const classes = useStyles();
 
   const [currentUser, currentUserQuery] = useCurrentUser();
@@ -47,8 +60,25 @@ const PaymentForm = () => {
   return (
     <Grid container direction="column">
       <Typography variant="h4" className={classes.title}>
-        Tip $3 to bingbong
+        Support bingbong
       </Typography>
+      <Grid
+        item
+        container
+        direction="row"
+        justify="flex-start"
+        alignItems="flex-end"
+        className={classes.moneyInput}
+      >
+        <MoneyInputField
+          autoFocus={props.prefilledPaymentAmount ? false : true}
+          className={classes.moneyInputField}
+          defaultValue={props.prefilledPaymentAmount}
+        />
+        <Typography variant="body2" color="secondary">
+          ($1 or more)
+        </Typography>
+      </Grid>
       <Typography color="secondary">
         80% goes to bingbong, 20% to the platform
       </Typography>

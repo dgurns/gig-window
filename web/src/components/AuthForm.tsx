@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Paper, Grid, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import SignUpForm from './SignUpForm';

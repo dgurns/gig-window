@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Paper, Container, Typography, Grid } from '@material-ui/core';
+import { Paper, Container, Typography, Grid, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import useDialog from 'hooks/useDialog';
 
-import TipButton from 'components/TipButton';
 import ChatBox from 'components/ChatBox';
 import PaymentForm from 'components/PaymentForm';
+import MoneyInputField from 'components/MoneyInputField';
 
 const useStyles = makeStyles((theme) => ({
   pageContent: {
@@ -57,6 +57,10 @@ const useStyles = makeStyles((theme) => ({
       padding: `0 ${theme.spacing(2)}px`,
     },
   },
+  tipAmount: {
+    marginRight: theme.spacing(1),
+    width: 56,
+  },
 }));
 
 const Watch = () => {
@@ -64,7 +68,16 @@ const Watch = () => {
   const { pathname } = useLocation();
   const urlSlug = pathname.split('/')[1];
 
-  const [PaymentDialog, setPaymentDialogIsVisible] = useDialog(true);
+  const [PaymentDialog, setPaymentDialogIsVisible] = useDialog();
+  const [tipAmount, setTipAmount] = useState('3');
+
+  const onChangeTipAmount = (value: string) => {
+    if (value === '') {
+      return setTipAmount(value);
+    } else if (typeof parseInt(value) === 'number') {
+      return setTipAmount(`${parseInt(value)}`);
+    }
+  };
 
   return (
     <Container disableGutters maxWidth={false}>
@@ -104,12 +117,24 @@ const Watch = () => {
           md={9}
           justify="flex-end"
         >
-          <TipButton />
+          <MoneyInputField
+            className={classes.tipAmount}
+            value={tipAmount}
+            onChange={(event) => onChangeTipAmount(event.target.value)}
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            onClick={() => setPaymentDialogIsVisible(true)}
+          >
+            Tip
+          </Button>
         </Grid>
       </Grid>
 
       <PaymentDialog>
-        <PaymentForm />
+        <PaymentForm prefilledPaymentAmount={tipAmount} />
       </PaymentDialog>
     </Container>
   );

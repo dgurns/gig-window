@@ -32,7 +32,7 @@ const useDialog = (
         <Grid className={classes.container}>{props.children}</Grid>
       </DialogComponent>
     ),
-    [isVisible, setIsVisible]
+    [isVisible, setIsVisible, classes]
   );
 
   return [Dialog, (isVisible = true) => setIsVisible(isVisible)];
