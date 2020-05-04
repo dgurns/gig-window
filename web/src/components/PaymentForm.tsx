@@ -33,6 +33,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const PaymentForm = (props: PaymentFormProps) => {
+  const { prefilledPaymentAmount } = props;
+
   const classes = useStyles();
 
   const [currentUser, currentUserQuery] = useCurrentUser();
@@ -60,25 +62,29 @@ const PaymentForm = (props: PaymentFormProps) => {
   return (
     <Grid container direction="column">
       <Typography variant="h4" className={classes.title}>
-        Support bingbong
+        {prefilledPaymentAmount
+          ? `Tip $${prefilledPaymentAmount} to bingbong`
+          : 'Name your price'}
       </Typography>
-      <Grid
-        item
-        container
-        direction="row"
-        justify="flex-start"
-        alignItems="flex-end"
-        className={classes.moneyInput}
-      >
-        <MoneyInputField
-          autoFocus={props.prefilledPaymentAmount ? false : true}
-          className={classes.moneyInputField}
-          defaultValue={props.prefilledPaymentAmount}
-        />
-        <Typography variant="body2" color="secondary">
-          ($1 or more)
-        </Typography>
-      </Grid>
+      {!prefilledPaymentAmount && (
+        <Grid
+          item
+          container
+          direction="row"
+          justify="flex-start"
+          alignItems="flex-end"
+          className={classes.moneyInput}
+        >
+          <MoneyInputField
+            autoFocus={true}
+            className={classes.moneyInputField}
+            defaultValue={prefilledPaymentAmount}
+          />
+          <Typography variant="body2" color="secondary">
+            ($1 or more)
+          </Typography>
+        </Grid>
+      )}
       <Typography color="secondary">
         80% goes to bingbong, 20% to the platform
       </Typography>
