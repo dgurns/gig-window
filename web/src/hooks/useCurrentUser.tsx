@@ -1,5 +1,9 @@
-import { useQuery, gql, QueryResult } from '@apollo/client';
+import { useQuery, gql, QueryResult, QueryHookOptions } from '@apollo/client';
 import { User } from '../../../api/src/entities/User';
+
+interface UseCurrentUserOptions {
+  pollInterval?: number;
+}
 
 const GET_CURRENT_USER = gql`
   {
@@ -14,12 +18,17 @@ const GET_CURRENT_USER = gql`
       awsMediaLiveInputId
       awsMediaLiveChannelId
       awsMediaPackageChannelId
+      awsMediaPackageOriginEndpointUrl
     }
   }
 `;
 
-const useCurrentUser = (): [User | undefined, QueryResult<User>] => {
-  const queryResult = useQuery(GET_CURRENT_USER);
+const useCurrentUser = (
+  options?: UseCurrentUserOptions
+): [User | undefined, QueryResult<User>] => {
+  const queryResult = useQuery(GET_CURRENT_USER, {
+    ...options,
+  });
 
   return [queryResult.data?.getCurrentUser, queryResult];
 };

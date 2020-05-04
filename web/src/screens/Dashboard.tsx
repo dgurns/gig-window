@@ -9,22 +9,14 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
+import useCurrentUser from 'hooks/useCurrentUser';
+
 import DashboardSubheader from 'components/DashboardSubheader';
 import LiveVideoPlayer from 'components/LiveVideoPlayer';
 import TextButton from 'components/TextButton';
 import ChatBox from 'components/ChatBox';
 import HowToBroadcast from 'components/HowToBroadcast';
 
-const GET_USER_PUBLISHING_STREAM_STATUS = gql`
-  {
-    getCurrentUser {
-      id
-      isPublishingStream
-      liveVideoInfrastructureError
-      awsMediaPackageOriginEndpointUrl
-    }
-  }
-`;
 const CHECK_USER_IS_STREAMING_LIVE = gql`
   {
     checkUserIsStreamingLive
@@ -110,19 +102,9 @@ const useStyles = makeStyles((theme) => ({
 const Dashboard = () => {
   const classes = useStyles();
 
-  const publishingStreamStatusQuery = useQuery(
-    GET_USER_PUBLISHING_STREAM_STATUS,
-    {
-      pollInterval: 3000,
-    }
-  );
-  const {
-    id,
-    isPublishingStream,
-    liveVideoInfrastructureError,
-    awsMediaPackageOriginEndpointUrl,
-  } = publishingStreamStatusQuery.data?.getCurrentUser || {};
-
+  const [currentUser] = useCurrentUser({
+    pollInterval: 3000,
+  });
   const isStreamingLiveQuery = useQuery(CHECK_USER_IS_STREAMING_LIVE, {
     pollInterval: 10000,
   });
@@ -131,9 +113,25 @@ const Dashboard = () => {
 
   const [isPublicMode, setIsPublicMode] = useState(false);
 
-  const renderStreamPreviewMessage = () => {
-    const { loading } = publishingStreamStatusQuery;
+  if (!currentUser) {
+    return (
+      <Container disableGutters maxWidth={false}>
+        <Grid container direction="row" className={classes.artistInfoContainer}>
+          Loading...
+        </Grid>
+      </Container>
+    );
+  }
 
+  const {
+    id,
+    username,
+    isPublishingStream,
+    liveVideoInfrastructureError,
+    awsMediaPackageOriginEndpointUrl,
+  } = currentUser;
+
+  const renderStreamPreviewMessage = () => {
     if (isPublishingStream && liveVideoInfrastructureError) {
       return (
         <Typography variant="body1" className={classes.streamPreviewMessage}>
@@ -146,7 +144,7 @@ const Dashboard = () => {
     return (
       <>
         <Typography variant="body1" className={classes.streamPreviewMessage}>
-          {!isPublishingStream && !loading && 'No stream detected'}
+          {!isPublishingStream && 'No stream detected'}
           {isPublishingStream &&
             !awsMediaPackageOriginEndpointUrl &&
             'Stream detected! Starting up video infrastructure... (takes about 60 seconds)'}
@@ -173,10 +171,8 @@ const Dashboard = () => {
             className={classes.artistImage}
           />
           <Grid item className={classes.artistText}>
-            <Typography variant="h6">Paul Bigelow</Typography>
-            <Typography color="textSecondary">
-              Today at 7pm: Covers and Improv
-            </Typography>
+            <Typography variant="h6">{username}</Typography>
+            <Typography color="textSecondary">No shows scheduled</Typography>
           </Grid>
         </Grid>
 
