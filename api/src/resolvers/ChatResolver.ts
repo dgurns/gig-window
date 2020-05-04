@@ -45,22 +45,14 @@ export class ChatResolver {
       throw new Error('User must be logged in to chat');
     }
 
-    const parentUser = await User.findOne({
-      where: { id: data.parentUserId },
-    });
-    if (!parentUser) {
-      throw new Error('Could not find parent user');
-    }
-
     const chat = Chat.create({
       userId: user.id,
-      parentUserId: parentUser.id,
+      parentUserId: data.parentUserId,
       message: data.message,
     });
     await chat.save();
 
     chat.user = user;
-    chat.parentUser = parentUser;
     await publish(chat);
 
     return chat;
@@ -69,7 +61,7 @@ export class ChatResolver {
   @Subscription({
     topics: ['CHAT_CREATED'],
     filter: ({ payload, args }) => {
-      if (payload.parentUser.id === args.parentUserId) {
+      if (payload.parentUserId === args.parentUserId) {
         return true;
       }
       return false;

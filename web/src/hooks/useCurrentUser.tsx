@@ -1,4 +1,4 @@
-import { useQuery, gql, QueryResult, QueryHookOptions } from '@apollo/client';
+import { useQuery, gql, QueryResult } from '@apollo/client';
 import { User } from '../../../api/src/entities/User';
 
 interface UseCurrentUserOptions {
