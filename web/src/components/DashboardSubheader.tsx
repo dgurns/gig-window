@@ -49,6 +49,17 @@ const DashboardSubheader = () => {
     }
   }, [data]);
 
+  const buildStripeOauthUrl = () => {
+    const url = new URL('https://connect.stripe.com/oauth/authorize');
+    url.searchParams.set(
+      'client_id',
+      process.env.REACT_APP_STRIPE_CLIENT_ID || ''
+    );
+    url.searchParams.set('scope', 'read_write');
+    url.searchParams.set('response_type', 'code');
+    return url.toString();
+  };
+
   return (
     <Subheader>
       <Grid
@@ -92,7 +103,7 @@ const DashboardSubheader = () => {
           <Typography color="secondary">
             All incoming payments will go directly to your Stripe account
           </Typography>
-          <Link href="https://stripe.com" className={classes.subheaderLink}>
+          <Link href={buildStripeOauthUrl()} className={classes.subheaderLink}>
             Link Stripe account
           </Link>
         </Grid>

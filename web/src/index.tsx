@@ -16,11 +16,11 @@ import * as serviceWorker from './serviceWorker';
 import App from 'App';
 
 const httpLink = new HttpLink({
-  uri: process.env.REACT_APP_GRAPHQL_API_URL,
+  uri: process.env.REACT_APP_GRAPHQL_HTTP_URL,
   credentials: 'include',
 });
 const wsLink = new WebSocketLink({
-  uri: process.env.REACT_APP_GRAPHQL_SUBSCRIPTIONS_API_URL || '',
+  uri: process.env.REACT_APP_GRAPHQL_WEBSOCKETS_URL || '',
   options: {
     reconnect: true,
   },

@@ -36,6 +36,8 @@ export class User extends BaseEntity {
   @Column()
   streamKey: string;
 
+  // Video infrastructure
+
   @Field((type) => Boolean)
   @Column({ default: false })
   isPublishingStream: boolean;
@@ -47,6 +49,8 @@ export class User extends BaseEntity {
   @Field((type) => String, { nullable: true })
   @Column({ nullable: true, default: null })
   liveVideoInfrastructureError: string;
+
+  // AWS Media Services
 
   @Field((type) => String, { nullable: true })
   @Column({ nullable: true, default: null })
@@ -79,6 +83,14 @@ export class User extends BaseEntity {
   @Field((type) => String, { nullable: true })
   @Column({ nullable: true, default: null })
   awsMediaPackageOriginEndpointUrl: string;
+
+  // Stripe
+
+  @Field((type) => String, { nullable: true })
+  @Column({ nullable: true, default: null })
+  stripeAccountId: string;
+
+  // User record meta
 
   @Field()
   @CreateDateColumn()
