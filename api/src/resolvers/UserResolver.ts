@@ -18,15 +18,19 @@ export class UserResolver {
     return User.find();
   }
 
-  @Query(() => User, { nullable: true })
-  getUser(@Arg('data') data: GetUserInput) {
+  @Query(() => User)
+  async getUser(@Arg('data') data: GetUserInput) {
     const { id, urlSlug } = data;
+    let user;
     if (id) {
-      return User.findOne({ where: { id } });
+      user = await User.findOne({ where: { id } });
     } else if (urlSlug) {
-      return User.findOne({ where: { urlSlug } });
+      user = await User.findOne({ where: { urlSlug } });
     }
-    return null;
+    if (!user) {
+      throw new Error('Could not find user');
+    }
+    return user;
   }
 
   @Query(() => User, { nullable: true })

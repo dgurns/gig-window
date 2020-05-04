@@ -6,25 +6,25 @@ import {
   PubSub,
   Publisher,
   Root,
+  Args,
   Arg,
   Ctx,
 } from 'type-graphql';
 import { CustomContext } from 'authChecker';
 import { Chat } from 'entities/Chat';
 import { User } from 'entities/User';
-import { CreateChatInput, NewChatEventPayload } from './types/ChatResolver';
+import {
+  GetChatEventsArgs,
+  CreateChatInput,
+  NewChatEventArgs,
+} from './types/ChatResolver';
 
 @Resolver()
 export class ChatResolver {
   @Query(() => [Chat])
-  async getChatEvents(@Arg('parentUrlSlug') parentUrlSlug: string) {
-    const parentUser = await User.findOne({
-      where: { urlSlug: parentUrlSlug },
-    });
-    if (!parentUser) return [];
-
+  async getChatEvents(@Args() { parentUserId }: GetChatEventsArgs) {
     const chats = await Chat.find({
-      where: { parentUserId: parentUser.id },
+      where: { parentUserId },
       relations: ['user', 'parentUser'],
       take: 10,
     });
@@ -46,7 +46,7 @@ export class ChatResolver {
     }
 
     const parentUser = await User.findOne({
-      where: { urlSlug: data.parentUrlSlug },
+      where: { id: data.parentUserId },
     });
     if (!parentUser) {
       throw new Error('Could not find parent user');
@@ -69,7 +69,7 @@ export class ChatResolver {
   @Subscription({
     topics: ['CHAT_CREATED'],
     filter: ({ payload, args }) => {
-      if (payload.parentUser.urlSlug === args.parentUrlSlug) {
+      if (payload.parentUser.id === args.parentUserId) {
         return true;
       }
       return false;
@@ -77,7 +77,7 @@ export class ChatResolver {
   })
   newChatEvent(
     @Root() payload: Chat,
-    @Arg('parentUrlSlug') parentUrlSlug: string
+    @Args() { parentUserId }: NewChatEventArgs
   ): Chat {
     return payload;
   }

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useQuery, gql } from '@apollo/client';
 import { Paper, Container, Typography, Grid, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -8,6 +9,16 @@ import useDialog from 'hooks/useDialog';
 import ChatBox from 'components/ChatBox';
 import PaymentForm from 'components/PaymentForm';
 import MoneyInputField from 'components/MoneyInputField';
+
+const GET_USER = gql`
+  query GetUser($urlSlug: String!) {
+    getUser(data: { urlSlug: $urlSlug }) {
+      id
+      username
+      urlSlug
+    }
+  }
+`;
 
 const useStyles = makeStyles((theme) => ({
   pageContent: {
@@ -68,6 +79,14 @@ const Watch = () => {
   const { pathname } = useLocation();
   const urlSlug = pathname.split('/')[1];
 
+  const { data, loading, error } = useQuery(GET_USER, {
+    variables: {
+      urlSlug,
+    },
+    skip: !urlSlug,
+  });
+  const user = data?.getUser || {};
+
   const [PaymentDialog, setPaymentDialogIsVisible] = useDialog();
   const [tipAmount, setTipAmount] = useState('3');
 
@@ -79,6 +98,24 @@ const Watch = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <Container disableGutters maxWidth={false}>
+        <Grid container direction="row" className={classes.userInfoContainer}>
+          Loading...
+        </Grid>
+      </Container>
+    );
+  } else if (!user || error) {
+    return (
+      <Container disableGutters maxWidth={false}>
+        <Grid container direction="row" className={classes.userInfoContainer}>
+          Could not find this user
+        </Grid>
+      </Container>
+    );
+  }
+
   return (
     <Container disableGutters maxWidth={false}>
       <Grid container direction="row" className={classes.userInfoContainer}>
@@ -88,9 +125,9 @@ const Watch = () => {
           className={classes.userImage}
         />
         <Grid item className={classes.userText}>
-          <Typography variant="h6">Paul Bigelow</Typography>
+          <Typography variant="h6">{user.username}</Typography>
           <Typography variant="body1" color="textSecondary">
-            Today at 7pm: Covers and Improv
+            No shows scheduled
           </Typography>
         </Grid>
       </Grid>
@@ -98,7 +135,7 @@ const Watch = () => {
         <Grid container direction="row" className={classes.videoChatContainer}>
           <Grid item xs={12} sm={8} md={9} className={classes.video} />
           <Grid item xs={false} sm={4} md={3} lg={3} className={classes.chat}>
-            <ChatBox urlSlug={urlSlug} />
+            <ChatBox userId={user.id} />
           </Grid>
         </Grid>
       </Paper>

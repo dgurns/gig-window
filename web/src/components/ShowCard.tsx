@@ -4,9 +4,9 @@ import { Card, CardMedia, Grid, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { grey } from '@material-ui/core/colors';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   cardLink: {
-    textDecoration: 'none'
+    textDecoration: 'none',
   },
   card: {
     alignItems: 'flex-start',
@@ -17,25 +17,25 @@ const useStyles = makeStyles(theme => ({
     minWidth: 280,
     padding: theme.spacing(1),
     '&:hover': {
-      backgroundColor: grey[100]
-    }
+      backgroundColor: grey[100],
+    },
   },
   image: {
     height: 72,
     marginRight: 10,
-    minWidth: 109
+    minWidth: 109,
   },
   textContent: {
     height: 72,
-    overflow: 'hidden'
-  }
+    overflow: 'hidden',
+  },
 }));
 
 const ShowCard = () => {
   const classes = useStyles();
 
   return (
-    <Link to="/user" className={classes.cardLink}>
+    <Link to="/bingbong" className={classes.cardLink}>
       <Card className={classes.card} elevation={3}>
         <CardMedia
           image="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.daytonlocal.com%2Fimages%2Fmusic%2Fdayton-celtic-festival-gaelic-storm.jpg&f=1&nofb=1"

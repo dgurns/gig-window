@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   Column,
+  Index,
 } from 'typeorm';
 import { ObjectType, Field, Int } from 'type-graphql';
 
@@ -24,6 +25,7 @@ export class User extends BaseEntity {
   username: string;
 
   @Field((type) => String)
+  @Index({ unique: true })
   @Column({ unique: true })
   urlSlug: string;
 

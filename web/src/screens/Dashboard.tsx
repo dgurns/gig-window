@@ -19,7 +19,6 @@ const GET_USER_PUBLISHING_STREAM_STATUS = gql`
   {
     getCurrentUser {
       id
-      urlSlug
       isPublishingStream
       liveVideoInfrastructureError
       awsMediaPackageOriginEndpointUrl
@@ -118,7 +117,7 @@ const Dashboard = () => {
     }
   );
   const {
-    urlSlug,
+    id,
     isPublishingStream,
     liveVideoInfrastructureError,
     awsMediaPackageOriginEndpointUrl,
@@ -238,7 +237,7 @@ const Dashboard = () => {
               lg={3}
               className={classes.chat}
             >
-              <ChatBox urlSlug={urlSlug} />
+              <ChatBox userId={id} />
             </Grid>
           </Grid>
         </Paper>

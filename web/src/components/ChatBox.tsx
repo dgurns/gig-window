@@ -9,7 +9,7 @@ import useChat from 'hooks/useChat';
 import ChatMessage from 'components/ChatMessage';
 
 interface ChatBoxProps {
-  urlSlug?: string;
+  userId?: number;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -36,7 +36,7 @@ const ChatBox = (props: ChatBoxProps) => {
   const chatsRef = useRef<HTMLDivElement>(null);
 
   const [currentUser] = useCurrentUser();
-  const [chatEvents, sendChat] = useChat(props.urlSlug);
+  const [chatEvents, sendChat] = useChat(props.userId);
 
   const [inputMessage, setInputMessage] = useState('');
 

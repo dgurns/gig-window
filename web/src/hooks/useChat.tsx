@@ -3,8 +3,8 @@ import { useQuery, useMutation, gql } from '@apollo/client';
 import { Chat } from '../../../api/src/entities/Chat';
 
 const GET_CHAT_EVENTS = gql`
-  query GetChatEvents($parentUrlSlug: String!) {
-    getChatEvents(parentUrlSlug: $parentUrlSlug) {
+  query GetChatEvents($parentUserId: Int!) {
+    getChatEvents(parentUserId: $parentUserId) {
       id
       user {
         urlSlug
@@ -16,8 +16,8 @@ const GET_CHAT_EVENTS = gql`
 `;
 
 const CHAT_EVENTS_SUBSCRIPTION = gql`
-  subscription ChatEventsSubscription($parentUrlSlug: String!) {
-    newChatEvent(parentUrlSlug: $parentUrlSlug) {
+  subscription ChatEventsSubscription($parentUserId: Int!) {
+    newChatEvent(parentUserId: $parentUserId) {
       id
       user {
         urlSlug
@@ -29,8 +29,8 @@ const CHAT_EVENTS_SUBSCRIPTION = gql`
 `;
 
 const CREATE_CHAT = gql`
-  mutation CreateChat($parentUrlSlug: String!, $message: String!) {
-    createChat(data: { parentUrlSlug: $parentUrlSlug, message: $message }) {
+  mutation CreateChat($parentUserId: Int!, $message: String!) {
+    createChat(data: { parentUserId: $parentUserId, message: $message }) {
       id
       user {
         urlSlug
@@ -42,23 +42,23 @@ const CREATE_CHAT = gql`
 `;
 
 const useChat = (
-  parentUrlSlug?: string
+  parentUserId?: number
 ): [Chat[], (message?: string) => void] => {
   const { subscribeToMore, ...getChatEventsResult } = useQuery(
     GET_CHAT_EVENTS,
     {
-      variables: { parentUrlSlug },
-      skip: !parentUrlSlug,
+      variables: { parentUserId },
+      skip: !parentUserId,
     }
   );
   const chatEvents = getChatEventsResult.data?.getChatEvents || [];
 
   useEffect(() => {
-    if (!parentUrlSlug) return;
+    if (!parentUserId) return;
 
     const unsubscribe = subscribeToMore({
       document: CHAT_EVENTS_SUBSCRIPTION,
-      variables: { parentUrlSlug: parentUrlSlug },
+      variables: { parentUserId },
       updateQuery: (prev, { subscriptionData }) => {
         if (!subscriptionData.data) return prev;
         const { newChatEvent } = subscriptionData.data;
@@ -68,18 +68,18 @@ const useChat = (
       },
     });
     return () => unsubscribe();
-  }, [parentUrlSlug, subscribeToMore]);
+  }, [parentUserId, subscribeToMore]);
 
   const [createChat] = useMutation(CREATE_CHAT, {
     errorPolicy: 'all',
   });
 
   const sendChat = (message?: string) => {
-    if (!message || !parentUrlSlug) return;
+    if (!message || !parentUserId) return;
 
     createChat({
       variables: {
-        parentUrlSlug,
+        parentUserId,
         message,
       },
     });

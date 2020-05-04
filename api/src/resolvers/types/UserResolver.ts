@@ -2,10 +2,10 @@ import { InputType, Field } from 'type-graphql';
 
 @InputType()
 export class GetUserInput {
-  @Field()
+  @Field({ nullable: true })
   id?: number;
 
-  @Field()
+  @Field({ nullable: true })
   urlSlug?: string;
 }
 
