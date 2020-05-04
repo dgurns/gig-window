@@ -18,7 +18,7 @@ const LOG_OUT = gql`
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    padding: `2px ${theme.spacing(3)}px 1px`,
+    padding: `5px ${theme.spacing(3)}px 4px`,
   },
   subheaderLink: {
     margin: `0 ${theme.spacing(3)}px`,
@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   incomingPaymentsInfo: {
-    marginBottom: 5,
+    marginBottom: 1,
   },
   monetizationIcon: {
     marginRight: theme.spacing(1),
@@ -74,6 +74,22 @@ const DashboardSubheader = () => {
           direction="row"
           justify="center"
           alignItems="center"
+          className={classes.incomingPaymentsInfo}
+        >
+          <MonetizationIcon className={classes.monetizationIcon} />
+          <Typography color="secondary">
+            All incoming payments will go directly to your Stripe account
+          </Typography>
+          <Link href={buildStripeOauthUrl()} className={classes.subheaderLink}>
+            Link Stripe account
+          </Link>
+        </Grid>
+        <Grid
+          item
+          container
+          direction="row"
+          justify="center"
+          alignItems="center"
         >
           <Link to="/" component={RouterLink} className={classes.subheaderLink}>
             Edit profile
@@ -90,22 +106,6 @@ const DashboardSubheader = () => {
           >
             Log out
           </TextButton>
-        </Grid>
-        <Grid
-          item
-          container
-          direction="row"
-          justify="center"
-          alignItems="center"
-          className={classes.incomingPaymentsInfo}
-        >
-          <MonetizationIcon className={classes.monetizationIcon} />
-          <Typography color="secondary">
-            All incoming payments will go directly to your Stripe account
-          </Typography>
-          <Link href={buildStripeOauthUrl()} className={classes.subheaderLink}>
-            Link Stripe account
-          </Link>
         </Grid>
       </Grid>
     </Subheader>
