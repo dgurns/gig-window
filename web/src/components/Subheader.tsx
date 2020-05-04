@@ -6,11 +6,11 @@ interface SubheaderProps {
   children: React.ReactElement | React.ReactElement[];
 }
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   container: {
     backgroundColor: theme.palette.common.white,
-    minHeight: 30
-  }
+    minHeight: 30,
+  },
 }));
 
 const Subheader = (props: SubheaderProps) => {

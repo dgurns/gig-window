@@ -102,7 +102,7 @@ const Watch = () => {
     return (
       <Container disableGutters maxWidth={false}>
         <Grid container direction="row" className={classes.userInfoContainer}>
-          Loading...
+          <Typography color="secondary">Loading...</Typography>
         </Grid>
       </Container>
     );
@@ -110,7 +110,7 @@ const Watch = () => {
     return (
       <Container disableGutters maxWidth={false}>
         <Grid container direction="row" className={classes.userInfoContainer}>
-          Could not find this user
+          <Typography color="secondary">Could not find this user</Typography>
         </Grid>
       </Container>
     );

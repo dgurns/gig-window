@@ -84,9 +84,11 @@ async function start() {
     server.installSubscriptionHandlers(httpServer);
 
     httpServer.listen({ port: SERVER_PORT }, () => {
-      console.log(`🚀 api ready on port ${SERVER_PORT}}`);
-      console.log(`GraphQL http:// at ${server.graphqlPath}`);
-      console.log(`GraphQL ws:// at ${server.subscriptionsPath}`);
+      console.log(`🚀 api ready on port ${SERVER_PORT}`);
+      console.log(`GraphQL http connections at ${server.graphqlPath}`);
+      console.log(
+        `GraphQL websocket connections at ${server.subscriptionsPath}`
+      );
     });
   } catch (error) {
     console.log(error);

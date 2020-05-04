@@ -117,7 +117,7 @@ const Dashboard = () => {
     return (
       <Container disableGutters maxWidth={false}>
         <Grid container direction="row" className={classes.artistInfoContainer}>
-          Loading...
+          <Typography color="secondary">Loading...</Typography>
         </Grid>
       </Container>
     );

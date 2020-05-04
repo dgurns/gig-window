@@ -74,6 +74,11 @@ export default createMuiTheme({
         fontSize: '1rem',
       },
     },
+    MuiLink: {
+      root: {
+        fontSize: '1rem',
+      },
+    },
     MuiOutlinedInput: {
       root: {
         borderRadius: 8,
@@ -94,6 +99,11 @@ export default createMuiTheme({
       elevation3: {
         boxShadow:
           '0px 3px 3px -2px rgba(0,0,0,0.1), 0px 3px 4px 0px rgba(0,0,0,0.07), 0px 1px 8px 0px rgba(0,0,0,0.06)',
+      },
+    },
+    MuiTypography: {
+      root: {
+        fontSize: '1rem',
       },
     },
   },
