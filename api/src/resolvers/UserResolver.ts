@@ -10,6 +10,7 @@ import {
 } from 'resolvers/types/UserResolver';
 import { CustomContext } from 'authChecker';
 import LiveVideoInfrastructure from 'services/LiveVideoInfrastructure';
+import StripeConnect from 'services/stripe/Connect';
 
 @Resolver()
 export class UserResolver {
@@ -104,5 +105,28 @@ export class UserResolver {
   logOut(@Ctx() ctx: CustomContext) {
     ctx.logout();
     return true;
+  }
+
+  @Mutation(() => User)
+  async completeStripeConnectOauthFlow(
+    @Arg('authorizationCode') authorizationCode: string,
+    @Ctx() ctx: CustomContext
+  ) {
+    const user = ctx.getUser();
+    if (!user) {
+      throw new Error('User must be logged in to link Stripe account');
+    }
+
+    const oauthResponse = await StripeConnect.validateOauthAuthorizationCode(
+      authorizationCode
+    );
+    const stripeAccountId = oauthResponse.stripe_user_id;
+    if (stripeAccountId) {
+      user.stripeAccountId = stripeAccountId;
+      await user.save();
+      return user;
+    } else {
+      throw new Error('Error linking Stripe account. Please try again.');
+    }
   }
 }

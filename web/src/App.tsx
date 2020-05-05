@@ -7,6 +7,7 @@ import Header from 'components/Header';
 import Home from 'screens/Home';
 import Watch from 'screens/Watch';
 import Dashboard from 'screens/Dashboard';
+import LinkStripeAccount from 'screens/LinkStripeAccount';
 
 function App() {
   const [currentUser] = useCurrentUser();
@@ -25,6 +26,9 @@ function App() {
       <Switch>
         <Route exact path="/">
           <Home />
+        </Route>
+        <Route exact path="/oauth/stripe-connect">
+          <LinkStripeAccount />
         </Route>
         <Route
           path="/:userUrlSlug"

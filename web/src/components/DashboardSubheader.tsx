@@ -7,6 +7,8 @@ import Typography from '@material-ui/core/Typography';
 import MonetizationIcon from '@material-ui/icons/MonetizationOn';
 import { makeStyles } from '@material-ui/core/styles';
 
+import useCurrentUser from 'hooks/useCurrentUser';
+
 import Subheader from 'components/Subheader';
 import TextButton from 'components/TextButton';
 
@@ -18,7 +20,7 @@ const LOG_OUT = gql`
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    padding: `5px ${theme.spacing(3)}px 4px`,
+    padding: `4px ${theme.spacing(3)}px`,
   },
   subheaderLink: {
     margin: `0 ${theme.spacing(3)}px`,
@@ -27,7 +29,8 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   incomingPaymentsInfo: {
-    marginBottom: 1,
+    marginBottom: theme.spacing(1),
+    marginTop: 6,
   },
   monetizationIcon: {
     marginRight: theme.spacing(1),
@@ -39,6 +42,8 @@ const useStyles = makeStyles((theme) => ({
 
 const DashboardSubheader = () => {
   const classes = useStyles();
+  const [currentUser] = useCurrentUser();
+
   const [logOut, { data }] = useMutation(LOG_OUT, {
     errorPolicy: 'all',
   });
@@ -53,12 +58,14 @@ const DashboardSubheader = () => {
     const url = new URL('https://connect.stripe.com/oauth/authorize');
     url.searchParams.set(
       'client_id',
-      process.env.REACT_APP_STRIPE_CLIENT_ID || ''
+      process.env.REACT_APP_STRIPE_CONNECT_CLIENT_ID || ''
     );
     url.searchParams.set('scope', 'read_write');
     url.searchParams.set('response_type', 'code');
     return url.toString();
   };
+
+  const userNeedsToLinkStripeAccount = !currentUser?.stripeAccountId;
 
   return (
     <Subheader>
@@ -68,22 +75,22 @@ const DashboardSubheader = () => {
         alignItems="center"
         className={classes.container}
       >
-        <Grid
-          item
-          container
-          direction="row"
-          justify="center"
-          alignItems="center"
-          className={classes.incomingPaymentsInfo}
-        >
-          <MonetizationIcon className={classes.monetizationIcon} />
-          <Typography color="secondary">
-            All incoming payments will go directly to your Stripe account
-          </Typography>
-          <Link href={buildStripeOauthUrl()} className={classes.subheaderLink}>
-            Link Stripe account
-          </Link>
-        </Grid>
+        {userNeedsToLinkStripeAccount && (
+          <Grid
+            item
+            container
+            direction="row"
+            justify="center"
+            alignItems="center"
+            className={classes.incomingPaymentsInfo}
+          >
+            <Typography color="secondary">
+              In order to play a public show and accept payments, you'll need to{' '}
+              <Link href={buildStripeOauthUrl()}>link a Stripe account</Link>
+            </Typography>
+          </Grid>
+        )}
+
         <Grid
           item
           container

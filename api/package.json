@@ -14,6 +14,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/stripe": "^7.13.23",
     "@types/uuid": "^7.0.2",
     "apollo-server-express": "^2.11.0",
     "aws-sdk": "^2.659.0",
@@ -29,6 +30,7 @@
     "passport": "^0.4.1",
     "reflect-metadata": "^0.1.13",
     "sqlite3": "^4.1.1",
+    "stripe": "^8.49.0",
     "type-graphql": "^0.17.6",
     "typeorm": "^0.2.24",
     "uuid": "^7.0.3"

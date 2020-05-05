@@ -7,7 +7,7 @@ import {
   ManyToOne,
 } from 'typeorm';
 import { ObjectType, Field, Int } from 'type-graphql';
-import { RelationColumn } from './helpers';
+import { RelationColumn } from './entityHelpers';
 import { User } from './User';
 
 @Entity()
