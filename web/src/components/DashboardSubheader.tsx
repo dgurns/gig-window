@@ -4,7 +4,6 @@ import { useMutation, gql } from '@apollo/client';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import MonetizationIcon from '@material-ui/icons/MonetizationOn';
 import { makeStyles } from '@material-ui/core/styles';
 
 import useCurrentUser from 'hooks/useCurrentUser';

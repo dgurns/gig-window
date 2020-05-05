@@ -50,14 +50,10 @@ const LinkStripeAccount = () => {
     }
   }, [stripeAuthorizationCode, completeOauthFlow]);
 
+  const waitingForMutation = !loading && !data && !error;
+
   const renderContent = () => {
-    if (!stripeAuthorizationCode) {
-      return (
-        <Typography color="secondary">
-          No authorization code provided
-        </Typography>
-      );
-    } else if (loading) {
+    if (waitingForMutation || loading) {
       return (
         <>
           <Typography variant="h6" className={classes.title}>
@@ -65,6 +61,12 @@ const LinkStripeAccount = () => {
           </Typography>
           <CircularProgress color="secondary" />
         </>
+      );
+    } else if (!stripeAuthorizationCode) {
+      return (
+        <Typography color="secondary">
+          No authorization code provided
+        </Typography>
       );
     } else if (error || !stripeAccountId) {
       return (
@@ -84,9 +86,8 @@ const LinkStripeAccount = () => {
         </Typography>
         <Typography>
           Now all incoming payments will go directly to your Stripe account.
-          Stripe takes 2.9% + $0.30 of each payment. From there, 80% goes into
-          your account and the platform takes 20% to cover video and operating
-          costs.
+          Stripe takes 2.9% + $0.30 of each payment. From there, 80% goes to you
+          and the platform takes 20% to cover video and operating costs.
           <br />
           <br />
           Since you own the Stripe account, you'll have full access to all the
