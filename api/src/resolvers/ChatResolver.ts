@@ -12,7 +12,6 @@ import {
 } from 'type-graphql';
 import { CustomContext } from 'authChecker';
 import { Chat } from 'entities/Chat';
-import { User } from 'entities/User';
 import {
   GetChatEventsArgs,
   CreateChatInput,
