@@ -6,8 +6,10 @@ import useCurrentUser from 'hooks/useCurrentUser';
 
 import MoneyInputField from './MoneyInputField';
 import AuthForm from './AuthForm';
+import PayWithCard from './PayWithCard';
 
 interface PaymentFormProps {
+  payeeUserId: number;
   prefilledPaymentAmount?: string;
 }
 
@@ -33,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const PaymentForm = (props: PaymentFormProps) => {
-  const { prefilledPaymentAmount } = props;
+  const { payeeUserId, prefilledPaymentAmount } = props;
 
   const classes = useStyles();
 
@@ -55,7 +57,13 @@ const PaymentForm = (props: PaymentFormProps) => {
         />
       );
     } else {
-      return 'Payment form';
+      return (
+        <PayWithCard
+          paymentAmount={3}
+          payeeUserId={payeeUserId}
+          onSuccess={() => {}}
+        />
+      );
     }
   };
 

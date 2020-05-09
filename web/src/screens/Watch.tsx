@@ -171,7 +171,7 @@ const Watch = () => {
       </Grid>
 
       <PaymentDialog>
-        <PaymentForm prefilledPaymentAmount={tipAmount} />
+        <PaymentForm payeeUserId={user.id} prefilledPaymentAmount={tipAmount} />
       </PaymentDialog>
     </Container>
   );

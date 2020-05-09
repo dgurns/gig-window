@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
   },
   incomingPaymentsInfo: {
     marginBottom: 2,
-    marginTop: 2,
+    marginTop: 6,
   },
   monetizationIcon: {
     marginRight: theme.spacing(1),
