@@ -36,7 +36,6 @@ const useStyles = makeStyles((theme) => ({
 
 const PaymentForm = (props: PaymentFormProps) => {
   const { payeeUserId, prefilledPaymentAmount } = props;
-
   const classes = useStyles();
 
   const [currentUser, currentUserQuery] = useCurrentUser();
@@ -94,7 +93,7 @@ const PaymentForm = (props: PaymentFormProps) => {
         </Grid>
       )}
       <Typography color="secondary">
-        80% goes to bingbong, 20% to the platform
+        80% goes to bingbong, 20% to the platform after payment processing fees
       </Typography>
       <Divider color="secondary" className={classes.divider} />
       {renderForm()}

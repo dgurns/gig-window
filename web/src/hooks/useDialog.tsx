@@ -7,7 +7,7 @@ const useStyles = makeStyles((theme) => ({
   container: {
     flexDirection: 'column',
     padding: theme.spacing(3),
-    minWidth: 400,
+    width: 400,
     [theme.breakpoints.down('xs')]: {
       minWidth: 0,
       width: '100%',
