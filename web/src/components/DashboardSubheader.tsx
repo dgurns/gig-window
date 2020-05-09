@@ -28,8 +28,8 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   incomingPaymentsInfo: {
-    marginBottom: theme.spacing(1),
-    marginTop: 6,
+    marginBottom: 2,
+    marginTop: 2,
   },
   monetizationIcon: {
     marginRight: theme.spacing(1),
@@ -74,22 +74,6 @@ const DashboardSubheader = () => {
         alignItems="center"
         className={classes.container}
       >
-        {userNeedsToLinkStripeAccount && (
-          <Grid
-            item
-            container
-            direction="row"
-            justify="center"
-            alignItems="center"
-            className={classes.incomingPaymentsInfo}
-          >
-            <Typography color="secondary">
-              In order to play a public show and accept payments, you'll need to{' '}
-              <Link href={buildStripeOauthUrl()}>link a Stripe account</Link>
-            </Typography>
-          </Grid>
-        )}
-
         <Grid
           item
           container
@@ -113,6 +97,22 @@ const DashboardSubheader = () => {
             Log out
           </TextButton>
         </Grid>
+
+        {userNeedsToLinkStripeAccount && (
+          <Grid
+            item
+            container
+            direction="row"
+            justify="center"
+            alignItems="center"
+            className={classes.incomingPaymentsInfo}
+          >
+            <Typography color="secondary">
+              In order to play a public show and accept payments, you'll need to{' '}
+              <Link href={buildStripeOauthUrl()}>link a Stripe account</Link>
+            </Typography>
+          </Grid>
+        )}
       </Grid>
     </Subheader>
   );

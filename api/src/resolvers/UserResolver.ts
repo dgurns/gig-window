@@ -10,6 +10,7 @@ import {
 } from 'resolvers/types/UserResolver';
 import { CustomContext } from 'authChecker';
 import LiveVideoInfrastructure from 'services/LiveVideoInfrastructure';
+import Stripe from 'services/stripe/Stripe';
 import StripeConnect from 'services/stripe/Connect';
 
 @Resolver()
@@ -83,8 +84,10 @@ export class UserResolver {
       streamKey,
     });
     await user.save();
-    await ctx.login(user);
 
+    Stripe.maybeCreateStripeCustomerForUser(user);
+
+    await ctx.login(user);
     return user;
   }
 

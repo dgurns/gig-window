@@ -88,6 +88,10 @@ export class User extends BaseEntity {
 
   @Field((type) => String, { nullable: true })
   @Column({ nullable: true, default: null })
+  stripeCustomerId: string;
+
+  @Field((type) => String, { nullable: true })
+  @Column({ nullable: true, default: null })
   stripeAccountId: string;
 
   // User record meta
