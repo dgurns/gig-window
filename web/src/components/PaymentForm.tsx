@@ -8,11 +8,6 @@ import MoneyInputField from './MoneyInputField';
 import AuthForm from './AuthForm';
 import PayWithCard from './PayWithCard';
 
-interface PaymentFormProps {
-  payeeUserId: number;
-  prefilledPaymentAmount?: string;
-}
-
 const useStyles = makeStyles((theme) => ({
   title: {
     marginBottom: theme.spacing(1),
@@ -33,6 +28,11 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(1),
   },
 }));
+
+interface PaymentFormProps {
+  payeeUserId: number;
+  prefilledPaymentAmount?: string;
+}
 
 const PaymentForm = (props: PaymentFormProps) => {
   const { payeeUserId, prefilledPaymentAmount } = props;
@@ -58,7 +58,7 @@ const PaymentForm = (props: PaymentFormProps) => {
     } else {
       return (
         <PayWithCard
-          paymentAmount={3}
+          paymentAmountInCents={300}
           payeeUserId={payeeUserId}
           onSuccess={() => {}}
         />

@@ -1,14 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useMutation, gql } from '@apollo/client';
 import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
-interface PayWithCardProps {
-  payeeUserId: number;
-  paymentAmount: number;
-  onSuccess: () => void;
-}
+const CREATE_PAYMENT_INTENT = gql`
+  mutation CreatePaymentIntent($amountInCents: Int!, $payeeUserId: Int!) {
+    createPaymentIntent(
+      data: { amountInCents: $amountInCents, payeeUserId: $payeeUserId }
+    )
+  }
+`;
 
 const useStyles = makeStyles(({ palette, spacing }) => ({
   cardElementWrapper: {
@@ -36,22 +40,73 @@ const CARD_ELEMENT_OPTIONS = {
   },
 };
 
+interface PayWithCardProps {
+  payeeUserId: number;
+  paymentAmountInCents: number;
+  onSuccess: () => void;
+}
+
 const PayWithCard = (props: PayWithCardProps) => {
+  const { payeeUserId, paymentAmountInCents, onSuccess } = props;
+
   const classes = useStyles();
   const stripe = useStripe();
   const elements = useElements();
 
-  // Make call to create PaymentIntent
+  const [createPaymentIntent, { loading, data, error }] = useMutation(
+    CREATE_PAYMENT_INTENT,
+    {
+      errorPolicy: 'all',
+    }
+  );
+  const clientSecret = data?.createPaymentIntent;
 
-  const onSubmit = (event: React.MouseEvent<HTMLElement>) => {
+  useEffect(() => {
+    createPaymentIntent({
+      variables: {
+        amountInCents: paymentAmountInCents,
+        payeeUserId,
+      },
+    });
+  }, [paymentAmountInCents, payeeUserId, createPaymentIntent]);
+
+  const onSubmitPayment = async (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
-
     if (!stripe || !elements) {
       return;
     }
 
-    // Use PaymentIntent secret to confirm payment
+    const card = elements.getElement(CardElement);
+    if (!card) {
+      return;
+    }
+
+    const result = await stripe.confirmCardPayment(clientSecret, {
+      payment_method: {
+        card,
+        // Add save_payment_method and setup_future_usage here if applicable
+      },
+    });
+
+    if (result.error) {
+      alert('Error confirming payment');
+    } else {
+      if (result.paymentIntent?.status === 'succeeded') {
+        onSuccess();
+        alert('Payment succeeded');
+      }
+    }
   };
+
+  if (loading) {
+    return <Typography color="secondary">Loading...</Typography>;
+  } else if (error) {
+    return (
+      <Typography color="secondary">
+        Error initializing payment form. Please reload.
+      </Typography>
+    );
+  }
 
   return (
     <Grid container direction="column">
@@ -62,10 +117,10 @@ const PayWithCard = (props: PayWithCardProps) => {
         variant="contained"
         color="primary"
         size="medium"
-        onClick={onSubmit}
-        disabled={!stripe}
+        onClick={onSubmitPayment}
+        disabled={!stripe || loading}
       >
-        Pay ${props.paymentAmount}
+        Pay ${props.paymentAmountInCents}
       </Button>
     </Grid>
   );

@@ -31,7 +31,6 @@ const createPaymentIntent = async (args: {
   amountInCents: number;
   user: User;
   payee: User;
-  setupFutureUsage: boolean;
 }): Promise<Stripe.PaymentIntent> => {
   if (!args.user.stripeCustomerId) {
     throw new Error('User does not have Stripe customer ID');
@@ -51,7 +50,6 @@ const createPaymentIntent = async (args: {
       currency: 'usd',
       customer: args.user.stripeCustomerId,
       receipt_email: args.user.email,
-      setup_future_usage: args.setupFutureUsage ? 'off_session' : undefined,
       statement_descriptor: `Payment to ${shortenedUsername}`,
       statement_descriptor_suffix: `Payment to ${shortenedUsername}`,
       application_fee_amount: applicationFeeInCents,

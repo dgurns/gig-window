@@ -16,6 +16,7 @@ const GET_USER = gql`
       id
       username
       urlSlug
+      stripeAccountId
     }
   }
 `;
@@ -145,29 +146,31 @@ const Watch = () => {
         justify="flex-start"
         className={classes.tools}
       >
-        <Grid
-          item
-          container
-          direction="row"
-          xs={12}
-          sm={8}
-          md={9}
-          justify="flex-end"
-        >
-          <MoneyInputField
-            className={classes.tipAmount}
-            value={tipAmount}
-            onChange={(event) => onChangeTipAmount(event.target.value)}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            size="small"
-            onClick={() => setPaymentDialogIsVisible(true)}
+        {user.stripeAccountId && (
+          <Grid
+            item
+            container
+            direction="row"
+            xs={12}
+            sm={8}
+            md={9}
+            justify="flex-end"
           >
-            Tip
-          </Button>
-        </Grid>
+            <MoneyInputField
+              className={classes.tipAmount}
+              value={tipAmount}
+              onChange={(event) => onChangeTipAmount(event.target.value)}
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={() => setPaymentDialogIsVisible(true)}
+            >
+              Tip
+            </Button>
+          </Grid>
+        )}
       </Grid>
 
       <PaymentDialog>

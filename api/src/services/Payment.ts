@@ -6,10 +6,13 @@ const calculateApplicationFeeAmount = (
   paymentAmountInCents: number
 ): number => {
   const totalStripeFeesInCents =
-    paymentAmountInCents * STRIPE_FEE_PERCENTAGE + STRIPE_FEE_AMOUNT_IN_CENTS;
+    paymentAmountInCents * (STRIPE_FEE_PERCENTAGE / 100) +
+    STRIPE_FEE_AMOUNT_IN_CENTS;
   const paymentAmountAfterStripeFees =
     paymentAmountInCents - totalStripeFeesInCents;
-  return paymentAmountAfterStripeFees * (APPLICATION_FEE_PERCENTAGE / 100);
+  const rawApplicationFeeAmount =
+    paymentAmountAfterStripeFees * (APPLICATION_FEE_PERCENTAGE / 100);
+  return Math.round(rawApplicationFeeAmount);
 };
 
 export default {

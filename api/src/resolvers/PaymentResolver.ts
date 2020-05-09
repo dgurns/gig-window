@@ -25,7 +25,6 @@ export class PaymentResolver {
       amountInCents: data.amountInCents,
       user,
       payee,
-      setupFutureUsage: data.setupFutureUsage,
     });
 
     if (paymentIntent.client_secret) {

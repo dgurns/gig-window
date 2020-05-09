@@ -7,7 +7,4 @@ export class CreatePaymentIntentInput {
 
   @Field((type) => Int)
   payeeUserId: number;
-
-  @Field((type) => Boolean, { defaultValue: false })
-  setupFutureUsage: boolean;
 }
