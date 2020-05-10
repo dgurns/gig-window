@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 import { Grid, Typography, Divider, CircularProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -31,12 +33,21 @@ const useStyles = makeStyles((theme) => ({
 
 interface PaymentFormProps {
   payeeUserId: number;
+  payeeStripeAccountId: string;
   prefilledPaymentAmount?: string;
 }
 
 const PaymentForm = (props: PaymentFormProps) => {
-  const { payeeUserId, prefilledPaymentAmount } = props;
+  const { payeeUserId, payeeStripeAccountId, prefilledPaymentAmount } = props;
   const classes = useStyles();
+
+  const stripePromise = useMemo(
+    () =>
+      loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || '', {
+        stripeAccount: payeeStripeAccountId,
+      }),
+    [payeeStripeAccountId]
+  );
 
   const [currentUser, currentUserQuery] = useCurrentUser();
 
@@ -57,11 +68,13 @@ const PaymentForm = (props: PaymentFormProps) => {
       );
     } else {
       return (
-        <PayWithCard
-          paymentAmountInCents={300}
-          payeeUserId={payeeUserId}
-          onSuccess={() => {}}
-        />
+        <Elements stripe={stripePromise}>
+          <PayWithCard
+            paymentAmountInCents={300}
+            payeeUserId={payeeUserId}
+            onSuccess={() => console.log('Payment succeeeded')}
+          />
+        </Elements>
       );
     }
   };

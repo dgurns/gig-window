@@ -48,11 +48,14 @@ const createPaymentIntent = async (args: {
       payment_method_types: ['card'],
       amount: args.amountInCents,
       currency: 'usd',
-      customer: args.user.stripeCustomerId,
       receipt_email: args.user.email,
       statement_descriptor: `Payment to ${shortenedUsername}`,
       statement_descriptor_suffix: `Payment to ${shortenedUsername}`,
       application_fee_amount: applicationFeeInCents,
+      metadata: {
+        userId: args.user.id,
+        payeeUserId: args.payee.id,
+      },
     },
     {
       stripeAccount: args.payee.stripeAccountId,

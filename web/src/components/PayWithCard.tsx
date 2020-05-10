@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useMutation, gql } from '@apollo/client';
 import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import Grid from '@material-ui/core/Grid';
@@ -24,6 +24,10 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
     '&:hover': {
       border: `1px solid ${palette.common.black}`,
     },
+  },
+  error: {
+    marginBottom: spacing(3),
+    textAlign: 'center',
   },
 }));
 
@@ -53,13 +57,16 @@ const PayWithCard = (props: PayWithCardProps) => {
   const stripe = useStripe();
   const elements = useElements();
 
-  const [createPaymentIntent, { loading, data, error }] = useMutation(
+  const [paymentIsSubmitting, setPaymentIsSubmitting] = useState(false);
+  const [paymentError, setPaymentError] = useState('');
+
+  const [createPaymentIntent, paymentIntent] = useMutation(
     CREATE_PAYMENT_INTENT,
     {
       errorPolicy: 'all',
     }
   );
-  const clientSecret = data?.createPaymentIntent;
+  const clientSecret = paymentIntent.data?.createPaymentIntent;
 
   useEffect(() => {
     createPaymentIntent({
@@ -81,26 +88,30 @@ const PayWithCard = (props: PayWithCardProps) => {
       return;
     }
 
+    setPaymentIsSubmitting(true);
+    setPaymentError('');
     const result = await stripe.confirmCardPayment(clientSecret, {
       payment_method: {
         card,
-        // Add save_payment_method and setup_future_usage here if applicable
       },
     });
+    setPaymentIsSubmitting(false);
 
     if (result.error) {
-      alert('Error confirming payment');
+      setPaymentError(
+        result.error.message ||
+          'Error confirming payment. Please check your card details'
+      );
     } else {
       if (result.paymentIntent?.status === 'succeeded') {
         onSuccess();
-        alert('Payment succeeded');
       }
     }
   };
 
-  if (loading) {
+  if (paymentIntent.loading || !stripe || !elements) {
     return <Typography color="secondary">Loading...</Typography>;
-  } else if (error) {
+  } else if (paymentIntent.error) {
     return (
       <Typography color="secondary">
         Error initializing payment form. Please reload.
@@ -113,14 +124,19 @@ const PayWithCard = (props: PayWithCardProps) => {
       <Grid className={classes.cardElementWrapper}>
         <CardElement options={CARD_ELEMENT_OPTIONS} />
       </Grid>
+      {paymentError && (
+        <Typography variant="body2" color="error" className={classes.error}>
+          {paymentError}
+        </Typography>
+      )}
       <Button
         variant="contained"
         color="primary"
         size="medium"
         onClick={onSubmitPayment}
-        disabled={!stripe || loading}
+        disabled={!stripe || paymentIntent.loading || paymentIsSubmitting}
       >
-        Pay ${props.paymentAmountInCents}
+        Pay ${props.paymentAmountInCents / 100}
       </Button>
     </Grid>
   );
