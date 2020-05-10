@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import classnames from 'classnames';
 import { useMutation, gql } from '@apollo/client';
 import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
@@ -21,9 +23,18 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
     margin: `${spacing(2)}px 0 ${spacing(3)}px`,
     padding: 13,
     paddingBottom: 12,
+    position: 'relative',
     '&:hover': {
       border: `1px solid ${palette.common.black}`,
     },
+  },
+  cardElementLoading: {
+    left: 13,
+    position: 'absolute',
+    top: 13,
+  },
+  cardElementLoadingHidden: {
+    display: 'none',
   },
   error: {
     marginBottom: spacing(3),
@@ -57,6 +68,7 @@ const PayWithCard = (props: PayWithCardProps) => {
   const stripe = useStripe();
   const elements = useElements();
 
+  const [cardElementIsReady, setCardElementIsReady] = useState(false);
   const [paymentIsSubmitting, setPaymentIsSubmitting] = useState(false);
   const [paymentError, setPaymentError] = useState('');
 
@@ -122,7 +134,17 @@ const PayWithCard = (props: PayWithCardProps) => {
   return (
     <Grid container direction="column">
       <Grid className={classes.cardElementWrapper}>
-        <CardElement options={CARD_ELEMENT_OPTIONS} />
+        <CircularProgress
+          className={classnames(classes.cardElementLoading, {
+            [classes.cardElementLoadingHidden]: cardElementIsReady,
+          })}
+          size={18}
+          color="secondary"
+        />
+        <CardElement
+          options={CARD_ELEMENT_OPTIONS}
+          onReady={() => setCardElementIsReady(true)}
+        />
       </Grid>
       {paymentError && (
         <Typography variant="body2" color="error" className={classes.error}>
