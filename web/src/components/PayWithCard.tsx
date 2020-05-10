@@ -18,7 +18,9 @@ const CREATE_PAYMENT_INTENT = gql`
   mutation CreatePaymentIntent($amountInCents: Int!, $payeeUserId: Int!) {
     createPaymentIntent(
       data: { amountInCents: $amountInCents, payeeUserId: $payeeUserId }
-    )
+    ) {
+      client_secret
+    }
   }
 `;
 
@@ -78,7 +80,7 @@ const PayWithCard = (props: PayWithCardProps) => {
       errorPolicy: 'all',
     }
   );
-  const clientSecret = paymentIntent.data?.createPaymentIntent;
+  const clientSecret = paymentIntent.data?.createPaymentIntent.client_secret;
 
   useEffect(() => {
     if (paymentAmountInCents) {

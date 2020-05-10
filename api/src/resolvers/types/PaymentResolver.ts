@@ -1,4 +1,10 @@
-import { InputType, Field, Int } from 'type-graphql';
+import { ObjectType, InputType, Field, Int } from 'type-graphql';
+
+@ObjectType()
+export class PaymentIntent {
+  @Field((type) => String)
+  client_secret: string;
+}
 
 @InputType()
 export class CreatePaymentIntentInput {

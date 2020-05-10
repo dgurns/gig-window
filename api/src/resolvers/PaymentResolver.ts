@@ -1,16 +1,20 @@
 import { Resolver, Mutation, Arg, Ctx } from 'type-graphql';
+import StripeLib from 'stripe';
 import { CustomContext } from 'authChecker';
-import { CreatePaymentIntentInput } from './types/PaymentResolver';
+import {
+  PaymentIntent,
+  CreatePaymentIntentInput,
+} from './types/PaymentResolver';
 import { User } from 'entities/User';
 import Stripe from 'services/stripe/Stripe';
 
 @Resolver()
 export class PaymentResolver {
-  @Mutation(() => String)
+  @Mutation((returns) => PaymentIntent)
   async createPaymentIntent(
     @Arg('data') data: CreatePaymentIntentInput,
     @Ctx() ctx: CustomContext
-  ) {
+  ): Promise<StripeLib.PaymentIntent> {
     const user = ctx.getUser();
     if (!user) {
       throw new Error('User must be logged in to create a PaymentIntent');
@@ -27,8 +31,8 @@ export class PaymentResolver {
       payee,
     });
 
-    if (paymentIntent.client_secret) {
-      return paymentIntent.client_secret;
+    if (paymentIntent) {
+      return paymentIntent;
     } else {
       throw new Error(
         'Error creating PaymentIntent - did not return client secret'
