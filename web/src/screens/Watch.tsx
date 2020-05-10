@@ -89,7 +89,7 @@ const Watch = () => {
   const user = data?.getUser || {};
 
   const [PaymentDialog, setPaymentDialogIsVisible] = useDialog();
-  const [tipAmount, setTipAmount] = useState('3');
+  const [tipAmount, setTipAmount] = useState('5');
 
   const onChangeTipAmount = (value: string) => {
     if (value === '') {
@@ -176,6 +176,7 @@ const Watch = () => {
       <PaymentDialog>
         <PaymentForm
           payeeUserId={user.id}
+          payeeUsername={user.username}
           payeeStripeAccountId={user.stripeAccountId}
           prefilledPaymentAmount={tipAmount}
         />

@@ -1,4 +1,5 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
+import debounce from 'lodash/debounce';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { Grid, Typography, Divider, CircularProgress } from '@material-ui/core';
@@ -33,12 +34,18 @@ const useStyles = makeStyles((theme) => ({
 
 interface PaymentFormProps {
   payeeUserId: number;
+  payeeUsername: string;
   payeeStripeAccountId: string;
   prefilledPaymentAmount?: string;
 }
 
 const PaymentForm = (props: PaymentFormProps) => {
-  const { payeeUserId, payeeStripeAccountId, prefilledPaymentAmount } = props;
+  const {
+    payeeUserId,
+    payeeUsername,
+    payeeStripeAccountId,
+    prefilledPaymentAmount,
+  } = props;
   const classes = useStyles();
 
   const stripePromise = useMemo(
@@ -50,10 +57,19 @@ const PaymentForm = (props: PaymentFormProps) => {
   );
 
   const [currentUser, currentUserQuery] = useCurrentUser();
+  const [paymentAmount, setPaymentAmount] = useState(prefilledPaymentAmount);
 
   const onAuthSuccess = () => {
     currentUserQuery.refetch();
   };
+
+  const onChangePaymentAmount = debounce((value: string) => {
+    if (value === '') {
+      return setPaymentAmount(value);
+    } else if (typeof parseInt(value) === 'number') {
+      return setPaymentAmount(`${parseInt(value)}`);
+    }
+  }, 400);
 
   const renderForm = () => {
     if (currentUserQuery.loading) {
@@ -66,11 +82,14 @@ const PaymentForm = (props: PaymentFormProps) => {
           onSuccess={onAuthSuccess}
         />
       );
+    } else if (!paymentAmount) {
+      return null;
     } else {
+      const paymentAmountInCents = parseInt(paymentAmount) * 100;
       return (
         <Elements stripe={stripePromise}>
           <PayWithCard
-            paymentAmountInCents={300}
+            paymentAmountInCents={paymentAmountInCents}
             payeeUserId={payeeUserId}
             onSuccess={() => console.log('Payment succeeeded')}
           />
@@ -83,7 +102,7 @@ const PaymentForm = (props: PaymentFormProps) => {
     <Grid container direction="column">
       <Typography variant="h4" className={classes.title}>
         {prefilledPaymentAmount
-          ? `Tip $${prefilledPaymentAmount} to bingbong`
+          ? `Tip $${prefilledPaymentAmount} to ${payeeUsername}`
           : 'Name your price'}
       </Typography>
       {!prefilledPaymentAmount && (
@@ -99,6 +118,7 @@ const PaymentForm = (props: PaymentFormProps) => {
             autoFocus={true}
             className={classes.moneyInputField}
             defaultValue={prefilledPaymentAmount}
+            onChange={(event) => onChangePaymentAmount(event.target.value)}
           />
           <Typography variant="body2" color="secondary">
             ($1 or more)
@@ -106,7 +126,8 @@ const PaymentForm = (props: PaymentFormProps) => {
         </Grid>
       )}
       <Typography color="secondary">
-        80% goes to bingbong, 20% to the platform after payment processing fees
+        80% goes to {payeeUsername}, 20% to the platform after payment
+        processing fees
       </Typography>
       <Divider color="secondary" className={classes.divider} />
       {renderForm()}

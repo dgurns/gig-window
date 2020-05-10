@@ -8,6 +8,12 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
+interface PayWithCardProps {
+  payeeUserId: number;
+  paymentAmountInCents?: number;
+  onSuccess: () => void;
+}
+
 const CREATE_PAYMENT_INTENT = gql`
   mutation CreatePaymentIntent($amountInCents: Int!, $payeeUserId: Int!) {
     createPaymentIntent(
@@ -55,12 +61,6 @@ const CARD_ELEMENT_OPTIONS = {
   },
 };
 
-interface PayWithCardProps {
-  payeeUserId: number;
-  paymentAmountInCents: number;
-  onSuccess: () => void;
-}
-
 const PayWithCard = (props: PayWithCardProps) => {
   const { payeeUserId, paymentAmountInCents, onSuccess } = props;
 
@@ -81,12 +81,14 @@ const PayWithCard = (props: PayWithCardProps) => {
   const clientSecret = paymentIntent.data?.createPaymentIntent;
 
   useEffect(() => {
-    createPaymentIntent({
-      variables: {
-        amountInCents: paymentAmountInCents,
-        payeeUserId,
-      },
-    });
+    if (paymentAmountInCents) {
+      createPaymentIntent({
+        variables: {
+          amountInCents: paymentAmountInCents,
+          payeeUserId,
+        },
+      });
+    }
   }, [paymentAmountInCents, payeeUserId, createPaymentIntent]);
 
   const onSubmitPayment = async (event: React.MouseEvent<HTMLElement>) => {
@@ -121,14 +123,30 @@ const PayWithCard = (props: PayWithCardProps) => {
     }
   };
 
-  if (paymentIntent.loading || !stripe || !elements) {
-    return <Typography color="secondary">Loading...</Typography>;
-  } else if (paymentIntent.error) {
+  if (paymentIntent.error) {
     return (
       <Typography color="secondary">
         Error initializing payment form. Please reload.
       </Typography>
     );
+  }
+
+  const shouldDisableButton =
+    paymentIntent.loading ||
+    !cardElementIsReady ||
+    !paymentAmountInCents ||
+    !clientSecret ||
+    paymentIsSubmitting;
+
+  let buttonLabel;
+  if (!paymentAmountInCents) {
+    buttonLabel = 'No amount entered';
+  } else if (paymentIntent.loading || !cardElementIsReady) {
+    buttonLabel = 'Loading...';
+  } else if (paymentIsSubmitting) {
+    buttonLabel = 'Submitting...';
+  } else if (paymentAmountInCents) {
+    buttonLabel = `Pay $${paymentAmountInCents / 100}`;
   }
 
   return (
@@ -156,9 +174,9 @@ const PayWithCard = (props: PayWithCardProps) => {
         color="primary"
         size="medium"
         onClick={onSubmitPayment}
-        disabled={!stripe || paymentIntent.loading || paymentIsSubmitting}
+        disabled={shouldDisableButton}
       >
-        Pay ${props.paymentAmountInCents / 100}
+        {buttonLabel}
       </Button>
     </Grid>
   );
