@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
 
 const DashboardSubheader = () => {
   const classes = useStyles();
-  const [currentUser] = useCurrentUser();
+  const [currentUser, currentUserQuery] = useCurrentUser();
 
   const [logOut, { data }] = useMutation(LOG_OUT, {
     errorPolicy: 'all',
@@ -64,7 +64,8 @@ const DashboardSubheader = () => {
     return url.toString();
   };
 
-  const userNeedsToLinkStripeAccount = !currentUser?.stripeAccountId;
+  const shouldShowLinkStripeAccountMessage =
+    !currentUser?.stripeAccountId && !currentUserQuery.loading;
 
   return (
     <Subheader>
@@ -98,7 +99,7 @@ const DashboardSubheader = () => {
           </TextButton>
         </Grid>
 
-        {userNeedsToLinkStripeAccount && (
+        {shouldShowLinkStripeAccountMessage && (
           <Grid
             item
             container

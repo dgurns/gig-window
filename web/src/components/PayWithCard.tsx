@@ -48,7 +48,7 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
   },
 }));
 
-const CARD_ELEMENT_OPTIONS = {
+const cardElementOptions = {
   style: {
     base: {
       color: '#212121',
@@ -160,7 +160,7 @@ const PayWithCard = (props: PayWithCardProps) => {
           color="secondary"
         />
         <CardElement
-          options={CARD_ELEMENT_OPTIONS}
+          options={cardElementOptions}
           onReady={() => setCardElementIsReady(true)}
         />
       </Grid>

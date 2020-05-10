@@ -71,7 +71,7 @@ const PaymentForm = (props: PaymentFormProps) => {
     }
   }, 400);
 
-  const renderForm = () => {
+  const renderAuthOrPaymentForm = () => {
     if (currentUserQuery.loading) {
       return <CircularProgress color="secondary" className={classes.loading} />;
     } else if (!currentUser) {
@@ -130,7 +130,7 @@ const PaymentForm = (props: PaymentFormProps) => {
         processing fees
       </Typography>
       <Divider color="secondary" className={classes.divider} />
-      {renderForm()}
+      {renderAuthOrPaymentForm()}
     </Grid>
   );
 };

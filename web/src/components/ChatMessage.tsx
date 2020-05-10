@@ -33,11 +33,13 @@ const ChatMessage = (props: ChatMessageProps) => {
 
   return (
     <Grid container direction="row" className={classes.container}>
-      <Grid
-        item
-        className={classes.userImage}
-        style={{ backgroundImage: `url(${props.userImageUrl})` }}
-      />
+      <RouterLink to={props.userUrlSlug}>
+        <Grid
+          item
+          className={classes.userImage}
+          style={{ backgroundImage: `url(${props.userImageUrl})` }}
+        />
+      </RouterLink>
       <Grid item className={classes.textContainer}>
         <Link
           variant="body1"

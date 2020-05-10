@@ -41,18 +41,21 @@ const createPaymentIntent = async (args: {
   const applicationFeeInCents = Payment.calculateApplicationFeeAmount(
     args.amountInCents
   );
-  const shortenedUsername = args.user.username.slice(0, 10);
+  const shortenedPayeeUsername = args.payee.username.slice(0, 10);
 
   const paymentIntent = await stripe.paymentIntents.create(
     {
       payment_method_types: ['card'],
       amount: args.amountInCents,
       currency: 'usd',
+      description: `Payment from: Username "${args.user.username}" / Email "${args.user.email}"`,
       receipt_email: args.user.email,
-      statement_descriptor: `Payment to ${shortenedUsername}`,
-      statement_descriptor_suffix: `Payment to ${shortenedUsername}`,
+      statement_descriptor: `Payment to ${shortenedPayeeUsername}`,
+      statement_descriptor_suffix: `Payment to ${shortenedPayeeUsername}`,
       application_fee_amount: applicationFeeInCents,
       metadata: {
+        userEmail: args.user.email,
+        userUsername: args.user.username,
         userId: args.user.id,
         payeeUserId: args.payee.id,
       },
