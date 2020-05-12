@@ -4,6 +4,8 @@ import { useMutation, gql } from '@apollo/client';
 import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
@@ -24,11 +26,19 @@ const CREATE_PAYMENT_INTENT = gql`
   }
 `;
 
+const CREATE_SETUP_INTENT = gql`
+  mutation CreateSetupIntent {
+    createSetupIntent {
+      client_secret
+    }
+  }
+`;
+
 const useStyles = makeStyles(({ palette, spacing }) => ({
   cardElementWrapper: {
     border: `1px solid ${palette.secondary.main}`,
     borderRadius: spacing(1),
-    margin: `${spacing(2)}px 0 ${spacing(3)}px`,
+    margin: `${spacing(2)}px 0 ${spacing(1)}px`,
     padding: 13,
     paddingBottom: 12,
     position: 'relative',
@@ -43,6 +53,14 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
   },
   cardElementLoadingHidden: {
     display: 'none',
+  },
+  saveCard: {
+    color: palette.secondary.main,
+    marginBottom: spacing(2),
+    opacity: 0,
+  },
+  saveCardVisible: {
+    opacity: 1,
   },
   error: {
     marginBottom: spacing(3),
@@ -70,6 +88,7 @@ const PayWithCard = (props: PayWithCardProps) => {
   const stripe = useStripe();
   const elements = useElements();
 
+  const [shouldSaveCard, setShouldSaveCard] = useState(true);
   const [cardElementIsReady, setCardElementIsReady] = useState(false);
   const [paymentIsSubmitting, setPaymentIsSubmitting] = useState(false);
   const [paymentError, setPaymentError] = useState('');
@@ -80,9 +99,18 @@ const PayWithCard = (props: PayWithCardProps) => {
       errorPolicy: 'all',
     }
   );
-  const clientSecret = paymentIntent.data?.createPaymentIntent.client_secret;
+  const paymentIntentClientSecret =
+    paymentIntent.data?.createPaymentIntent.client_secret;
+
+  const [createSetupIntent, setupIntent] = useMutation(CREATE_SETUP_INTENT, {
+    errorPolicy: 'all',
+  });
+  const setupIntentClientSecret =
+    setupIntent.data?.createSetupIntent.client_secret;
 
   useEffect(() => {
+    createSetupIntent();
+
     if (paymentAmountInCents) {
       createPaymentIntent({
         variables: {
@@ -91,7 +119,12 @@ const PayWithCard = (props: PayWithCardProps) => {
         },
       });
     }
-  }, [paymentAmountInCents, payeeUserId, createPaymentIntent]);
+  }, [
+    paymentAmountInCents,
+    payeeUserId,
+    createPaymentIntent,
+    createSetupIntent,
+  ]);
 
   const onSubmitPayment = async (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
@@ -106,7 +139,7 @@ const PayWithCard = (props: PayWithCardProps) => {
 
     setPaymentIsSubmitting(true);
     setPaymentError('');
-    const result = await stripe.confirmCardPayment(clientSecret, {
+    const result = await stripe.confirmCardPayment(paymentIntentClientSecret, {
       payment_method: {
         card,
       },
@@ -135,15 +168,21 @@ const PayWithCard = (props: PayWithCardProps) => {
 
   const shouldDisableButton =
     paymentIntent.loading ||
+    setupIntent.loading ||
     !cardElementIsReady ||
     !paymentAmountInCents ||
-    !clientSecret ||
+    !paymentIntentClientSecret ||
+    !setupIntentClientSecret ||
     paymentIsSubmitting;
 
   let buttonLabel;
   if (!paymentAmountInCents) {
     buttonLabel = 'No amount entered';
-  } else if (paymentIntent.loading || !cardElementIsReady) {
+  } else if (
+    paymentIntent.loading ||
+    setupIntent.loading ||
+    !cardElementIsReady
+  ) {
     buttonLabel = 'Loading...';
   } else if (paymentIsSubmitting) {
     buttonLabel = 'Submitting...';
@@ -166,11 +205,30 @@ const PayWithCard = (props: PayWithCardProps) => {
           onReady={() => setCardElementIsReady(true)}
         />
       </Grid>
+
+      <FormControlLabel
+        label="Use this card for future payments"
+        control={
+          <Checkbox
+            checked={shouldSaveCard}
+            onChange={() => setShouldSaveCard(!shouldSaveCard)}
+            color="primary"
+          />
+        }
+        className={classnames([
+          classes.saveCard,
+          {
+            [classes.saveCardVisible]: cardElementIsReady,
+          },
+        ])}
+      />
+
       {paymentError && (
         <Typography variant="body2" color="error" className={classes.error}>
           {paymentError}
         </Typography>
       )}
+
       <Button
         variant="contained"
         color="primary"
