@@ -68,7 +68,24 @@ const createPaymentIntent = async (args: {
   return paymentIntent;
 };
 
+const createSetupIntent = async (user: User): Promise<Stripe.SetupIntent> => {
+  if (!user.stripeCustomerId) {
+    throw new Error('User does not have Stripe customer ID');
+  }
+
+  const setupIntent = await stripe.setupIntents.create({
+    payment_method_types: ['card'],
+    usage: 'off_session',
+    metadata: {
+      userId: user.id,
+    },
+  });
+
+  return setupIntent;
+};
+
 export default {
   maybeCreateStripeCustomerForUser,
   createPaymentIntent,
+  createSetupIntent,
 };

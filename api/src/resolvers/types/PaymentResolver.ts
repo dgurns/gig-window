@@ -14,3 +14,9 @@ export class CreatePaymentIntentInput {
   @Field((type) => Int)
   payeeUserId: number;
 }
+
+@ObjectType()
+export class SetupIntent {
+  @Field((type) => String)
+  client_secret: string;
+}

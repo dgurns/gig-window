@@ -4,6 +4,7 @@ import { CustomContext } from 'authChecker';
 import {
   PaymentIntent,
   CreatePaymentIntentInput,
+  SetupIntent,
 } from './types/PaymentResolver';
 import { User } from 'entities/User';
 import Stripe from 'services/stripe/Stripe';
@@ -36,6 +37,26 @@ export class PaymentResolver {
     } else {
       throw new Error(
         'Error creating PaymentIntent - did not return client secret'
+      );
+    }
+  }
+
+  @Mutation((returns) => SetupIntent)
+  async createSetupIntent(
+    @Ctx() ctx: CustomContext
+  ): Promise<StripeLib.SetupIntent> {
+    const user = ctx.getUser();
+    if (!user) {
+      throw new Error('User must be logged in to create a SetupIntent');
+    }
+
+    const setupIntent = await Stripe.createSetupIntent(user);
+
+    if (setupIntent) {
+      return setupIntent;
+    } else {
+      throw new Error(
+        'Error creating SetupIntent - did not return client secret'
       );
     }
   }
