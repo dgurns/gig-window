@@ -68,18 +68,29 @@ const createPaymentIntent = async (args: {
   return paymentIntent;
 };
 
-const createSetupIntent = async (user: User): Promise<Stripe.SetupIntent> => {
-  if (!user.stripeCustomerId) {
+const createSetupIntent = async (args: {
+  user: User;
+  payee: User;
+}): Promise<Stripe.SetupIntent> => {
+  if (!args.user.stripeCustomerId) {
     throw new Error('User does not have Stripe customer ID');
+  } else if (!args.payee.stripeAccountId) {
+    throw new Error('Payee does not have Stripe account ID');
   }
 
-  const setupIntent = await stripe.setupIntents.create({
-    payment_method_types: ['card'],
-    usage: 'off_session',
-    metadata: {
-      userId: user.id,
+  const setupIntent = await stripe.setupIntents.create(
+    {
+      payment_method_types: ['card'],
+      usage: 'off_session',
+      metadata: {
+        userId: args.user.id,
+        payeeUserId: args.payee.id,
+      },
     },
-  });
+    {
+      stripeAccount: args.payee.stripeAccountId,
+    }
+  );
 
   return setupIntent;
 };

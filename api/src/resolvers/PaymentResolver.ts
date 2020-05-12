@@ -5,6 +5,7 @@ import {
   PaymentIntent,
   CreatePaymentIntentInput,
   SetupIntent,
+  CreateSetupIntentInput,
 } from './types/PaymentResolver';
 import { User } from 'entities/User';
 import Stripe from 'services/stripe/Stripe';
@@ -43,6 +44,7 @@ export class PaymentResolver {
 
   @Mutation((returns) => SetupIntent)
   async createSetupIntent(
+    @Arg('data') data: CreateSetupIntentInput,
     @Ctx() ctx: CustomContext
   ): Promise<StripeLib.SetupIntent> {
     const user = ctx.getUser();
@@ -50,7 +52,12 @@ export class PaymentResolver {
       throw new Error('User must be logged in to create a SetupIntent');
     }
 
-    const setupIntent = await Stripe.createSetupIntent(user);
+    const payee = await User.findOne({ where: { id: data.payeeUserId } });
+    if (!payee) {
+      throw new Error('Could not find payee user');
+    }
+
+    const setupIntent = await Stripe.createSetupIntent({ user, payee });
 
     if (setupIntent) {
       return setupIntent;

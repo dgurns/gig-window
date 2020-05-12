@@ -20,3 +20,9 @@ export class SetupIntent {
   @Field((type) => String)
   client_secret: string;
 }
+
+@InputType()
+export class CreateSetupIntentInput {
+  @Field((type) => Int)
+  payeeUserId: number;
+}

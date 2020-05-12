@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import classnames from 'classnames';
 import { useMutation, gql } from '@apollo/client';
+import Stripe from '@stripe/stripe-js';
 import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
@@ -27,8 +28,8 @@ const CREATE_PAYMENT_INTENT = gql`
 `;
 
 const CREATE_SETUP_INTENT = gql`
-  mutation CreateSetupIntent {
-    createSetupIntent {
+  mutation CreateSetupIntent($payeeUserId: Int!) {
+    createSetupIntent(data: { payeeUserId: $payeeUserId }) {
       client_secret
     }
   }
@@ -109,7 +110,7 @@ const PayWithCard = (props: PayWithCardProps) => {
     setupIntent.data?.createSetupIntent.client_secret;
 
   useEffect(() => {
-    createSetupIntent();
+    createSetupIntent({ variables: { payeeUserId } });
 
     if (paymentAmountInCents) {
       createPaymentIntent({
@@ -126,19 +127,33 @@ const PayWithCard = (props: PayWithCardProps) => {
     createSetupIntent,
   ]);
 
+  const saveCardToCustomer = async (
+    card: Stripe.StripeCardElement
+  ): Promise<void> => {
+    if (!stripe) return;
+
+    const result = await stripe.confirmCardSetup(setupIntentClientSecret, {
+      payment_method: {
+        card,
+      },
+    });
+    console.log(result);
+  };
+
   const onSubmitPayment = async (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
-    if (!stripe || !elements) {
-      return;
-    }
+    if (!stripe || !elements) return;
 
     const card = elements.getElement(CardElement);
-    if (!card) {
-      return;
-    }
+    if (!card) return;
 
     setPaymentIsSubmitting(true);
     setPaymentError('');
+
+    if (shouldSaveCard) {
+      await saveCardToCustomer(card);
+    }
+
     const result = await stripe.confirmCardPayment(paymentIntentClientSecret, {
       payment_method: {
         card,
