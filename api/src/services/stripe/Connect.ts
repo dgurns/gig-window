@@ -48,11 +48,12 @@ const createPaymentIntentAsPayee = async (args: {
   );
   const shortenedPayeeUsername = payee.username.slice(0, 10);
 
-  const paymentMethodsForUser = await Stripe.listPaymentMethodsForUser(user);
-  const paymentMethodIdToClone = paymentMethodsForUser.pop()?.id || '';
+  const paymentMethodIdToClone = await Stripe.getLatestPaymentMethodIdForUser(
+    user
+  );
   const clonedPaymentMethod = await clonePaymentMethodAsPayee({
     customerId: user.stripeCustomerId,
-    paymentMethodId: paymentMethodIdToClone,
+    paymentMethodId: paymentMethodIdToClone ?? '',
     stripeAccountId: payee.stripeAccountId,
   });
 

@@ -23,23 +23,31 @@ export class PaymentResolver {
       throw new Error('Could not find payee user');
     }
 
-    const paymentIntent = await StripeConnect.createPaymentIntentAsPayee({
-      amountInCents: data.amountInCents,
-      user,
-      payee,
-    });
+    let paymentIntent;
+    try {
+      paymentIntent = await StripeConnect.createPaymentIntentAsPayee({
+        amountInCents: data.amountInCents,
+        user,
+        payee,
+      });
+    } catch {}
 
-    if (paymentIntent) {
-      // Detach payment method from user, if applicable
+    if (data.shouldDetachPaymentMethodAfter) {
+      const latestPaymentMethodId = await Stripe.getLatestPaymentMethodIdForUser(
+        user
+      );
+      if (latestPaymentMethodId) {
+        await Stripe.detachPaymentMethod(latestPaymentMethodId);
+      }
+    }
 
+    if (paymentIntent?.status === 'succeeded') {
       // Save Payment to DB
 
       // Return the Payment to client
       return true;
     } else {
-      throw new Error(
-        'Error creating PaymentIntent - did not return client secret'
-      );
+      throw new Error('Error creating PaymentIntent');
     }
   }
 

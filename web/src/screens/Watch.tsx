@@ -177,7 +177,6 @@ const Watch = () => {
         <PaymentForm
           payeeUserId={user.id}
           payeeUsername={user.username}
-          payeeStripeAccountId={user.stripeAccountId}
           prefilledPaymentAmount={tipAmount}
         />
       </PaymentDialog>

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import classnames from 'classnames';
 import { useMutation, gql } from '@apollo/client';
-import Stripe from '@stripe/stripe-js';
 import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
@@ -22,6 +21,22 @@ const CREATE_SETUP_INTENT = gql`
     createSetupIntent {
       client_secret
     }
+  }
+`;
+
+const CREATE_PAYMENT = gql`
+  mutation CreatePayment(
+    $amountInCents: Int!
+    $payeeUserId: Int!
+    $shouldDetachPaymentMethodAfter: Boolean!
+  ) {
+    createPayment(
+      data: {
+        amountInCents: $amountInCents
+        payeeUserId: $payeeUserId
+        shouldDetachPaymentMethodAfter: $shouldDetachPaymentMethodAfter
+      }
+    )
   }
 `;
 
@@ -89,10 +104,22 @@ const PayWithCard = (props: PayWithCardProps) => {
   });
   const setupIntentClientSecret =
     setupIntent.data?.createSetupIntent.client_secret;
+  const [createPayment, payment] = useMutation(CREATE_PAYMENT, {
+    errorPolicy: 'all',
+  });
 
   useEffect(() => {
     createSetupIntent();
   }, [createSetupIntent]);
+
+  useEffect(() => {
+    if (payment.data?.createPayment) {
+      onSuccess();
+    } else if (payment.error) {
+      setPaymentIsSubmitting(false);
+      setPaymentError('Could not process payment. Please try again.');
+    }
+  }, [payment.data, payment.error, onSuccess]);
 
   const onSubmit = async (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
@@ -115,15 +142,18 @@ const PayWithCard = (props: PayWithCardProps) => {
         result.error.message ||
           'Error confirming payment. Please check your card details'
       );
+      setPaymentIsSubmitting(false);
     } else {
       if (result.setupIntent?.status === 'succeeded') {
-        console.log('setupIntent succeeded', setupIntent);
-        // Create payment on server
-        // Call onSuccess
+        createPayment({
+          variables: {
+            amountInCents: paymentAmountInCents,
+            payeeUserId,
+            shouldDetachPaymentMethodAfter: !shouldSaveCard,
+          },
+        });
       }
     }
-
-    setPaymentIsSubmitting(false);
   };
 
   if (setupIntent.error) {

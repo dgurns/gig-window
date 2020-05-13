@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import debounce from 'lodash/debounce';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
@@ -39,17 +39,11 @@ const useStyles = makeStyles((theme) => ({
 interface PaymentFormProps {
   payeeUserId: number;
   payeeUsername: string;
-  payeeStripeAccountId: string;
   prefilledPaymentAmount?: string;
 }
 
 const PaymentForm = (props: PaymentFormProps) => {
-  const {
-    payeeUserId,
-    payeeUsername,
-    payeeStripeAccountId,
-    prefilledPaymentAmount,
-  } = props;
+  const { payeeUserId, payeeUsername, prefilledPaymentAmount } = props;
   const classes = useStyles();
 
   const [currentUser, currentUserQuery] = useCurrentUser();
