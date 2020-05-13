@@ -1,28 +1,19 @@
 import { ObjectType, InputType, Field, Int } from 'type-graphql';
 
-@ObjectType()
-export class PaymentIntent {
-  @Field((type) => String)
-  client_secret: string;
-}
-
 @InputType()
-export class CreatePaymentIntentInput {
+export class CreatePaymentInput {
   @Field((type) => Int)
   amountInCents: number;
 
   @Field((type) => Int)
   payeeUserId: number;
+
+  @Field((type) => Boolean)
+  shouldDetachPaymentMethodAfter: boolean;
 }
 
 @ObjectType()
 export class SetupIntent {
   @Field((type) => String)
   client_secret: string;
-}
-
-@InputType()
-export class CreateSetupIntentInput {
-  @Field((type) => Int)
-  payeeUserId: number;
 }

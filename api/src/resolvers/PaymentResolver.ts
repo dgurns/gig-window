@@ -1,25 +1,21 @@
 import { Resolver, Mutation, Arg, Ctx } from 'type-graphql';
 import StripeLib from 'stripe';
 import { CustomContext } from 'authChecker';
-import {
-  PaymentIntent,
-  CreatePaymentIntentInput,
-  SetupIntent,
-  CreateSetupIntentInput,
-} from './types/PaymentResolver';
+import { CreatePaymentInput, SetupIntent } from './types/PaymentResolver';
 import { User } from 'entities/User';
 import Stripe from 'services/stripe/Stripe';
+import StripeConnect from 'services/stripe/Connect';
 
 @Resolver()
 export class PaymentResolver {
-  @Mutation((returns) => PaymentIntent)
-  async createPaymentIntent(
-    @Arg('data') data: CreatePaymentIntentInput,
+  @Mutation((returns) => Boolean)
+  async createPayment(
+    @Arg('data') data: CreatePaymentInput,
     @Ctx() ctx: CustomContext
-  ): Promise<StripeLib.PaymentIntent> {
+  ): Promise<Boolean> {
     const user = ctx.getUser();
     if (!user) {
-      throw new Error('User must be logged in to create a PaymentIntent');
+      throw new Error('User must be logged in to create a Payment');
     }
 
     const payee = await User.findOne({ where: { id: data.payeeUserId } });
@@ -27,14 +23,19 @@ export class PaymentResolver {
       throw new Error('Could not find payee user');
     }
 
-    const paymentIntent = await Stripe.createPaymentIntent({
+    const paymentIntent = await StripeConnect.createPaymentIntentAsPayee({
       amountInCents: data.amountInCents,
       user,
       payee,
     });
 
     if (paymentIntent) {
-      return paymentIntent;
+      // Detach payment method from user, if applicable
+
+      // Save Payment to DB
+
+      // Return the Payment to client
+      return true;
     } else {
       throw new Error(
         'Error creating PaymentIntent - did not return client secret'
@@ -44,7 +45,6 @@ export class PaymentResolver {
 
   @Mutation((returns) => SetupIntent)
   async createSetupIntent(
-    @Arg('data') data: CreateSetupIntentInput,
     @Ctx() ctx: CustomContext
   ): Promise<StripeLib.SetupIntent> {
     const user = ctx.getUser();
@@ -52,12 +52,7 @@ export class PaymentResolver {
       throw new Error('User must be logged in to create a SetupIntent');
     }
 
-    const payee = await User.findOne({ where: { id: data.payeeUserId } });
-    if (!payee) {
-      throw new Error('Could not find payee user');
-    }
-
-    const setupIntent = await Stripe.createSetupIntent({ user, payee });
+    const setupIntent = await Stripe.createSetupIntentForUser(user);
 
     if (setupIntent) {
       return setupIntent;

@@ -11,6 +11,10 @@ import MoneyInputField from './MoneyInputField';
 import AuthForm from './AuthForm';
 import PayWithCard from './PayWithCard';
 
+const stripePromise = loadStripe(
+  process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || ''
+);
+
 const useStyles = makeStyles((theme) => ({
   title: {
     marginBottom: theme.spacing(1),
@@ -47,14 +51,6 @@ const PaymentForm = (props: PaymentFormProps) => {
     prefilledPaymentAmount,
   } = props;
   const classes = useStyles();
-
-  const stripePromise = useMemo(
-    () =>
-      loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || '', {
-        stripeAccount: payeeStripeAccountId,
-      }),
-    [payeeStripeAccountId]
-  );
 
   const [currentUser, currentUserQuery] = useCurrentUser();
   const [paymentAmount, setPaymentAmount] = useState(prefilledPaymentAmount);

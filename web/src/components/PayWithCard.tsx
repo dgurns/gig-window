@@ -17,19 +17,9 @@ interface PayWithCardProps {
   onSuccess: () => void;
 }
 
-const CREATE_PAYMENT_INTENT = gql`
-  mutation CreatePaymentIntent($amountInCents: Int!, $payeeUserId: Int!) {
-    createPaymentIntent(
-      data: { amountInCents: $amountInCents, payeeUserId: $payeeUserId }
-    ) {
-      client_secret
-    }
-  }
-`;
-
 const CREATE_SETUP_INTENT = gql`
-  mutation CreateSetupIntent($payeeUserId: Int!) {
-    createSetupIntent(data: { payeeUserId: $payeeUserId }) {
+  mutation CreateSetupIntent {
+    createSetupIntent {
       client_secret
     }
   }
@@ -94,15 +84,6 @@ const PayWithCard = (props: PayWithCardProps) => {
   const [paymentIsSubmitting, setPaymentIsSubmitting] = useState(false);
   const [paymentError, setPaymentError] = useState('');
 
-  const [createPaymentIntent, paymentIntent] = useMutation(
-    CREATE_PAYMENT_INTENT,
-    {
-      errorPolicy: 'all',
-    }
-  );
-  const paymentIntentClientSecret =
-    paymentIntent.data?.createPaymentIntent.client_secret;
-
   const [createSetupIntent, setupIntent] = useMutation(CREATE_SETUP_INTENT, {
     errorPolicy: 'all',
   });
@@ -110,37 +91,10 @@ const PayWithCard = (props: PayWithCardProps) => {
     setupIntent.data?.createSetupIntent.client_secret;
 
   useEffect(() => {
-    createSetupIntent({ variables: { payeeUserId } });
+    createSetupIntent();
+  }, [createSetupIntent]);
 
-    if (paymentAmountInCents) {
-      createPaymentIntent({
-        variables: {
-          amountInCents: paymentAmountInCents,
-          payeeUserId,
-        },
-      });
-    }
-  }, [
-    paymentAmountInCents,
-    payeeUserId,
-    createPaymentIntent,
-    createSetupIntent,
-  ]);
-
-  const saveCardToCustomer = async (
-    card: Stripe.StripeCardElement
-  ): Promise<void> => {
-    if (!stripe) return;
-
-    const result = await stripe.confirmCardSetup(setupIntentClientSecret, {
-      payment_method: {
-        card,
-      },
-    });
-    console.log(result);
-  };
-
-  const onSubmitPayment = async (event: React.MouseEvent<HTMLElement>) => {
+  const onSubmit = async (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
     if (!stripe || !elements) return;
 
@@ -150,16 +104,11 @@ const PayWithCard = (props: PayWithCardProps) => {
     setPaymentIsSubmitting(true);
     setPaymentError('');
 
-    if (shouldSaveCard) {
-      await saveCardToCustomer(card);
-    }
-
-    const result = await stripe.confirmCardPayment(paymentIntentClientSecret, {
+    const result = await stripe.confirmCardSetup(setupIntentClientSecret, {
       payment_method: {
         card,
       },
     });
-    setPaymentIsSubmitting(false);
 
     if (result.error) {
       setPaymentError(
@@ -167,13 +116,17 @@ const PayWithCard = (props: PayWithCardProps) => {
           'Error confirming payment. Please check your card details'
       );
     } else {
-      if (result.paymentIntent?.status === 'succeeded') {
-        onSuccess();
+      if (result.setupIntent?.status === 'succeeded') {
+        console.log('setupIntent succeeded', setupIntent);
+        // Create payment on server
+        // Call onSuccess
       }
     }
+
+    setPaymentIsSubmitting(false);
   };
 
-  if (paymentIntent.error) {
+  if (setupIntent.error) {
     return (
       <Typography color="secondary">
         Error initializing payment form. Please reload.
@@ -182,22 +135,16 @@ const PayWithCard = (props: PayWithCardProps) => {
   }
 
   const shouldDisableButton =
-    paymentIntent.loading ||
     setupIntent.loading ||
     !cardElementIsReady ||
     !paymentAmountInCents ||
-    !paymentIntentClientSecret ||
     !setupIntentClientSecret ||
     paymentIsSubmitting;
 
   let buttonLabel;
   if (!paymentAmountInCents) {
     buttonLabel = 'No amount entered';
-  } else if (
-    paymentIntent.loading ||
-    setupIntent.loading ||
-    !cardElementIsReady
-  ) {
+  } else if (setupIntent.loading || !cardElementIsReady) {
     buttonLabel = 'Loading...';
   } else if (paymentIsSubmitting) {
     buttonLabel = 'Submitting...';
@@ -248,7 +195,7 @@ const PayWithCard = (props: PayWithCardProps) => {
         variant="contained"
         color="primary"
         size="medium"
-        onClick={onSubmitPayment}
+        onClick={onSubmit}
         disabled={shouldDisableButton}
       >
         {buttonLabel}
