@@ -8,7 +8,7 @@
 # NOTE: You'll need to replace the ngrok remote TCP address
 # with one from your own ngrok account or a use a randomly
 # generated address from the free version. Don't forget to
-# update RTMP env variables in `web` and `api`
+# also update env variables in `web` and `api`
 
 concurrently \
   "cd web && yarn start" \
