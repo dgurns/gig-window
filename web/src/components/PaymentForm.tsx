@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import debounce from 'lodash/debounce';
+import { useQuery, gql } from '@apollo/client';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { Grid, Typography, Divider, CircularProgress } from '@material-ui/core';
@@ -10,10 +11,20 @@ import useCurrentUser from 'hooks/useCurrentUser';
 import MoneyInputField from './MoneyInputField';
 import AuthForm from './AuthForm';
 import PayWithCard from './PayWithCard';
+import PayWithSavedCard from './PayWithSavedCard';
 
 const stripePromise = loadStripe(
   process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || ''
 );
+
+const GET_SAVED_PAYMENT_METHOD = gql`
+  query {
+    getLatestPaymentMethodForUser {
+      id
+      card
+    }
+  }
+`;
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -49,6 +60,12 @@ const PaymentForm = (props: PaymentFormProps) => {
   const [currentUser, currentUserQuery] = useCurrentUser();
   const [paymentAmount, setPaymentAmount] = useState(prefilledPaymentAmount);
 
+  const savedPaymentMethodQuery = useQuery(GET_SAVED_PAYMENT_METHOD, {
+    skip: !currentUser,
+  });
+  const savedPaymentMethod =
+    savedPaymentMethodQuery.data?.getLatestPaymentMethodForUser;
+
   const onAuthSuccess = () => {
     currentUserQuery.refetch();
   };
@@ -62,7 +79,7 @@ const PaymentForm = (props: PaymentFormProps) => {
   }, 400);
 
   const renderAuthOrPaymentForm = () => {
-    if (currentUserQuery.loading) {
+    if (currentUserQuery.loading || savedPaymentMethodQuery.loading) {
       return <CircularProgress color="secondary" className={classes.loading} />;
     } else if (!currentUser) {
       return (
@@ -76,12 +93,19 @@ const PaymentForm = (props: PaymentFormProps) => {
       return null;
     } else {
       const paymentAmountInCents = parseInt(paymentAmount) * 100;
-      return (
+      return savedPaymentMethod.card ? (
+        <PayWithSavedCard
+          savedCard={savedPaymentMethod.card}
+          paymentAmountInCents={paymentAmountInCents}
+          payeeUserId={payeeUserId}
+          onSuccess={() => console.log('Pay with saved card succeeeded')}
+        />
+      ) : (
         <Elements stripe={stripePromise}>
           <PayWithCard
             paymentAmountInCents={paymentAmountInCents}
             payeeUserId={payeeUserId}
-            onSuccess={() => console.log('Payment succeeeded')}
+            onSuccess={() => console.log('Pay with card succeeeded')}
           />
         </Elements>
       );

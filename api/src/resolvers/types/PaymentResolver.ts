@@ -9,8 +9,8 @@ export class CreatePaymentInput {
   @Field((type) => Int)
   payeeUserId: number;
 
-  @Field((type) => Boolean)
-  shouldDetachPaymentMethodAfter: boolean;
+  @Field((type) => Boolean, { nullable: true, defaultValue: false })
+  shouldDetachPaymentMethodAfter?: boolean;
 }
 
 @ObjectType()
