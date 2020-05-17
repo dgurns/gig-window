@@ -20,18 +20,24 @@ export class SetupIntent {
 }
 
 @ObjectType()
+class Card {
+  @Field((type) => String)
+  brand: string;
+
+  @Field((type) => String)
+  last4: string;
+}
+
+@ObjectType()
 export class PaymentMethod {
   @Field((type) => String)
   id: string;
 
-  @Field((type) => Object, { nullable: true })
+  @Field((type) => Card, { nullable: true })
   card?: Stripe.PaymentMethod.Card;
 
   @Field((type) => Int)
   created: number;
-
-  @Field((type) => Object)
-  metadata: Stripe.Metadata;
 
   @Field((type) => String)
   type: Stripe.PaymentMethod.Type;

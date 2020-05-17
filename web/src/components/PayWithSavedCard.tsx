@@ -8,13 +8,17 @@ import { makeStyles } from '@material-ui/core/styles';
 import TextButton from './TextButton';
 
 interface PayWithSavedCardProps {
-  savedCard: {
-    brand: string;
-    last4: string;
+  paymentMethod: {
+    id: string;
+    card: {
+      brand: string;
+      last4: string;
+    };
   };
   payeeUserId: number;
   paymentAmountInCents?: number;
   onSuccess: () => void;
+  onDeleteCard: () => void;
 }
 
 const CREATE_PAYMENT = gql`
@@ -25,7 +29,13 @@ const CREATE_PAYMENT = gql`
   }
 `;
 
-const DETACH_CARD = gql``;
+const DELETE_CARD = gql`
+  mutation DeleteCard($paymentMethodId: String!) {
+    detachPaymentMethodFromUser(paymentMethodId: $paymentMethodId) {
+      id
+    }
+  }
+`;
 
 const useStyles = makeStyles(({ spacing }) => ({
   savedCardWrapper: {
@@ -38,31 +48,45 @@ const useStyles = makeStyles(({ spacing }) => ({
 }));
 
 const PayWithSavedCard = (props: PayWithSavedCardProps) => {
-  const { savedCard, payeeUserId, paymentAmountInCents, onSuccess } = props;
+  const {
+    paymentMethod,
+    payeeUserId,
+    paymentAmountInCents,
+    onSuccess,
+    onDeleteCard,
+  } = props;
 
   const classes = useStyles();
 
-  const [paymentIsSubmitting, setPaymentIsSubmitting] = useState(false);
   const [paymentError, setPaymentError] = useState('');
+  const [deleteCardError, setDeleteCardError] = useState('');
 
-  const [createPayment, payment] = useMutation(CREATE_PAYMENT, {
+  const [createPayment, createPaymentMutation] = useMutation(CREATE_PAYMENT, {
+    errorPolicy: 'all',
+  });
+  const [deleteCard, deleteCardMutation] = useMutation(DELETE_CARD, {
     errorPolicy: 'all',
   });
 
   useEffect(() => {
-    if (payment.data?.createPayment) {
+    if (createPaymentMutation.data?.createPayment) {
       onSuccess();
-    } else if (payment.error) {
-      setPaymentIsSubmitting(false);
+    } else if (createPaymentMutation.error) {
       setPaymentError('Could not process payment. Please try again.');
     }
-  }, [payment.data, payment.error, onSuccess]);
+  }, [createPaymentMutation.data, createPaymentMutation.error, onSuccess]);
 
-  const onSubmit = async (event: React.MouseEvent<HTMLElement>) => {
+  useEffect(() => {
+    if (deleteCardMutation.data?.detachPaymentMethodFromUser) {
+      onDeleteCard();
+    } else if (deleteCardMutation.error) {
+      setDeleteCardError('Error deleting card. Please try again.');
+    }
+  }, [deleteCardMutation.data, deleteCardMutation.error, onDeleteCard]);
+
+  const onSubmitPayment = async (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
-    setPaymentIsSubmitting(true);
     setPaymentError('');
-
     createPayment({
       variables: {
         amountInCents: paymentAmountInCents,
@@ -71,16 +95,23 @@ const PayWithSavedCard = (props: PayWithSavedCardProps) => {
     });
   };
 
-  const shouldDisableButton = !paymentAmountInCents || paymentIsSubmitting;
+  const shouldDisableButton =
+    !paymentAmountInCents ||
+    createPaymentMutation.loading ||
+    deleteCardMutation.loading;
 
   let buttonLabel;
   if (!paymentAmountInCents) {
     buttonLabel = 'No amount entered';
-  } else if (paymentIsSubmitting) {
+  } else if (createPaymentMutation.loading) {
     buttonLabel = 'Submitting...';
+  } else if (deleteCardMutation.loading) {
+    buttonLabel = 'Deleting card...';
   } else if (paymentAmountInCents) {
     buttonLabel = `Pay $${paymentAmountInCents / 100}`;
   }
+
+  const { id, card } = paymentMethod;
 
   return (
     <Grid container direction="column">
@@ -92,9 +123,14 @@ const PayWithSavedCard = (props: PayWithSavedCardProps) => {
         className={classes.savedCardWrapper}
       >
         <Typography>
-          Use {savedCard.brand} ending in {savedCard.last4}
+          {card.brand.toUpperCase()} ending in {card.last4}
         </Typography>
-        <TextButton>delete</TextButton>
+        <TextButton
+          onClick={() => deleteCard({ variables: { paymentMethodId: id } })}
+          disabled={deleteCardMutation.loading}
+        >
+          delete
+        </TextButton>
       </Grid>
 
       {paymentError && (
@@ -102,12 +138,17 @@ const PayWithSavedCard = (props: PayWithSavedCardProps) => {
           {paymentError}
         </Typography>
       )}
+      {deleteCardError && (
+        <Typography variant="body2" color="error" className={classes.error}>
+          {deleteCardError}
+        </Typography>
+      )}
 
       <Button
         variant="contained"
         color="primary"
         size="medium"
-        onClick={onSubmit}
+        onClick={onSubmitPayment}
         disabled={shouldDisableButton}
       >
         {buttonLabel}

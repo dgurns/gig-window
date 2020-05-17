@@ -21,7 +21,10 @@ const GET_SAVED_PAYMENT_METHOD = gql`
   query {
     getLatestPaymentMethodForUser {
       id
-      card
+      card {
+        brand
+        last4
+      }
     }
   }
 `;
@@ -93,19 +96,23 @@ const PaymentForm = (props: PaymentFormProps) => {
       return null;
     } else {
       const paymentAmountInCents = parseInt(paymentAmount) * 100;
-      return savedPaymentMethod.card ? (
+      return savedPaymentMethod?.card ? (
         <PayWithSavedCard
-          savedCard={savedPaymentMethod.card}
+          paymentMethod={savedPaymentMethod}
           paymentAmountInCents={paymentAmountInCents}
           payeeUserId={payeeUserId}
           onSuccess={() => console.log('Pay with saved card succeeeded')}
+          onDeleteCard={savedPaymentMethodQuery.refetch}
         />
       ) : (
         <Elements stripe={stripePromise}>
           <PayWithCard
             paymentAmountInCents={paymentAmountInCents}
             payeeUserId={payeeUserId}
-            onSuccess={() => console.log('Pay with card succeeeded')}
+            onSuccess={() => {
+              console.log('Pay with card succeeeded');
+              savedPaymentMethodQuery.refetch();
+            }}
           />
         </Elements>
       );

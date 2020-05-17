@@ -12,7 +12,7 @@ import StripeConnect from 'services/stripe/Connect';
 
 @Resolver()
 export class PaymentResolver {
-  @Query(() => PaymentMethod)
+  @Query(() => PaymentMethod, { nullable: true })
   getLatestPaymentMethodForUser(@Ctx() ctx: CustomContext) {
     const user = ctx.getUser();
     if (!user) throw new Error('User must be logged in');
