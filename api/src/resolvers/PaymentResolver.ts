@@ -84,19 +84,15 @@ export class PaymentResolver {
   }
 
   @Mutation((returns) => PaymentMethod)
-  async detachLatestPaymentMethodFromUser(@Ctx() ctx: CustomContext) {
+  async detachPaymentMethodFromUser(
+    @Arg('paymentMethodId') paymentMethodId: string,
+    @Ctx() ctx: CustomContext
+  ) {
     const user = ctx.getUser();
     if (!user) {
       throw new Error('User must be logged in to detach a payment method');
     }
 
-    const latestPaymentMethod = await Stripe.getLatestPaymentMethodForUser(
-      user
-    );
-    if (latestPaymentMethod?.id) {
-      return Stripe.detachPaymentMethod(latestPaymentMethod.id);
-    } else {
-      throw new Error('Could not find the latest payment method for this user');
-    }
+    return Stripe.detachPaymentMethod(paymentMethodId);
   }
 }
