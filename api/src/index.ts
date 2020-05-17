@@ -21,6 +21,7 @@ import { UserResolver } from 'resolvers/UserResolver';
 import { ChatResolver } from 'resolvers/ChatResolver';
 import { PaymentResolver } from 'resolvers/PaymentResolver';
 import { AdminResolver } from 'resolvers/AdminResolver';
+import { ShowResolver } from 'resolvers/ShowResolver';
 
 const { RTMP_ORIGIN, UI_ORIGIN, SERVER_PORT, COOKIE_SESSION_KEY } = process.env;
 
@@ -66,7 +67,13 @@ async function start() {
     app.use(restRouter);
 
     const schema = await buildSchema({
-      resolvers: [UserResolver, ChatResolver, PaymentResolver, AdminResolver],
+      resolvers: [
+        UserResolver,
+        ChatResolver,
+        PaymentResolver,
+        ShowResolver,
+        AdminResolver,
+      ],
       authChecker,
       dateScalarMode: 'isoDate',
       validate: false,
