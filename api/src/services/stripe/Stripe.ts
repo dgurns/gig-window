@@ -45,9 +45,9 @@ const createSetupIntentForUser = async (
   return setupIntent;
 };
 
-const getLatestPaymentMethodIdForUser = async (
+const getLatestPaymentMethodForUser = async (
   user: User
-): Promise<string | undefined> => {
+): Promise<Stripe.PaymentMethod | undefined> => {
   if (!user) throw new Error('No user passed in');
   if (!user.stripeCustomerId) {
     throw new Error('User does not have an associated Stripe Customer');
@@ -60,7 +60,7 @@ const getLatestPaymentMethodIdForUser = async (
   if (!paymentMethods.data) {
     throw new Error('No payment methods retrieved for customer');
   }
-  return paymentMethods.data[0]?.id;
+  return paymentMethods.data[0];
 };
 
 const detachPaymentMethod = (
@@ -74,6 +74,6 @@ const detachPaymentMethod = (
 export default {
   maybeCreateStripeCustomerForUser,
   createSetupIntentForUser,
-  getLatestPaymentMethodIdForUser,
+  getLatestPaymentMethodForUser,
   detachPaymentMethod,
 };

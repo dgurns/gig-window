@@ -1,13 +1,25 @@
-import { Resolver, Mutation, Arg, Ctx } from 'type-graphql';
+import { Query, Resolver, Mutation, Arg, Ctx } from 'type-graphql';
 import StripeLib from 'stripe';
 import { CustomContext } from 'authChecker';
-import { CreatePaymentInput, SetupIntent } from './types/PaymentResolver';
+import {
+  CreatePaymentInput,
+  SetupIntent,
+  PaymentMethod,
+} from './types/PaymentResolver';
 import { User } from 'entities/User';
 import Stripe from 'services/stripe/Stripe';
 import StripeConnect from 'services/stripe/Connect';
 
 @Resolver()
 export class PaymentResolver {
+  @Query(() => PaymentMethod)
+  getLatestPaymentMethodForUser(@Ctx() ctx: CustomContext) {
+    const user = ctx.getUser();
+    if (!user) throw new Error('User must be logged in');
+
+    return Stripe.getLatestPaymentMethodForUser(user);
+  }
+
   @Mutation((returns) => Boolean)
   async createPayment(
     @Arg('data') data: CreatePaymentInput,
@@ -33,11 +45,11 @@ export class PaymentResolver {
     } catch {}
 
     if (data.shouldDetachPaymentMethodAfter) {
-      const latestPaymentMethodId = await Stripe.getLatestPaymentMethodIdForUser(
+      const latestPaymentMethod = await Stripe.getLatestPaymentMethodForUser(
         user
       );
-      if (latestPaymentMethodId) {
-        await Stripe.detachPaymentMethod(latestPaymentMethodId);
+      if (latestPaymentMethod?.id) {
+        await Stripe.detachPaymentMethod(latestPaymentMethod.id);
       }
     }
 
@@ -68,6 +80,23 @@ export class PaymentResolver {
       throw new Error(
         'Error creating SetupIntent - did not return client secret'
       );
+    }
+  }
+
+  @Mutation((returns) => PaymentMethod)
+  async detachLatestPaymentMethodFromUser(@Ctx() ctx: CustomContext) {
+    const user = ctx.getUser();
+    if (!user) {
+      throw new Error('User must be logged in to detach a payment method');
+    }
+
+    const latestPaymentMethod = await Stripe.getLatestPaymentMethodForUser(
+      user
+    );
+    if (latestPaymentMethod?.id) {
+      return Stripe.detachPaymentMethod(latestPaymentMethod.id);
+    } else {
+      throw new Error('Could not find the latest payment method for this user');
     }
   }
 }
