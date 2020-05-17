@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import classnames from 'classnames';
 import { Grid, Link, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
@@ -16,8 +17,7 @@ const useStyles = makeStyles((theme) => ({
     padding: '0 10px',
   },
   logo: {
-    height: 50,
-    marginTop: 3,
+    marginLeft: 6,
   },
   button: {
     color: theme.palette.common.white,
@@ -58,7 +58,11 @@ const Header = () => {
         alignItems="center"
         justify="space-between"
       >
-        <Link to="/" component={RouterLink} className={classes.userLink}>
+        <Link
+          to="/"
+          component={RouterLink}
+          className={classnames(classes.logo, classes.userLink)}
+        >
           <Typography>Home</Typography>
         </Link>
         <Grid item>

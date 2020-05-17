@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { useMutation, gql } from '@apollo/client';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
@@ -27,21 +27,17 @@ const useStyles = makeStyles((theme) => ({
       margin: `${theme.spacing(1)}px ${theme.spacing(3)}px`,
     },
   },
-  incomingPaymentsInfo: {
+  linkStripeAccount: {
     marginBottom: 2,
     marginTop: 6,
-  },
-  monetizationIcon: {
-    marginRight: theme.spacing(1),
-    [theme.breakpoints.down('sm')]: {
-      display: 'none',
-    },
+    textAlign: 'center',
   },
 }));
 
 const DashboardSubheader = () => {
   const classes = useStyles();
   const [currentUser, currentUserQuery] = useCurrentUser();
+  const { pathname } = useLocation();
 
   const [logOut, { data }] = useMutation(LOG_OUT, {
     errorPolicy: 'all',
@@ -85,7 +81,11 @@ const DashboardSubheader = () => {
           <Link to="/" component={RouterLink} className={classes.subheaderLink}>
             Edit profile
           </Link>
-          <Link to="/" component={RouterLink} className={classes.subheaderLink}>
+          <Link
+            to={`${pathname}/edit-shows`}
+            component={RouterLink}
+            className={classes.subheaderLink}
+          >
             Edit shows
           </Link>
           <Link to="/" component={RouterLink} className={classes.subheaderLink}>
@@ -106,7 +106,7 @@ const DashboardSubheader = () => {
             direction="row"
             justify="center"
             alignItems="center"
-            className={classes.incomingPaymentsInfo}
+            className={classes.linkStripeAccount}
           >
             <Typography color="secondary">
               In order to play a public show and accept payments, you'll need to{' '}

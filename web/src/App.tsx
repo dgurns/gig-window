@@ -7,6 +7,7 @@ import Header from 'components/Header';
 import Home from 'screens/Home';
 import Watch from 'screens/Watch';
 import Dashboard from 'screens/Dashboard';
+import EditShows from 'screens/EditShows';
 import LinkStripeAccount from 'screens/LinkStripeAccount';
 
 function App() {
@@ -20,6 +21,8 @@ function App() {
     }
   }, []);
 
+  const currentUserUrlSlug = currentUser?.urlSlug;
+
   return (
     <Router>
       <Header />
@@ -27,17 +30,25 @@ function App() {
         <Route exact path="/">
           <Home />
         </Route>
+
         <Route exact path="/oauth/stripe-connect">
           <LinkStripeAccount />
         </Route>
-        <Route
-          path="/:userUrlSlug"
-          render={({ match: { params } }) => {
-            const isCurrentUserDashboard =
-              currentUser?.urlSlug === params.userUrlSlug;
-            return isCurrentUserDashboard ? <Dashboard /> : <Watch />;
-          }}
-        ></Route>
+
+        <Route path={`/${currentUserUrlSlug}`}>
+          <Switch>
+            <Route exact path="/:currentUserUrlSlug/edit-shows">
+              <EditShows />
+            </Route>
+            <Route>
+              <Dashboard />
+            </Route>
+          </Switch>
+        </Route>
+
+        <Route path="/:userUrlSlug">
+          <Watch />
+        </Route>
       </Switch>
     </Router>
   );
