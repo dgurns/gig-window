@@ -74,8 +74,8 @@ const PaymentForm = (props: PaymentFormProps) => {
   };
 
   const onChangePaymentAmount = debounce((value: string) => {
-    if (value === '') {
-      return setPaymentAmount(value);
+    if (value === '' || value === '0') {
+      return setPaymentAmount('');
     } else if (typeof parseInt(value) === 'number') {
       return setPaymentAmount(`${parseInt(value)}`);
     }

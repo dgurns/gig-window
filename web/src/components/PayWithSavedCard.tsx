@@ -72,7 +72,9 @@ const PayWithSavedCard = (props: PayWithSavedCardProps) => {
     if (createPaymentMutation.data?.createPayment) {
       onSuccess();
     } else if (createPaymentMutation.error) {
-      setPaymentError('Could not process payment. Please try again.');
+      setPaymentError(
+        'Could not process payment. Please try again or use a different card.'
+      );
     }
   }, [createPaymentMutation.data, createPaymentMutation.error, onSuccess]);
 

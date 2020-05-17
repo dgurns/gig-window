@@ -92,8 +92,8 @@ const Watch = () => {
   const [tipAmount, setTipAmount] = useState('5');
 
   const onChangeTipAmount = (value: string) => {
-    if (value === '') {
-      return setTipAmount(value);
+    if (value === '' || value === '0') {
+      return setTipAmount('');
     } else if (typeof parseInt(value) === 'number') {
       return setTipAmount(`${parseInt(value)}`);
     }
