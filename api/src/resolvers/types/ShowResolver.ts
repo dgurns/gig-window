@@ -1,8 +1,7 @@
 import { ArgsType, InputType, Field, Int } from 'type-graphql';
-import { User } from 'entities/User';
 
 @ArgsType()
-export class GetShowsByUserArgs {
+export class GetShowsForUserArgs {
   @Field((type) => Int)
   userId: number;
 }

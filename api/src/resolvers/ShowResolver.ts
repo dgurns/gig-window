@@ -2,7 +2,7 @@ import { Resolver, Query, Mutation, Args, Arg, Ctx, Int } from 'type-graphql';
 import { CustomContext } from 'authChecker';
 import { Show } from 'entities/Show';
 import {
-  GetShowsByUserArgs,
+  GetShowsForUserArgs,
   CreateShowInput,
   UpdateShowInput,
 } from './types/ShowResolver';
@@ -10,7 +10,7 @@ import {
 @Resolver()
 export class ShowResolver {
   @Query(() => [Show])
-  getShowsByUser(@Args() { userId }: GetShowsByUserArgs) {
+  getShowsForUser(@Args() { userId }: GetShowsForUserArgs) {
     return Show.find({
       where: { userId },
       relations: ['user'],
@@ -26,7 +26,7 @@ export class ShowResolver {
     if (!user) throw new Error('User must be logged in to create a show');
 
     const show = Show.create({
-      userId: 1, //user.id,
+      userId: user.id,
       title: data.title,
       showtimeInUtc: data.showtimeInUtc,
     });

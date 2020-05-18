@@ -1,8 +1,32 @@
 import React from 'react';
-import { Container, Typography } from '@material-ui/core';
+import { format, parse, toDate } from 'date-fns';
+import { useQuery, gql } from '@apollo/client';
+import Grid from '@material-ui/core/Grid';
+import Container from '@material-ui/core/Container';
+import Typography from '@material-ui/core/Typography';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
 
+import useCurrentUser from 'hooks/useCurrentUser';
+
 import NavSubheader from 'components/NavSubheader';
+import CreateShowForm from 'components/CreateShowForm';
+
+interface Show {
+  id: number;
+  title: string;
+  showtimeInUtc: string;
+}
+
+const GET_SHOWS = gql`
+  query GetShows($userId: Int!) {
+    getShowsForUser(userId: $userId) {
+      id
+      title
+      showtimeInUtc
+    }
+  }
+`;
 
 const useStyles = makeStyles(({ spacing }) => ({
   pageContent: {
@@ -10,27 +34,58 @@ const useStyles = makeStyles(({ spacing }) => ({
     paddingTop: spacing(4),
     width: '100%',
   },
-  sectionHeading: {
-    marginBottom: 15,
+  section: {
+    marginBottom: spacing(4),
   },
-  showCards: {
-    marginBottom: 35,
+  sectionHeading: {
+    marginBottom: spacing(2),
   },
 }));
 
 const EditShows = () => {
   const classes = useStyles();
+  const [currentUser] = useCurrentUser();
+
+  const { loading, data, error, refetch } = useQuery(GET_SHOWS, {
+    variables: { userId: currentUser?.id },
+    skip: !currentUser,
+  });
+  const shows = data?.getShowsForUser || [];
+
+  const renderShows = () => {
+    if (loading) return <CircularProgress color="secondary" />;
+    if (error)
+      return <Typography color="error">Error fetching shows</Typography>;
+
+    return shows.map(({ id, title, showtimeInUtc }: Show) => (
+      <Grid container direction="column" key={id}>
+        <Typography>{title}</Typography>
+        <Typography color="secondary">
+          {format(
+            new Date(new Date(showtimeInUtc).toString()),
+            'MMMMM d at h a..aaa'
+          )}
+        </Typography>
+      </Grid>
+    ));
+  };
 
   return (
     <>
       <NavSubheader title="Edit shows" />
       <Container maxWidth="md" disableGutters className={classes.pageContent}>
-        <Typography variant="h6" className={classes.sectionHeading}>
-          Create a show
-        </Typography>
-        <Typography variant="h6" className={classes.sectionHeading}>
-          Your upcoming shows
-        </Typography>
+        <Grid className={classes.section}>
+          <Typography variant="h6" className={classes.sectionHeading}>
+            Create a show
+          </Typography>
+          <CreateShowForm onSuccess={refetch} />
+        </Grid>
+        <Grid className={classes.section}>
+          <Typography variant="h6" className={classes.sectionHeading}>
+            Your upcoming shows
+          </Typography>
+          {renderShows()}
+        </Grid>
       </Container>
     </>
   );
