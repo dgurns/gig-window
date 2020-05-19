@@ -1,5 +1,5 @@
 import React from 'react';
-import { format, parse, toDate } from 'date-fns';
+import { format } from 'date-fns';
 import { useQuery, gql } from '@apollo/client';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
@@ -8,6 +8,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
 
 import useCurrentUser from 'hooks/useCurrentUser';
+import DateTime from 'services/DateTime';
 
 import NavSubheader from 'components/NavSubheader';
 import CreateShowForm from 'components/CreateShowForm';
@@ -57,17 +58,16 @@ const EditShows = () => {
     if (error)
       return <Typography color="error">Error fetching shows</Typography>;
 
-    return shows.map(({ id, title, showtimeInUtc }: Show) => (
-      <Grid container direction="column" key={id}>
-        <Typography>{title}</Typography>
-        <Typography color="secondary">
-          {format(
-            new Date(new Date(showtimeInUtc).toString()),
-            'MMMMM d at h a..aaa'
-          )}
-        </Typography>
-      </Grid>
-    ));
+    return shows.map(({ id, title, showtimeInUtc }: Show) => {
+      return (
+        <Grid container direction="column" key={id}>
+          <Typography>{title}</Typography>
+          <Typography color="secondary">
+            {DateTime.formatUserReadableShowtime(showtimeInUtc)}
+          </Typography>
+        </Grid>
+      );
+    });
   };
 
   return (

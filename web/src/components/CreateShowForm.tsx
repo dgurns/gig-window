@@ -6,6 +6,8 @@ import { Grid, Typography, TextField, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import 'react-datepicker/dist/react-datepicker.css';
 
+import DateTime from 'services/DateTime';
+
 interface CreateShowFormProps {
   onSuccess?: () => void;
 }
@@ -40,13 +42,13 @@ const CreateShowForm = (props: CreateShowFormProps) => {
   });
 
   const [title, setTitle] = useState('');
-  const [showtimeInUtc, setShowtimeInUtc] = useState('');
+  const [showtime, setShowtime] = useState(DateTime.createDefaultShowtime());
   const [localValidationError, setLocalValidationError] = useState('');
 
   useEffect(() => {
     if (data?.createShow.id) {
       setTitle('');
-      setShowtimeInUtc('');
+      setShowtime(DateTime.createDefaultShowtime());
 
       if (onSuccess) {
         onSuccess();
@@ -56,12 +58,12 @@ const CreateShowForm = (props: CreateShowFormProps) => {
 
   const onCreateClicked = () => {
     setLocalValidationError('');
-    if (!title || !showtimeInUtc) {
+    if (!title || !showtime) {
       return setLocalValidationError('Please fill out all the fields');
-    } else if (new Date().toISOString() > showtimeInUtc) {
+    } else if (new Date() > showtime) {
       return setLocalValidationError('Showtime must be in the future');
     }
-    createShow({ variables: { title, showtimeInUtc } });
+    createShow({ variables: { title, showtimeInUtc: showtime.toISOString() } });
   };
 
   return (
@@ -74,11 +76,11 @@ const CreateShowForm = (props: CreateShowFormProps) => {
         className={classes.formField}
       />
       <DatePicker
-        selected={showtimeInUtc ? new Date(showtimeInUtc) : null}
-        onChange={(date) =>
-          date ? setShowtimeInUtc(new Date(date).toISOString()) : null
-        }
+        selected={showtime}
+        onChange={(date) => (date ? setShowtime(date) : null)}
+        minDate={new Date()}
         showTimeSelect
+        showDisabledMonthNavigation
         timeFormat="HH:mm"
         timeIntervals={15}
         timeCaption="time"
