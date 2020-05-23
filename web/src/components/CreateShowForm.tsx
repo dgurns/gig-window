@@ -42,7 +42,7 @@ const CreateShowForm = (props: CreateShowFormProps) => {
   });
 
   const [title, setTitle] = useState('');
-  const [showtime, setShowtime] = useState(DateTime.createDefaultShowtime());
+  const [showtime, setShowtime] = useState<Date | null>(null);
   const [localValidationError, setLocalValidationError] = useState('');
 
   useEffect(() => {
@@ -77,7 +77,7 @@ const CreateShowForm = (props: CreateShowFormProps) => {
       />
       <DatePicker
         selected={showtime}
-        onChange={(date) => (date ? setShowtime(date) : null)}
+        onChange={(date) => setShowtime(date)}
         minDate={new Date()}
         showTimeSelect
         showDisabledMonthNavigation
