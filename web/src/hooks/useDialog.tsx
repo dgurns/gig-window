@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import Grid from '@material-ui/core/Grid';
-import DialogComponent, { DialogProps } from '@material-ui/core/Dialog';
+import DialogComponent from '@material-ui/core/Dialog';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
