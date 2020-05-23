@@ -1,6 +1,5 @@
-import React from 'react';
-import { format } from 'date-fns';
-import { useQuery, gql } from '@apollo/client';
+import React, { useEffect } from 'react';
+import { useQuery, useMutation, gql } from '@apollo/client';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
@@ -12,6 +11,7 @@ import DateTime from 'services/DateTime';
 
 import NavSubheader from 'components/NavSubheader';
 import CreateShowForm from 'components/CreateShowForm';
+import TextButton from 'components/TextButton';
 
 interface Show {
   id: number;
@@ -29,6 +29,12 @@ const GET_SHOWS = gql`
   }
 `;
 
+const DELETE_SHOW = gql`
+  mutation DeleteShow($id: Int!) {
+    deleteShow(data: { id: $id })
+  }
+`;
+
 const useStyles = makeStyles(({ spacing }) => ({
   pageContent: {
     padding: spacing(2),
@@ -41,30 +47,67 @@ const useStyles = makeStyles(({ spacing }) => ({
   sectionHeading: {
     marginBottom: spacing(2),
   },
+  showResult: {
+    marginBottom: spacing(1),
+  },
+  showResultAction: {
+    marginRight: spacing(1),
+  },
 }));
 
 const EditShows = () => {
   const classes = useStyles();
   const [currentUser] = useCurrentUser();
 
-  const { loading, data, error, refetch } = useQuery(GET_SHOWS, {
+  const getShowsQuery = useQuery(GET_SHOWS, {
     variables: { userId: currentUser?.id },
     skip: !currentUser,
   });
-  const shows = data?.getShowsForUser || [];
+  const shows = getShowsQuery.data?.getShowsForUser || [];
+  const [deleteShow, deleteShowMutation] = useMutation(DELETE_SHOW, {
+    errorPolicy: 'all',
+  });
+
+  useEffect(() => {
+    if (deleteShowMutation.data?.deleteShow) {
+      getShowsQuery.refetch();
+    }
+  }, [deleteShowMutation.data, getShowsQuery]);
+
+  const onDeleteShow = (id: number) => {
+    const confirm = window.confirm(
+      'Are you sure you want to delete this show?'
+    );
+    if (confirm) deleteShow({ variables: { id } });
+  };
 
   const renderShows = () => {
-    if (loading) return <CircularProgress color="secondary" />;
-    if (error)
+    if (getShowsQuery.loading) return <CircularProgress color="secondary" />;
+    if (getShowsQuery.error)
       return <Typography color="error">Error fetching shows</Typography>;
 
     return shows.map(({ id, title, showtimeInUtc }: Show) => {
       return (
-        <Grid container direction="column" key={id}>
+        <Grid
+          container
+          direction="column"
+          alignItems="flex-start"
+          className={classes.showResult}
+          key={id}
+        >
           <Typography>{title}</Typography>
           <Typography color="secondary">
             {DateTime.formatUserReadableShowtime(showtimeInUtc)}
           </Typography>
+          <Grid item container direction="row">
+            <TextButton className={classes.showResultAction}>Edit</TextButton>
+            <TextButton
+              onClick={() => onDeleteShow(id)}
+              disabled={deleteShowMutation.loading}
+            >
+              Delete
+            </TextButton>
+          </Grid>
         </Grid>
       );
     });
@@ -78,7 +121,7 @@ const EditShows = () => {
           <Typography variant="h6" className={classes.sectionHeading}>
             Create a show
           </Typography>
-          <CreateShowForm onSuccess={refetch} />
+          <CreateShowForm onSuccess={getShowsQuery.refetch} />
         </Grid>
         <Grid className={classes.section}>
           <Typography variant="h6" className={classes.sectionHeading}>

@@ -28,7 +28,7 @@ export class Show extends BaseEntity {
   @Column({ nullable: true, default: '' })
   title: string;
 
-  @Field(() => String)
+  @Field()
   @Column()
   showtimeInUtc: Date;
 

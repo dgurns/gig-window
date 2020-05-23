@@ -1,20 +1,30 @@
 import { Resolver, Query, Mutation, Args, Arg, Ctx, Int } from 'type-graphql';
+import { getManager } from 'typeorm';
 import { CustomContext } from 'authChecker';
 import { Show } from 'entities/Show';
 import {
   GetShowsForUserArgs,
   CreateShowInput,
   UpdateShowInput,
+  DeleteShowInput,
 } from './types/ShowResolver';
 
 @Resolver()
 export class ShowResolver {
   @Query(() => [Show])
-  getShowsForUser(@Args() { userId }: GetShowsForUserArgs) {
-    return Show.find({
-      where: { userId },
-      relations: ['user'],
-    });
+  async getShowsForUser(@Args() { userId, onlyUpcoming }: GetShowsForUserArgs) {
+    const shows = await getManager()
+      .createQueryBuilder(Show, 'show')
+      .where('show.userId = :userId', { userId })
+      .andWhere(
+        onlyUpcoming ? 'show.showtimeInUtc >= :now' : 'show.showtimeInUtc',
+        {
+          now: new Date().toISOString(),
+        }
+      )
+      .orderBy('show.showtimeInUtc', 'ASC')
+      .getMany();
+    return shows;
   }
 
   @Mutation(() => Show)
@@ -54,7 +64,10 @@ export class ShowResolver {
   }
 
   @Mutation(() => Int)
-  async deleteShow(@Arg('id') id: number, @Ctx() ctx: CustomContext) {
+  async deleteShow(
+    @Arg('data') { id }: DeleteShowInput,
+    @Ctx() ctx: CustomContext
+  ) {
     const user = ctx.getUser();
     if (!user) throw new Error('User must be logged in to delete a show');
 

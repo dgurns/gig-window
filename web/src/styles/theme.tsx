@@ -45,6 +45,7 @@ export default createMuiTheme({
       root: {
         borderRadius: 7,
         fontSize: '1rem',
+        minWidth: 0,
         textTransform: 'none',
       },
       text: {
