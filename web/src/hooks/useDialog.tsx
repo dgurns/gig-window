@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import Grid from '@material-ui/core/Grid';
-import DialogComponent from '@material-ui/core/Dialog';
+import DialogComponent, { DialogProps } from '@material-ui/core/Dialog';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
@@ -12,6 +12,9 @@ const useStyles = makeStyles((theme) => ({
       minWidth: 0,
       width: '100%',
     },
+  },
+  dialogPaper: {
+    overflow: 'visible',
   },
 }));
 
@@ -27,6 +30,7 @@ const useDialog = (
       <DialogComponent
         open={isVisible}
         onClose={() => setIsVisible(false)}
+        classes={{ paper: classes.dialogPaper }}
         {...props}
       >
         <Grid className={classes.container}>{props.children}</Grid>
