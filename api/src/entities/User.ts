@@ -42,8 +42,8 @@ export class User extends BaseEntity {
   @Column({ default: false })
   isPublishingStream: boolean;
 
-  @Field((type) => Date, { nullable: true })
-  @Column({ nullable: true, default: null })
+  @Field({ nullable: true })
+  @Column({ type: 'timestamptz', nullable: true, default: null })
   lastPublishedStreamEndTimestamp: Date;
 
   @Field((type) => String, { nullable: true })
@@ -97,10 +97,10 @@ export class User extends BaseEntity {
   // User record meta
 
   @Field()
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
 
   @Field()
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: Date;
 }

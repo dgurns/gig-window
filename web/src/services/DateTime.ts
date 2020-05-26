@@ -12,9 +12,7 @@ const createDefaultShowtime = () => {
 
 const formatUserReadableShowtime = (showtimeInUtc?: number | string) => {
   if (!showtimeInUtc) return '';
-  const showtimeAsNumber =
-    typeof showtimeInUtc === 'string' ? parseInt(showtimeInUtc) : showtimeInUtc;
-  return format(new Date(showtimeAsNumber), "LLLL d 'at' h:mm a");
+  return format(new Date(showtimeInUtc), "LLLL d 'at' h:mm a");
 };
 
 export default {

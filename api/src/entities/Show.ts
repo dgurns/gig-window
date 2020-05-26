@@ -29,14 +29,14 @@ export class Show extends BaseEntity {
   title: string;
 
   @Field()
-  @Column()
+  @Column({ type: 'timestamptz' })
   showtimeInUtc: Date;
 
   @Field()
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
 
   @Field()
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: Date;
 }

@@ -14,7 +14,7 @@ export class CreateShowInput {
   @Field((type) => String, { nullable: true })
   title?: string;
 
-  @Field()
+  @Field((type) => String)
   showtimeInUtc: Date;
 }
 
@@ -26,7 +26,7 @@ export class UpdateShowInput {
   @Field((type) => String, { nullable: true })
   title?: string;
 
-  @Field((type) => Date, { nullable: true })
+  @Field((type) => String, { nullable: true })
   showtimeInUtc?: Date;
 }
 

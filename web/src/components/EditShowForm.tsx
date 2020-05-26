@@ -10,7 +10,7 @@ interface EditShowFormProps {
   show: {
     id: number;
     title?: string;
-    showtimeInUtc: number;
+    showtimeInUtc: string;
   };
   onSuccess?: () => void;
 }
@@ -19,7 +19,7 @@ const UPDATE_SHOW = gql`
   mutation UpdateShow(
     $id: Int!
     $updatedTitle: String
-    $updatedShowtime: Timestamp!
+    $updatedShowtime: String!
   ) {
     updateShow(
       data: { id: $id, title: $updatedTitle, showtimeInUtc: $updatedShowtime }
@@ -78,7 +78,7 @@ const EditShowForm = (props: EditShowFormProps) => {
       variables: {
         id: id,
         updatedTitle,
-        updatedShowtime: Date.parse(updatedShowtime.toISOString()),
+        updatedShowtime: updatedShowtime.toISOString(),
       },
     });
   };

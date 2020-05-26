@@ -18,7 +18,7 @@ import TextButton from 'components/TextButton';
 interface Show {
   id: number;
   title?: string;
-  showtimeInUtc: number;
+  showtimeInUtc: string;
 }
 
 const GET_SHOWS = gql`
@@ -93,6 +93,10 @@ const EditShows = () => {
     if (getShowsQuery.loading) return <CircularProgress color="secondary" />;
     if (getShowsQuery.error)
       return <Typography color="error">Error fetching shows</Typography>;
+
+    if (!shows.length) {
+      return <Typography color="secondary">No upcoming shows</Typography>;
+    }
 
     return shows.map((show: Show) => {
       const { id, title, showtimeInUtc } = show;
