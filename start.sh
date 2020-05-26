@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Start db
 # Start web
 # Start api
 # Make rtmp port publicly accessible
@@ -11,6 +12,7 @@
 # also update env variables in `web` and `api`
 
 concurrently \
+  "docker run -p 5432:5432 -e POSTGRES_PASSWORD=password postgres:alpine" \
   "cd web && yarn start" \
   "cd api && yarn start" \
   "ngrok tcp --remote-addr 1.tcp.ngrok.io:29644 1935" \

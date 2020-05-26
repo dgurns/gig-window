@@ -6,14 +6,12 @@ import { Grid, Typography, TextField, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import 'react-datepicker/dist/react-datepicker.css';
 
-import DateTime from 'services/DateTime';
-
 interface CreateShowFormProps {
   onSuccess?: () => void;
 }
 
 const CREATE_SHOW = gql`
-  mutation CreateShow($title: String, $showtimeInUtc: String!) {
+  mutation CreateShow($title: String, $showtimeInUtc: Timestamp!) {
     createShow(data: { title: $title, showtimeInUtc: $showtimeInUtc }) {
       id
     }
@@ -48,7 +46,7 @@ const CreateShowForm = (props: CreateShowFormProps) => {
   useEffect(() => {
     if (data?.createShow.id) {
       setTitle('');
-      setShowtime(DateTime.createDefaultShowtime());
+      setShowtime(null);
 
       if (onSuccess) {
         onSuccess();
@@ -63,7 +61,9 @@ const CreateShowForm = (props: CreateShowFormProps) => {
     } else if (new Date() > showtime) {
       return setLocalValidationError('Showtime must be in the future');
     }
-    createShow({ variables: { title, showtimeInUtc: showtime.toISOString() } });
+    createShow({
+      variables: { title, showtimeInUtc: Date.parse(showtime.toISOString()) },
+    });
   };
 
   return (

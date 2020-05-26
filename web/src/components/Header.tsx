@@ -21,6 +21,7 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     color: theme.palette.common.white,
+    marginLeft: theme.spacing(2),
   },
   userLink: {
     color: theme.palette.common.white,

@@ -30,9 +30,9 @@ async function start() {
     const connection = await createDatabaseConnection();
     // TODO: Only needed for using SQLite during development
     //       Remove this for production
-    await connection.query('PRAGMA foreign_keys=OFF');
+    // await connection.query('PRAGMA foreign_keys=OFF');
     await connection.synchronize();
-    await connection.query('PRAGMA foreign_keys=ON');
+    // await connection.query('PRAGMA foreign_keys=ON');
 
     initializePassport();
 
@@ -75,7 +75,7 @@ async function start() {
         AdminResolver,
       ],
       authChecker,
-      dateScalarMode: 'isoDate',
+      dateScalarMode: 'timestamp',
       validate: false,
     });
     const server = new ApolloServer({

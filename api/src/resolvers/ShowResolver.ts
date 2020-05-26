@@ -1,5 +1,6 @@
 import { Resolver, Query, Mutation, Args, Arg, Ctx, Int } from 'type-graphql';
 import { getManager } from 'typeorm';
+import subMinutes from 'date-fns/subMinutes';
 import { CustomContext } from 'authChecker';
 import { Show } from 'entities/Show';
 import {
@@ -13,13 +14,19 @@ import {
 export class ShowResolver {
   @Query(() => [Show])
   async getShowsForUser(@Args() { userId, onlyUpcoming }: GetShowsForUserArgs) {
+    // TODO: This date comparison logic is specific to SQLite due to
+    //       how it stores date fields. Update it for Postgres
+    const dateIncludingGracePeriod = subMinutes(new Date(), 240);
+    const dateToCompareAsSqliteString = dateIncludingGracePeriod
+      .toISOString()
+      .replace('T', ' ');
     const shows = await getManager()
       .createQueryBuilder(Show, 'show')
       .where('show.userId = :userId', { userId })
       .andWhere(
-        onlyUpcoming ? 'show.showtimeInUtc >= :now' : 'show.showtimeInUtc',
+        onlyUpcoming ? 'show.showtimeInUtc > :now' : 'show.showtimeInUtc',
         {
-          now: new Date().toISOString(),
+          now: dateToCompareAsSqliteString,
         }
       )
       .orderBy('show.showtimeInUtc', 'ASC')

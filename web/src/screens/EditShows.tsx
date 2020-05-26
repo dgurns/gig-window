@@ -18,7 +18,7 @@ import TextButton from 'components/TextButton';
 interface Show {
   id: number;
   title?: string;
-  showtimeInUtc: string;
+  showtimeInUtc: number;
 }
 
 const GET_SHOWS = gql`
