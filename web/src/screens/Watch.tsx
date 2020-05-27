@@ -52,10 +52,22 @@ const useStyles = makeStyles((theme) => ({
   videoChatContainer: {
     height: 520,
   },
-  video: {
+  videoContainer: {
     backgroundColor: theme.palette.common.black,
+    minHeight: 250,
+    maxHeight: 520,
+    position: 'relative',
+  },
+  videoCurtains: {
+    background: 'url("images/curtains.jpg")',
+    backgroundPosition: 'center',
     backgroundSize: 'cover',
-    minHeight: 100,
+    bottom: 0,
+    left: 0,
+    opacity: 0.3,
+    position: 'absolute',
+    right: 0,
+    top: 0,
   },
   chat: {
     backgroundColor: theme.palette.common.white,
@@ -79,7 +91,7 @@ const Watch = () => {
   const urlSlug = pathname.split('/')[1];
 
   const [user, userQuery] = useUser({ urlSlug });
-  const [shows, showsQuery, activeShow] = useShows(user?.id);
+  const [, showsQuery, activeShow] = useShows(user?.id);
 
   const [PaymentDialog, setPaymentDialogIsVisible] = useDialog();
   const [tipAmount, setTipAmount] = useState('5');
@@ -110,7 +122,7 @@ const Watch = () => {
     );
   }
 
-  const renderActiveShowText = () => {
+  const renderActiveShowDescription = () => {
     if (showsQuery.loading) {
       return <CircularProgress size={15} color="secondary" />;
     } else if (showsQuery.error) {
@@ -135,13 +147,15 @@ const Watch = () => {
         <Grid item className={classes.userText}>
           <Typography variant="h6">{user.username}</Typography>
           <Typography variant="body1" color="textSecondary">
-            {renderActiveShowText()}
+            {renderActiveShowDescription()}
           </Typography>
         </Grid>
       </Grid>
       <Paper elevation={3}>
         <Grid container direction="row" className={classes.videoChatContainer}>
-          <Grid item xs={12} sm={8} md={9} className={classes.video} />
+          <Grid item xs={12} sm={8} md={9} className={classes.videoContainer}>
+            <Grid className={classes.videoCurtains} />
+          </Grid>
           <Grid item xs={false} sm={4} md={3} lg={3} className={classes.chat}>
             <ChatBox userId={user.id} />
           </Grid>

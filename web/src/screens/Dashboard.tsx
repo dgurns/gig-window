@@ -70,9 +70,8 @@ const useStyles = makeStyles((theme) => ({
   videoChatContainer: {
     height: 520,
   },
-  video: {
+  videoContainer: {
     backgroundColor: theme.palette.common.black,
-    backgroundSize: 'cover',
     maxHeight: 520,
     minHeight: 250,
   },
@@ -112,7 +111,7 @@ const Dashboard = () => {
   });
   const userIsStreamingLive =
     isStreamingLiveQuery.data?.checkUserIsStreamingLive;
-  const [shows, showsQuery, activeShow] = useShows(currentUser?.id);
+  const [, showsQuery, activeShow] = useShows(currentUser?.id);
 
   const [isPublicMode, setIsPublicMode] = useState(false);
 
@@ -235,7 +234,7 @@ const Dashboard = () => {
               direction="column"
               justify="center"
               alignItems="center"
-              className={classes.video}
+              className={classes.videoContainer}
             >
               {userIsStreamingLive ? (
                 <LiveVideoPlayer hlsUrl={awsMediaPackageOriginEndpointUrl} />
