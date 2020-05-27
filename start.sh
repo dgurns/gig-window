@@ -12,7 +12,7 @@
 # also update env variables in `web` and `api`
 
 concurrently \
-  "docker run --name db-postgres -v `pwd`/postgres-data:/var/lib/postgresql/data -p 5432:5432 -e POSTGRES_PASSWORD=password postgres:alpine" \
+  "docker run -v `pwd`/postgres-data:/var/lib/postgresql/data -p 5432:5432 -e POSTGRES_PASSWORD=password postgres:alpine" \
   "cd web && yarn start" \
   "cd api && yarn start" \
   "ngrok tcp --remote-addr 1.tcp.ngrok.io:29644 1935" \
