@@ -1,25 +1,15 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useQuery, gql } from '@apollo/client';
 import { Paper, Container, Typography, Grid, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import useDialog from 'hooks/useDialog';
+import useUser from 'hooks/useUser';
+import useShows from 'hooks/useShows';
 
 import ChatBox from 'components/ChatBox';
 import PaymentForm from 'components/PaymentForm';
 import MoneyInputField from 'components/MoneyInputField';
-
-const GET_USER = gql`
-  query GetUser($urlSlug: String!) {
-    getUser(data: { urlSlug: $urlSlug }) {
-      id
-      username
-      urlSlug
-      stripeAccountId
-    }
-  }
-`;
 
 const useStyles = makeStyles((theme) => ({
   pageContent: {
@@ -80,13 +70,8 @@ const Watch = () => {
   const { pathname } = useLocation();
   const urlSlug = pathname.split('/')[1];
 
-  const { data, loading, error } = useQuery(GET_USER, {
-    variables: {
-      urlSlug,
-    },
-    skip: !urlSlug,
-  });
-  const user = data?.getUser || {};
+  const [user, userQuery] = useUser({ urlSlug });
+  const [shows, showsQuery] = useShows(user?.id);
 
   const [PaymentDialog, setPaymentDialogIsVisible] = useDialog();
   const [tipAmount, setTipAmount] = useState('5');
@@ -99,7 +84,7 @@ const Watch = () => {
     }
   };
 
-  if (loading) {
+  if (userQuery.loading) {
     return (
       <Container disableGutters maxWidth={false}>
         <Grid container direction="row" className={classes.userInfoContainer}>
@@ -107,7 +92,7 @@ const Watch = () => {
         </Grid>
       </Container>
     );
-  } else if (!user || error) {
+  } else if (!user || userQuery.error) {
     return (
       <Container disableGutters maxWidth={false}>
         <Grid container direction="row" className={classes.userInfoContainer}>

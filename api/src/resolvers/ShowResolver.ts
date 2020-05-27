@@ -14,17 +14,15 @@ import {
 export class ShowResolver {
   @Query(() => [Show])
   async getShowsForUser(@Args() { userId, onlyUpcoming }: GetShowsForUserArgs) {
-    // TODO: This date comparison logic is specific to SQLite due to
-    //       how it stores date fields. Update it for Postgres
     const dateIncludingGracePeriod = subMinutes(new Date(), 240);
-    const dateToCompareAsSqliteString = dateIncludingGracePeriod
+    const dateToCompareAsSqlString = dateIncludingGracePeriod
       .toISOString()
       .replace('T', ' ');
     const shows = await getManager()
       .createQueryBuilder(Show, 'show')
       .where('show.userId = :userId', { userId })
       .andWhere(onlyUpcoming ? 'show.showtime > :now' : 'show.showtime', {
-        now: dateToCompareAsSqliteString,
+        now: dateToCompareAsSqlString,
       })
       .orderBy('show.showtime', 'ASC')
       .getMany();
