@@ -30,7 +30,7 @@ export class Show extends BaseEntity {
 
   @Field()
   @Column({ type: 'timestamptz' })
-  showtimeInUtc: Date;
+  showtime: Date;
 
   @Field()
   @CreateDateColumn({ type: 'timestamptz' })

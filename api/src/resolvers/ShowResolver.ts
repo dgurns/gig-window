@@ -23,13 +23,10 @@ export class ShowResolver {
     const shows = await getManager()
       .createQueryBuilder(Show, 'show')
       .where('show.userId = :userId', { userId })
-      .andWhere(
-        onlyUpcoming ? 'show.showtimeInUtc > :now' : 'show.showtimeInUtc',
-        {
-          now: dateToCompareAsSqliteString,
-        }
-      )
-      .orderBy('show.showtimeInUtc', 'ASC')
+      .andWhere(onlyUpcoming ? 'show.showtime > :now' : 'show.showtime', {
+        now: dateToCompareAsSqliteString,
+      })
+      .orderBy('show.showtime', 'ASC')
       .getMany();
     return shows;
   }
@@ -45,7 +42,7 @@ export class ShowResolver {
     const show = Show.create({
       userId: user.id,
       title: data.title,
-      showtimeInUtc: data.showtimeInUtc,
+      showtime: data.showtime,
     });
     await show.save();
     return show;
@@ -59,13 +56,13 @@ export class ShowResolver {
     const user = ctx.getUser();
     if (!user) throw new Error('User must be logged in to update a show');
 
-    const { id, title, showtimeInUtc } = data;
+    const { id, title, showtime } = data;
     const show = await Show.findOne({ where: { id } });
     if (!show) {
       throw new Error('Could not find Show with that ID');
     }
     if (title) show.title = title;
-    if (showtimeInUtc) show.showtimeInUtc = showtimeInUtc;
+    if (showtime) show.showtime = showtime;
     await show.save();
     return show;
   }

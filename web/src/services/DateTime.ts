@@ -10,9 +10,9 @@ const createDefaultShowtime = () => {
   return addDays(futureTime, 5);
 };
 
-const formatUserReadableShowtime = (showtimeInUtc?: number | string) => {
-  if (!showtimeInUtc) return '';
-  return format(new Date(showtimeInUtc), "LLLL d 'at' h:mm a");
+const formatUserReadableShowtime = (showtime?: number | string) => {
+  if (!showtime) return '';
+  return format(new Date(showtime), "LLLL d 'at' h:mm a");
 };
 
 export default {

@@ -15,7 +15,7 @@ export class CreateShowInput {
   title?: string;
 
   @Field((type) => String)
-  showtimeInUtc: Date;
+  showtime: Date;
 }
 
 @InputType()
@@ -27,7 +27,7 @@ export class UpdateShowInput {
   title?: string;
 
   @Field((type) => String, { nullable: true })
-  showtimeInUtc?: Date;
+  showtime?: Date;
 }
 
 @InputType()

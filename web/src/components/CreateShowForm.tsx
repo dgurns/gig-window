@@ -11,8 +11,8 @@ interface CreateShowFormProps {
 }
 
 const CREATE_SHOW = gql`
-  mutation CreateShow($title: String, $showtimeInUtc: String!) {
-    createShow(data: { title: $title, showtimeInUtc: $showtimeInUtc }) {
+  mutation CreateShow($title: String, $showtime: String!) {
+    createShow(data: { title: $title, showtime: $showtime }) {
       id
     }
   }
@@ -62,7 +62,7 @@ const CreateShowForm = (props: CreateShowFormProps) => {
       return setLocalValidationError('Showtime must be in the future');
     }
     createShow({
-      variables: { title, showtimeInUtc: showtime.toISOString() },
+      variables: { title, showtime: showtime.toISOString() },
     });
   };
 

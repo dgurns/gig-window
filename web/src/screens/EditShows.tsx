@@ -18,7 +18,7 @@ import TextButton from 'components/TextButton';
 interface Show {
   id: number;
   title?: string;
-  showtimeInUtc: string;
+  showtime: string;
 }
 
 const GET_SHOWS = gql`
@@ -26,7 +26,7 @@ const GET_SHOWS = gql`
     getShowsForUser(userId: $userId) {
       id
       title
-      showtimeInUtc
+      showtime
     }
   }
 `;
@@ -99,7 +99,7 @@ const EditShows = () => {
     }
 
     return shows.map((show: Show) => {
-      const { id, title, showtimeInUtc } = show;
+      const { id, title, showtime } = show;
       return (
         <Grid
           container
@@ -110,7 +110,7 @@ const EditShows = () => {
         >
           <Typography>{title}</Typography>
           <Typography color="secondary">
-            {DateTime.formatUserReadableShowtime(showtimeInUtc)}
+            {DateTime.formatUserReadableShowtime(showtime)}
           </Typography>
           <Grid item container direction="row">
             <TextButton

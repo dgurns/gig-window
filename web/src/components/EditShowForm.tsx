@@ -10,7 +10,7 @@ interface EditShowFormProps {
   show: {
     id: number;
     title?: string;
-    showtimeInUtc: string;
+    showtime: string;
   };
   onSuccess?: () => void;
 }
@@ -22,7 +22,7 @@ const UPDATE_SHOW = gql`
     $updatedShowtime: String!
   ) {
     updateShow(
-      data: { id: $id, title: $updatedTitle, showtimeInUtc: $updatedShowtime }
+      data: { id: $id, title: $updatedTitle, showtime: $updatedShowtime }
     ) {
       id
     }
@@ -44,7 +44,7 @@ const useStyles = makeStyles(({ spacing }) => ({
 
 const EditShowForm = (props: EditShowFormProps) => {
   const {
-    show: { id, title, showtimeInUtc },
+    show: { id, title, showtime },
     onSuccess,
   } = props;
 
@@ -54,9 +54,7 @@ const EditShowForm = (props: EditShowFormProps) => {
   });
 
   const [updatedTitle, setUpdatedTitle] = useState(title);
-  const [updatedShowtime, setUpdatedShowtime] = useState(
-    new Date(showtimeInUtc)
-  );
+  const [updatedShowtime, setUpdatedShowtime] = useState(new Date(showtime));
   const [localValidationError, setLocalValidationError] = useState('');
 
   useEffect(() => {
