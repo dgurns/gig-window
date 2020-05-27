@@ -1,11 +1,19 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Paper, Container, Typography, Grid, Button } from '@material-ui/core';
+import {
+  Paper,
+  Container,
+  Typography,
+  Grid,
+  Button,
+  CircularProgress,
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import useDialog from 'hooks/useDialog';
 import useUser from 'hooks/useUser';
 import useShows from 'hooks/useShows';
+import DateTime from 'services/DateTime';
 
 import ChatBox from 'components/ChatBox';
 import PaymentForm from 'components/PaymentForm';
@@ -71,7 +79,7 @@ const Watch = () => {
   const urlSlug = pathname.split('/')[1];
 
   const [user, userQuery] = useUser({ urlSlug });
-  const [shows, showsQuery] = useShows(user?.id);
+  const [shows, showsQuery, activeShow] = useShows(user?.id);
 
   const [PaymentDialog, setPaymentDialogIsVisible] = useDialog();
   const [tipAmount, setTipAmount] = useState('5');
@@ -102,6 +110,20 @@ const Watch = () => {
     );
   }
 
+  const renderActiveShowText = () => {
+    if (showsQuery.loading) {
+      return <CircularProgress size={15} color="secondary" />;
+    } else if (showsQuery.error) {
+      return 'Error fetching shows';
+    } else if (activeShow) {
+      return `${DateTime.formatUserReadableShowtime(activeShow.showtime)}: ${
+        activeShow.title
+      }`;
+    } else {
+      return 'No shows scheduled';
+    }
+  };
+
   return (
     <Container disableGutters maxWidth={false}>
       <Grid container direction="row" className={classes.userInfoContainer}>
@@ -113,7 +135,7 @@ const Watch = () => {
         <Grid item className={classes.userText}>
           <Typography variant="h6">{user.username}</Typography>
           <Typography variant="body1" color="textSecondary">
-            No shows scheduled
+            {renderActiveShowText()}
           </Typography>
         </Grid>
       </Grid>

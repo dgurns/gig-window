@@ -10,6 +10,8 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 
 import useCurrentUser from 'hooks/useCurrentUser';
+import useShows from 'hooks/useShows';
+import DateTime from 'services/DateTime';
 
 import DashboardSubheader from 'components/DashboardSubheader';
 import LiveVideoPlayer from 'components/LiveVideoPlayer';
@@ -110,6 +112,7 @@ const Dashboard = () => {
   });
   const userIsStreamingLive =
     isStreamingLiveQuery.data?.checkUserIsStreamingLive;
+  const [shows, showsQuery, activeShow] = useShows(currentUser?.id);
 
   const [isPublicMode, setIsPublicMode] = useState(false);
 
@@ -159,6 +162,20 @@ const Dashboard = () => {
     );
   };
 
+  const renderActiveShowText = () => {
+    if (showsQuery.loading) {
+      return <CircularProgress size={15} color="secondary" />;
+    } else if (showsQuery.error) {
+      return 'Error fetching shows';
+    } else if (activeShow) {
+      return `${DateTime.formatUserReadableShowtime(activeShow.showtime)}: ${
+        activeShow.title
+      }`;
+    } else {
+      return 'No shows scheduled';
+    }
+  };
+
   return (
     <>
       <DashboardSubheader />
@@ -172,7 +189,9 @@ const Dashboard = () => {
           />
           <Grid item className={classes.artistText}>
             <Typography variant="h6">{username}</Typography>
-            <Typography color="textSecondary">No shows scheduled</Typography>
+            <Typography color="textSecondary">
+              {renderActiveShowText()}
+            </Typography>
           </Grid>
         </Grid>
 
