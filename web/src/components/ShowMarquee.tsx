@@ -1,36 +1,71 @@
 import React from 'react';
+import { useQuery, gql } from '@apollo/client';
 import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
+
+import useCurrentUser from 'hooks/useCurrentUser';
 
 import Countdown from './Countdown';
 import BuyTicketButton from './BuyTicketButton';
 
-interface ShowMarqueeProps {
-  showtime: string;
-  payeeUserId: number;
-  payeeUsername: string;
-}
+const GET_USER_PAYMENT_FOR_SHOW = gql`
+  query GetUserPaymentForShow($showId: Int!) {
+    getUserPaymentForShow(showId: $showId) {
+      id
+    }
+  }
+`;
 
 const useStyles = makeStyles(({ palette, spacing }) => ({
   container: {
-    background: 'url("images/curtains.jpg")',
-    backgroundColor: palette.common.black,
-    backgroundPosition: 'center',
-    backgroundSize: 'cover',
     height: '100%',
   },
   countdown: {
     margin: spacing(2),
     textAlign: 'center',
   },
+  message: {
+    color: palette.common.white,
+  },
 }));
 
-const ShowMarquee = ({
-  showtime,
-  payeeUsername,
-  payeeUserId,
-}: ShowMarqueeProps) => {
+interface ShowMarqueeProps {
+  show: {
+    id: number;
+    showtime: string;
+  };
+  payee: {
+    id: number;
+    username: string;
+    stripeAccountId?: string;
+  };
+}
+
+const ShowMarquee = ({ show, payee }: ShowMarqueeProps) => {
   const classes = useStyles();
+  const [currentUser] = useCurrentUser();
+
+  const { loading, data, error } = useQuery(GET_USER_PAYMENT_FOR_SHOW, {
+    variables: { showId: show.id },
+    skip: !currentUser,
+  });
+
+  const renderBuyTicketButton = () => {
+    if (loading) return <CircularProgress color="secondary" size={58} />;
+    if (error) {
+      return (
+        <Typography className={classes.message}>
+          Error checking ticket status
+        </Typography>
+      );
+    }
+    if (data?.getUserPaymentForShow) {
+      return <Typography className={classes.message}>You're in 👍</Typography>;
+    }
+    return <BuyTicketButton payee={payee} show={show} />;
+  };
 
   return (
     <Grid
@@ -41,12 +76,9 @@ const ShowMarquee = ({
       className={classes.container}
     >
       <Grid item className={classes.countdown}>
-        <Countdown showtime={showtime} />
+        <Countdown showtime={show.showtime} />
       </Grid>
-      <BuyTicketButton
-        payeeUserId={payeeUserId}
-        payeeUsername={payeeUsername}
-      />
+      {payee.stripeAccountId && renderBuyTicketButton()}
     </Grid>
   );
 };

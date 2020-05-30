@@ -6,17 +6,19 @@ import useDialog from 'hooks/useDialog';
 import PaymentForm from 'components/PaymentForm';
 
 interface BuyTicketButtonProps {
-  payeeUserId: number;
-  payeeUsername: string;
+  payee: {
+    id: number;
+    username: string;
+  };
+  show?: {
+    id: number;
+  };
 }
 
-const BuyTicketButton = ({
-  payeeUserId,
-  payeeUsername,
-}: BuyTicketButtonProps) => {
+const BuyTicketButton = ({ payee, show }: BuyTicketButtonProps) => {
   const [PaymentDialog, setPaymentDialogIsVisible] = useDialog();
 
-  if (!payeeUserId || !payeeUsername) return null;
+  if (!payee.id || !payee.username) return null;
 
   return (
     <>
@@ -30,7 +32,7 @@ const BuyTicketButton = ({
       </Button>
 
       <PaymentDialog>
-        <PaymentForm payeeUserId={payeeUserId} payeeUsername={payeeUsername} />
+        <PaymentForm payee={payee} show={show} />
       </PaymentDialog>
     </>
   );

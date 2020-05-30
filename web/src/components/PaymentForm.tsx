@@ -51,13 +51,18 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface PaymentFormProps {
-  payeeUserId: number;
-  payeeUsername: string;
+  payee: {
+    id: number;
+    username: string;
+  };
+  show?: {
+    id: number;
+  };
   prefilledPaymentAmount?: string;
 }
 
 const PaymentForm = (props: PaymentFormProps) => {
-  const { payeeUserId, payeeUsername, prefilledPaymentAmount } = props;
+  const { payee, show, prefilledPaymentAmount } = props;
   const classes = useStyles();
 
   const [currentUser, currentUserQuery] = useCurrentUser();
@@ -100,7 +105,8 @@ const PaymentForm = (props: PaymentFormProps) => {
         <PayWithSavedCard
           paymentMethod={savedPaymentMethod}
           paymentAmountInCents={paymentAmountInCents}
-          payeeUserId={payeeUserId}
+          payeeUserId={payee.id}
+          showId={show?.id}
           onSuccess={() => console.log('Pay with saved card succeeeded')}
           onDeleteCard={savedPaymentMethodQuery.refetch}
         />
@@ -108,7 +114,8 @@ const PaymentForm = (props: PaymentFormProps) => {
         <Elements stripe={stripePromise}>
           <PayWithCard
             paymentAmountInCents={paymentAmountInCents}
-            payeeUserId={payeeUserId}
+            payeeUserId={payee.id}
+            showId={show?.id}
             onSuccess={() => {
               console.log('Pay with card succeeeded');
               savedPaymentMethodQuery.refetch();
@@ -123,7 +130,7 @@ const PaymentForm = (props: PaymentFormProps) => {
     <Grid container direction="column">
       <Typography variant="h4" className={classes.title}>
         {prefilledPaymentAmount
-          ? `Tip $${prefilledPaymentAmount} to ${payeeUsername}`
+          ? `Tip $${prefilledPaymentAmount} to ${payee.username}`
           : 'Name your price'}
       </Typography>
       {!prefilledPaymentAmount && (
@@ -147,7 +154,7 @@ const PaymentForm = (props: PaymentFormProps) => {
         </Grid>
       )}
       <Typography color="secondary">
-        80% goes to {payeeUsername}, 20% to the platform after payment
+        80% goes to {payee.username}, 20% to the platform after payment
         processing fees
       </Typography>
       <Divider color="secondary" className={classes.divider} />

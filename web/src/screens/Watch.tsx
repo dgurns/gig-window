@@ -52,6 +52,10 @@ const useStyles = makeStyles((theme) => ({
   },
   videoContainer: {
     backgroundColor: theme.palette.common.black,
+    background: 'url("images/curtains.jpg")',
+    backgroundPosition: 'center',
+    backgroundSize: 'cover',
+    height: '100%',
     minHeight: 250,
     maxHeight: 520,
     position: 'relative',
@@ -112,6 +116,9 @@ const Watch = () => {
     }
   };
 
+  const userIsLive = user.isPublishingStream; // TODO: And is in Public mode
+  const shouldShowTipButton = user.stripeAccountId; // TODO: And if there is no Buy button
+
   return (
     <Container disableGutters maxWidth={false}>
       <Grid container direction="row" className={classes.userInfoContainer}>
@@ -130,12 +137,8 @@ const Watch = () => {
       <Paper elevation={3}>
         <Grid container direction="row" className={classes.videoChatContainer}>
           <Grid item xs={12} sm={8} md={9} className={classes.videoContainer}>
-            {activeShow && (
-              <ShowMarquee
-                showtime={activeShow.showtime}
-                payeeUserId={user.id}
-                payeeUsername={user.username}
-              />
+            {!userIsLive && activeShow && (
+              <ShowMarquee show={activeShow} payee={user} />
             )}
           </Grid>
           <Grid item xs={false} sm={4} md={3} lg={3} className={classes.chat}>
@@ -158,9 +161,7 @@ const Watch = () => {
           md={9}
           justify="flex-end"
         >
-          {user.stripeAccountId && (
-            <TipButton payeeUserId={user.id} payeeUsername={user.username} />
-          )}
+          {shouldShowTipButton && <TipButton payee={user} show={activeShow} />}
         </Grid>
       </Grid>
     </Container>

@@ -1,7 +1,11 @@
-import { Query, Resolver, Mutation, Arg, Ctx } from 'type-graphql';
+import { Query, Resolver, Mutation, Arg, Args, Ctx } from 'type-graphql';
 import StripeLib from 'stripe';
+import { getManager } from 'typeorm';
+import subHours from 'date-fns/subHours';
 import { CustomContext } from 'authChecker';
 import {
+  GetUserPaymentForShowArgs,
+  GetUserPaymentsToPayeeArgs,
   CreatePaymentInput,
   SetupIntent,
   PaymentMethod,
@@ -19,6 +23,45 @@ export class PaymentResolver {
     if (!user) throw new Error('User must be logged in');
 
     return Stripe.getLatestPaymentMethodForUser(user);
+  }
+
+  @Query(() => Payment, { nullable: true })
+  getUserPaymentForShow(
+    @Args() { showId }: GetUserPaymentForShowArgs,
+    @Ctx() ctx: CustomContext
+  ) {
+    const user = ctx.getUser();
+    if (!user) throw new Error('User is not logged in');
+
+    return Payment.findOne({ where: { userId: user.id, showId } });
+  }
+
+  @Query(() => [Payment])
+  async getUserPaymentsToPayee(
+    @Args() { payeeUserId, onlyRecent }: GetUserPaymentsToPayeeArgs,
+    @Ctx() ctx: CustomContext
+  ) {
+    const user = ctx.getUser();
+    if (!user) throw new Error('User is not logged in');
+
+    const recencyThreshold = subHours(new Date(), 24);
+    const dateToCompareAsSqlString = recencyThreshold
+      .toISOString()
+      .replace('T', ' ');
+    const payments = await getManager()
+      .createQueryBuilder(Payment, 'payment')
+      .where('payment.payeeUserId = :payeeUserId', { payeeUserId })
+      .andWhere(
+        onlyRecent
+          ? 'payment.createdAt > :recencyThreshold'
+          : 'payment.createdAt',
+        {
+          recencyThreshold: dateToCompareAsSqlString,
+        }
+      )
+      .orderBy('payment.createdAt', 'ASC')
+      .getMany();
+    return payments;
   }
 
   @Mutation((returns) => Payment)
@@ -58,6 +101,7 @@ export class PaymentResolver {
       const payment = Payment.create({
         userId: user.id,
         payeeUserId: payee.id,
+        amountInCents: data.amountInCents,
         showId: data.showId,
       });
       await payment.save();

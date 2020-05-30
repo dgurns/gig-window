@@ -8,8 +8,13 @@ import PaymentForm from 'components/PaymentForm';
 import MoneyInputField from 'components/MoneyInputField';
 
 interface TipButtonProps {
-  payeeUserId: number;
-  payeeUsername: string;
+  payee: {
+    id: number;
+    username: string;
+  };
+  show?: {
+    id: number;
+  };
 }
 
 const useStyles = makeStyles(({ spacing }) => ({
@@ -24,7 +29,7 @@ const useStyles = makeStyles(({ spacing }) => ({
   },
 }));
 
-const TipButton = ({ payeeUserId, payeeUsername }: TipButtonProps) => {
+const TipButton = ({ payee, show }: TipButtonProps) => {
   const classes = useStyles();
 
   const [PaymentDialog, setPaymentDialogIsVisible] = useDialog();
@@ -38,7 +43,7 @@ const TipButton = ({ payeeUserId, payeeUsername }: TipButtonProps) => {
     }
   };
 
-  if (!payeeUserId || !payeeUsername) return null;
+  if (!payee.id || !payee.username) return null;
 
   return (
     <>
@@ -60,9 +65,9 @@ const TipButton = ({ payeeUserId, payeeUsername }: TipButtonProps) => {
 
       <PaymentDialog>
         <PaymentForm
-          payeeUserId={payeeUserId}
-          payeeUsername={payeeUsername}
+          payee={payee}
           prefilledPaymentAmount={tipAmount}
+          show={show}
         />
       </PaymentDialog>
     </>

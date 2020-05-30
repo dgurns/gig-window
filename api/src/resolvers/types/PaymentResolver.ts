@@ -1,5 +1,20 @@
-import { ObjectType, InputType, Field, Int } from 'type-graphql';
+import { ArgsType, ObjectType, InputType, Field, Int } from 'type-graphql';
 import Stripe from 'stripe';
+
+@ArgsType()
+export class GetUserPaymentForShowArgs {
+  @Field((type) => Int)
+  showId: number;
+}
+
+@ArgsType()
+export class GetUserPaymentsToPayeeArgs {
+  @Field((type) => Int)
+  payeeUserId: number;
+
+  @Field((type) => Boolean, { nullable: true, defaultValue: true })
+  onlyRecent: boolean;
+}
 
 @InputType()
 export class CreatePaymentInput {

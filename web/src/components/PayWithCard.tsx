@@ -10,12 +10,6 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
-interface PayWithCardProps {
-  payeeUserId: number;
-  paymentAmountInCents?: number;
-  onSuccess: () => void;
-}
-
 const CREATE_SETUP_INTENT = gql`
   mutation CreateSetupIntent {
     createSetupIntent {
@@ -28,15 +22,19 @@ const CREATE_PAYMENT = gql`
   mutation CreatePayment(
     $amountInCents: Int!
     $payeeUserId: Int!
+    $showId: Int
     $shouldDetachPaymentMethodAfter: Boolean!
   ) {
     createPayment(
       data: {
         amountInCents: $amountInCents
         payeeUserId: $payeeUserId
+        showId: $showId
         shouldDetachPaymentMethodAfter: $shouldDetachPaymentMethodAfter
       }
-    )
+    ) {
+      id
+    }
   }
 `;
 
@@ -87,8 +85,15 @@ const cardElementOptions = {
   },
 };
 
+interface PayWithCardProps {
+  payeeUserId: number;
+  showId?: number;
+  paymentAmountInCents?: number;
+  onSuccess: () => void;
+}
+
 const PayWithCard = (props: PayWithCardProps) => {
-  const { payeeUserId, paymentAmountInCents, onSuccess } = props;
+  const { payeeUserId, showId, paymentAmountInCents, onSuccess } = props;
 
   const classes = useStyles();
   const stripe = useStripe();
@@ -149,6 +154,7 @@ const PayWithCard = (props: PayWithCardProps) => {
           variables: {
             amountInCents: paymentAmountInCents,
             payeeUserId,
+            showId,
             shouldDetachPaymentMethodAfter: !shouldSaveCard,
           },
         });

@@ -7,25 +7,21 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import TextButton from './TextButton';
 
-interface PayWithSavedCardProps {
-  paymentMethod: {
-    id: string;
-    card: {
-      brand: string;
-      last4: string;
-    };
-  };
-  payeeUserId: number;
-  paymentAmountInCents?: number;
-  onSuccess: () => void;
-  onDeleteCard: () => void;
-}
-
 const CREATE_PAYMENT = gql`
-  mutation CreatePayment($amountInCents: Int!, $payeeUserId: Int!) {
+  mutation CreatePayment(
+    $amountInCents: Int!
+    $payeeUserId: Int!
+    $showId: Int
+  ) {
     createPayment(
-      data: { amountInCents: $amountInCents, payeeUserId: $payeeUserId }
-    )
+      data: {
+        amountInCents: $amountInCents
+        payeeUserId: $payeeUserId
+        showId: $showId
+      }
+    ) {
+      id
+    }
   }
 `;
 
@@ -47,10 +43,26 @@ const useStyles = makeStyles(({ spacing }) => ({
   },
 }));
 
+interface PayWithSavedCardProps {
+  paymentMethod: {
+    id: string;
+    card: {
+      brand: string;
+      last4: string;
+    };
+  };
+  payeeUserId: number;
+  showId?: number;
+  paymentAmountInCents?: number;
+  onSuccess: () => void;
+  onDeleteCard: () => void;
+}
+
 const PayWithSavedCard = (props: PayWithSavedCardProps) => {
   const {
     paymentMethod,
     payeeUserId,
+    showId,
     paymentAmountInCents,
     onSuccess,
     onDeleteCard,
@@ -93,6 +105,7 @@ const PayWithSavedCard = (props: PayWithSavedCardProps) => {
       variables: {
         amountInCents: paymentAmountInCents,
         payeeUserId,
+        showId,
       },
     });
   };

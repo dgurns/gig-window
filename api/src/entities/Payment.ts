@@ -2,6 +2,7 @@ import {
   Entity,
   BaseEntity,
   PrimaryGeneratedColumn,
+  Column,
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
@@ -17,6 +18,10 @@ export class Payment extends BaseEntity {
   @Field((type) => Int)
   @PrimaryGeneratedColumn()
   readonly id: number;
+
+  @Field((type) => Int)
+  @Column()
+  amountInCents: number;
 
   @Field((type) => User)
   @ManyToOne((type) => User)

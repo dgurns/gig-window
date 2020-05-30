@@ -4,6 +4,7 @@ import {
   Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
+  UpdateDateColumn,
   ManyToOne,
 } from 'typeorm';
 import { ObjectType, Field, Int } from 'type-graphql';
@@ -36,4 +37,8 @@ export class Chat extends BaseEntity {
   @Field()
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
+
+  @Field()
+  @UpdateDateColumn({ type: 'timestamptz' })
+  updatedAt: Date;
 }
