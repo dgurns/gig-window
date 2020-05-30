@@ -3,7 +3,7 @@ import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Countdown from './Countdown';
-import PayWhatYouWantButton from './PayWhatYouWantButton';
+import BuyTicketButton from './BuyTicketButton';
 
 interface ShowMarqueeProps {
   showtime: string;
@@ -42,7 +42,7 @@ const ShowMarquee = ({
       <Grid item className={classes.countdown}>
         <Countdown showtime={showtime} />
       </Grid>
-      <PayWhatYouWantButton
+      <BuyTicketButton
         payeeUserId={payeeUserId}
         payeeUsername={payeeUsername}
       />

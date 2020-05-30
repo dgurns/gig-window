@@ -5,15 +5,15 @@ import useDialog from 'hooks/useDialog';
 
 import PaymentForm from 'components/PaymentForm';
 
-interface PayWhatYouWantButtonProps {
+interface BuyTicketButtonProps {
   payeeUserId: number;
   payeeUsername: string;
 }
 
-const PayWhatYouWantButton = ({
+const BuyTicketButton = ({
   payeeUserId,
   payeeUsername,
-}: PayWhatYouWantButtonProps) => {
+}: BuyTicketButtonProps) => {
   const [PaymentDialog, setPaymentDialogIsVisible] = useDialog();
 
   if (!payeeUserId || !payeeUsername) return null;
@@ -36,4 +36,4 @@ const PayWhatYouWantButton = ({
   );
 };
 
-export default PayWhatYouWantButton;
+export default BuyTicketButton;
