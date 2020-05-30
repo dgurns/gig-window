@@ -21,6 +21,7 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
   },
   countdown: {
     margin: spacing(2),
+    textAlign: 'center',
   },
 }));
 

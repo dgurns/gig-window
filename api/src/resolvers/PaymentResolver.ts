@@ -7,6 +7,7 @@ import {
   PaymentMethod,
 } from './types/PaymentResolver';
 import { User } from 'entities/User';
+import { Payment } from 'entities/Payment';
 import Stripe from 'services/stripe/Stripe';
 import StripeConnect from 'services/stripe/Connect';
 
@@ -20,11 +21,11 @@ export class PaymentResolver {
     return Stripe.getLatestPaymentMethodForUser(user);
   }
 
-  @Mutation((returns) => Boolean)
+  @Mutation((returns) => Payment)
   async createPayment(
     @Arg('data') data: CreatePaymentInput,
     @Ctx() ctx: CustomContext
-  ): Promise<Boolean> {
+  ): Promise<Payment> {
     const user = ctx.getUser();
     if (!user) {
       throw new Error('User must be logged in to create a Payment');
@@ -54,10 +55,13 @@ export class PaymentResolver {
     }
 
     if (paymentIntent?.status === 'succeeded') {
-      // Save Payment to DB
-
-      // Return the Payment to client
-      return true;
+      const payment = Payment.create({
+        userId: user.id,
+        payeeUserId: payee.id,
+        showId: data.showId,
+      });
+      await payment.save();
+      return payment;
     } else {
       throw new Error('Error creating PaymentIntent');
     }
