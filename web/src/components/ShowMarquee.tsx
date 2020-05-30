@@ -62,7 +62,14 @@ const ShowMarquee = ({ show, payee }: ShowMarqueeProps) => {
       );
     }
     if (data?.getUserPaymentForShow) {
-      return <Typography className={classes.message}>You're in 👍</Typography>;
+      return (
+        <Typography className={classes.message}>
+          You're in{' '}
+          <span aria-label="thumbs up" role="img">
+            👍
+          </span>
+        </Typography>
+      );
     }
     return <BuyTicketButton payee={payee} show={show} />;
   };

@@ -103,6 +103,7 @@ export class PaymentResolver {
         payeeUserId: payee.id,
         amountInCents: data.amountInCents,
         showId: data.showId,
+        stripePaymentIntentId: paymentIntent.id,
       });
       await payment.save();
       return payment;

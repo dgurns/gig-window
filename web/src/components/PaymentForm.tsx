@@ -107,7 +107,7 @@ const PaymentForm = (props: PaymentFormProps) => {
           paymentAmountInCents={paymentAmountInCents}
           payeeUserId={payee.id}
           showId={show?.id}
-          onSuccess={() => console.log('Pay with saved card succeeeded')}
+          onSuccess={() => window.location.reload()}
           onDeleteCard={savedPaymentMethodQuery.refetch}
         />
       ) : (
@@ -117,8 +117,8 @@ const PaymentForm = (props: PaymentFormProps) => {
             payeeUserId={payee.id}
             showId={show?.id}
             onSuccess={() => {
-              console.log('Pay with card succeeeded');
               savedPaymentMethodQuery.refetch();
+              window.location.reload();
             }}
           />
         </Elements>

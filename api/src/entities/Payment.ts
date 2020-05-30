@@ -23,6 +23,10 @@ export class Payment extends BaseEntity {
   @Column()
   amountInCents: number;
 
+  @Field((type) => String)
+  @Column()
+  stripePaymentIntentId: string;
+
   @Field((type) => User)
   @ManyToOne((type) => User)
   user: User;
@@ -36,9 +40,7 @@ export class Payment extends BaseEntity {
   payeeUserId: number;
 
   @Field((type) => Show, { nullable: true })
-  @ManyToOne((type) => Show)
-  show?: Show;
-  @RelationColumn({ default: null })
+  @Column({ default: null })
   showId?: number;
 
   @Field()
