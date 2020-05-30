@@ -83,6 +83,7 @@ const EditShows = () => {
   }, [deleteShowMutation.data, getShowsQuery]);
 
   const onDeleteShow = (id: number) => {
+    // TODO: Warn about deleting if this showId has payments attached
     const confirm = window.confirm(
       'Are you sure you want to delete this show?'
     );
