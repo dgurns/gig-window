@@ -41,8 +41,11 @@ const Countdown = (props: CountdownProps) => {
   const { days, hours, minutes, seconds } = timeOffsets;
 
   useEffect(() => {
-    setInterval(() => setTimeOffsets(calculateTimeOffsets()), 1000);
-    return () => clearInterval();
+    const timer = setInterval(
+      () => setTimeOffsets(calculateTimeOffsets()),
+      1000
+    );
+    return () => clearInterval(timer);
   }, [calculateTimeOffsets]);
 
   const isAfterShowtime = new Date() > new Date(props.showtime);

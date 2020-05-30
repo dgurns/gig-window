@@ -58,6 +58,7 @@ export default createMuiTheme({
       },
       sizeSmall: {
         fontSize: '1rem',
+        padding: '0 20px',
       },
       sizeLarge: {
         fontSize: '1rem',

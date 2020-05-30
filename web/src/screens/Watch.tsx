@@ -1,24 +1,21 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useLocation } from 'react-router-dom';
 import {
   Paper,
   Container,
   Typography,
   Grid,
-  Button,
   CircularProgress,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-import useDialog from 'hooks/useDialog';
 import useUser from 'hooks/useUser';
 import useShows from 'hooks/useShows';
 import DateTime from 'services/DateTime';
 
 import ShowMarquee from 'components/ShowMarquee';
 import ChatBox from 'components/ChatBox';
-import PaymentForm from 'components/PaymentForm';
-import MoneyInputField from 'components/MoneyInputField';
+import TipButton from 'components/TipButton';
 
 const useStyles = makeStyles((theme) => ({
   pageContent: {
@@ -83,17 +80,6 @@ const Watch = () => {
   const [user, userQuery] = useUser({ urlSlug });
   const [, showsQuery, activeShow] = useShows(user?.id);
 
-  const [PaymentDialog, setPaymentDialogIsVisible] = useDialog();
-  const [tipAmount, setTipAmount] = useState('5');
-
-  const onChangeTipAmount = (value: string) => {
-    if (value === '' || value === '0') {
-      return setTipAmount('');
-    } else if (typeof parseInt(value) === 'number') {
-      return setTipAmount(`${parseInt(value)}`);
-    }
-  };
-
   if (userQuery.loading) {
     return (
       <Container disableGutters maxWidth={false}>
@@ -157,40 +143,20 @@ const Watch = () => {
         justify="flex-start"
         className={classes.tools}
       >
-        {user.stripeAccountId && (
-          <Grid
-            item
-            container
-            direction="row"
-            xs={12}
-            sm={8}
-            md={9}
-            justify="flex-end"
-          >
-            <MoneyInputField
-              className={classes.tipAmount}
-              value={tipAmount}
-              onChange={(event) => onChangeTipAmount(event.target.value)}
-            />
-            <Button
-              variant="contained"
-              color="primary"
-              size="small"
-              onClick={() => setPaymentDialogIsVisible(true)}
-            >
-              Tip
-            </Button>
-          </Grid>
-        )}
+        <Grid
+          item
+          container
+          direction="row"
+          xs={12}
+          sm={8}
+          md={9}
+          justify="flex-end"
+        >
+          {user.stripeAccountId && (
+            <TipButton payeeUserId={user.id} payeeUsername={user.username} />
+          )}
+        </Grid>
       </Grid>
-
-      <PaymentDialog>
-        <PaymentForm
-          payeeUserId={user.id}
-          payeeUsername={user.username}
-          prefilledPaymentAmount={tipAmount}
-        />
-      </PaymentDialog>
     </Container>
   );
 };
