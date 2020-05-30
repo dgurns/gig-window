@@ -64,7 +64,6 @@ const useStyles = makeStyles((theme) => ({
     backgroundSize: 'cover',
     bottom: 0,
     left: 0,
-    opacity: 0.3,
     position: 'absolute',
     right: 0,
     top: 0,
