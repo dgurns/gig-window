@@ -1,16 +1,14 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Countdown from './Countdown';
+import PayWhatYouWantButton from './PayWhatYouWantButton';
 
 interface ShowMarqueeProps {
-  show: {
-    id: number;
-    title: string;
-    showtime: string;
-  };
+  showtime: string;
+  payeeUserId: number;
+  payeeUsername: string;
 }
 
 const useStyles = makeStyles(({ palette, spacing }) => ({
@@ -26,7 +24,11 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
   },
 }));
 
-const ShowMarquee = (props: ShowMarqueeProps) => {
+const ShowMarquee = ({
+  showtime,
+  payeeUsername,
+  payeeUserId,
+}: ShowMarqueeProps) => {
   const classes = useStyles();
 
   return (
@@ -38,11 +40,12 @@ const ShowMarquee = (props: ShowMarqueeProps) => {
       className={classes.container}
     >
       <Grid item className={classes.countdown}>
-        <Countdown showtime={props.show.showtime} />
+        <Countdown showtime={showtime} />
       </Grid>
-      <Button variant="contained" size="large" color="primary">
-        Pay what you want
-      </Button>
+      <PayWhatYouWantButton
+        payeeUserId={payeeUserId}
+        payeeUsername={payeeUsername}
+      />
     </Grid>
   );
 };
