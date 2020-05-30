@@ -59,6 +59,11 @@ export default createMuiTheme({
       sizeSmall: {
         fontSize: '1rem',
       },
+      sizeLarge: {
+        fontSize: '1rem',
+        fontWeight: 'bold',
+        padding: '15px 30px',
+      },
     },
     MuiCard: {
       root: {

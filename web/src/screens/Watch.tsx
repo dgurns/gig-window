@@ -15,6 +15,7 @@ import useUser from 'hooks/useUser';
 import useShows from 'hooks/useShows';
 import DateTime from 'services/DateTime';
 
+import ShowMarquee from 'components/ShowMarquee';
 import ChatBox from 'components/ChatBox';
 import PaymentForm from 'components/PaymentForm';
 import MoneyInputField from 'components/MoneyInputField';
@@ -57,16 +58,6 @@ const useStyles = makeStyles((theme) => ({
     minHeight: 250,
     maxHeight: 520,
     position: 'relative',
-  },
-  videoCurtains: {
-    background: 'url("images/curtains.jpg")',
-    backgroundPosition: 'center',
-    backgroundSize: 'cover',
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-    right: 0,
-    top: 0,
   },
   chat: {
     backgroundColor: theme.palette.common.white,
@@ -153,7 +144,7 @@ const Watch = () => {
       <Paper elevation={3}>
         <Grid container direction="row" className={classes.videoChatContainer}>
           <Grid item xs={12} sm={8} md={9} className={classes.videoContainer}>
-            <Grid className={classes.videoCurtains} />
+            {activeShow && <ShowMarquee show={activeShow} />}
           </Grid>
           <Grid item xs={false} sm={4} md={3} lg={3} className={classes.chat}>
             <ChatBox userId={user.id} />
