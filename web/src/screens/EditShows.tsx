@@ -86,7 +86,9 @@ const EditShows = () => {
     const confirm = window.confirm(
       'Are you sure you want to delete this show?'
     );
-    if (confirm) deleteShow({ variables: { id } });
+    if (confirm) {
+      return deleteShow({ variables: { id } });
+    }
   };
 
   const renderShows = () => {
