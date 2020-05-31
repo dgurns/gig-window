@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useQuery, gql } from '@apollo/client';
 import {
   Paper,
@@ -14,8 +14,8 @@ import useShows from 'hooks/useShows';
 import DateTime from 'services/DateTime';
 
 import DashboardSubheader from 'components/DashboardSubheader';
+import DashboardModeSwitcher from 'components/DashboardModeSwitcher';
 import LiveVideoPlayer from 'components/LiveVideoPlayer';
-import TextButton from 'components/TextButton';
 import ChatBox from 'components/ChatBox';
 import HowToBroadcast from 'components/HowToBroadcast';
 
@@ -48,24 +48,6 @@ const useStyles = makeStyles((theme) => ({
   },
   artistText: {
     flexDirection: 'column',
-  },
-  streamStatusBanner: {
-    backgroundColor: theme.palette.common.white,
-    padding: theme.spacing(1),
-    [theme.breakpoints.down('xs')]: {
-      textAlign: 'center',
-    },
-  },
-  previewModeColorBand: {
-    backgroundColor: theme.palette.warning.main,
-    height: 3,
-  },
-  publicModeColorBand: {
-    backgroundColor: theme.palette.success.main,
-    height: 3,
-  },
-  switchStreamModeButton: {
-    marginLeft: theme.spacing(2),
   },
   videoChatContainer: {
     height: 520,
@@ -112,8 +94,6 @@ const Dashboard = () => {
   const userIsStreamingLive =
     isStreamingLiveQuery.data?.checkUserIsStreamingLive;
   const [, showsQuery, activeShow] = useShows(currentUser?.id);
-
-  const [isPublicMode, setIsPublicMode] = useState(false);
 
   if (!currentUser) {
     return (
@@ -195,31 +175,7 @@ const Dashboard = () => {
         </Grid>
 
         <Paper elevation={3}>
-          <Grid
-            className={
-              isPublicMode
-                ? classes.publicModeColorBand
-                : classes.previewModeColorBand
-            }
-          />
-          <Grid
-            container
-            justify="center"
-            alignItems="center"
-            className={classes.streamStatusBanner}
-          >
-            <Typography>
-              {isPublicMode
-                ? "You're in public mode (everyone can see your stream)"
-                : "You're in private mode (nobody can see your stream)"}
-            </Typography>
-            <TextButton
-              onClick={() => setIsPublicMode(!isPublicMode)}
-              className={classes.switchStreamModeButton}
-            >
-              {`Switch to ${isPublicMode ? 'private' : 'public'}`}
-            </TextButton>
-          </Grid>
+          <DashboardModeSwitcher />
           <Grid
             container
             direction="row"

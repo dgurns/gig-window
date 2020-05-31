@@ -132,4 +132,17 @@ export class UserResolver {
       throw new Error('Error linking Stripe account. Please try again.');
     }
   }
+
+  @Mutation(() => User)
+  async setPublicMode(
+    @Arg('publicMode') publicMode: boolean,
+    @Ctx() ctx: CustomContext
+  ) {
+    const user = ctx.getUser();
+    if (!user) throw new Error('User is not logged in');
+
+    user.isInPublicMode = publicMode;
+    await user.save();
+    return user;
+  }
 }

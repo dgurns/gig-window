@@ -14,6 +14,7 @@ const GET_CURRENT_USER = gql`
       urlSlug
       streamKey
       isPublishingStream
+      isInPublicMode
       liveVideoInfrastructureError
       awsMediaLiveInputId
       awsMediaLiveChannelId
@@ -28,11 +29,11 @@ const GET_CURRENT_USER = gql`
 const useCurrentUser = (
   options?: UseCurrentUserOptions
 ): [User | undefined, QueryResult<User>] => {
-  const queryResult = useQuery(GET_CURRENT_USER, {
+  const currentUserQuery = useQuery(GET_CURRENT_USER, {
     ...options,
   });
 
-  return [queryResult.data?.getCurrentUser, queryResult];
+  return [currentUserQuery.data?.getCurrentUser, currentUserQuery];
 };
 
 export default useCurrentUser;

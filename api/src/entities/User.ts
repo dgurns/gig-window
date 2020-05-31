@@ -42,6 +42,10 @@ export class User extends BaseEntity {
   @Column({ default: false })
   isPublishingStream: boolean;
 
+  @Field((type) => Boolean)
+  @Column({ default: false })
+  isInPublicMode: boolean;
+
   @Field({ nullable: true })
   @Column({ type: 'timestamptz', nullable: true, default: null })
   lastPublishedStreamEndTimestamp: Date;
