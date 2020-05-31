@@ -68,6 +68,7 @@ const TipButton = ({ payee, show }: TipButtonProps) => {
           payee={payee}
           prefilledPaymentAmount={tipAmount}
           show={show}
+          onSuccess={() => setPaymentDialogIsVisible(false)}
         />
       </PaymentDialog>
     </>

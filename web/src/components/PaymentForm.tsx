@@ -60,10 +60,11 @@ interface PaymentFormProps {
     id: number;
   };
   prefilledPaymentAmount?: string;
+  onSuccess?: () => void;
 }
 
 const PaymentForm = (props: PaymentFormProps) => {
-  const { payee, show, prefilledPaymentAmount } = props;
+  const { payee, show, prefilledPaymentAmount, onSuccess } = props;
   const classes = useStyles();
 
   const [currentUser, currentUserQuery] = useCurrentUser();
@@ -112,7 +113,10 @@ const PaymentForm = (props: PaymentFormProps) => {
           paymentAmountInCents={paymentAmountInCents}
           payeeUserId={payee.id}
           showId={show?.id}
-          onSuccess={refetchPayments}
+          onSuccess={() => {
+            refetchPayments();
+            if (onSuccess) onSuccess();
+          }}
           onDeleteCard={savedPaymentMethodQuery.refetch}
         />
       ) : (
@@ -124,6 +128,7 @@ const PaymentForm = (props: PaymentFormProps) => {
             onSuccess={() => {
               savedPaymentMethodQuery.refetch();
               refetchPayments();
+              if (onSuccess) onSuccess();
             }}
           />
         </Elements>
