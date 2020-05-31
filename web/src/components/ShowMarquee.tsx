@@ -1,22 +1,13 @@
 import React from 'react';
-import { useQuery, gql } from '@apollo/client';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
 
-import useCurrentUser from 'hooks/useCurrentUser';
+import usePayments from 'hooks/usePayments';
 
 import Countdown from './Countdown';
 import BuyTicketButton from './BuyTicketButton';
-
-const GET_USER_PAYMENT_FOR_SHOW = gql`
-  query GetUserPaymentForShow($showId: Int!) {
-    getUserPaymentForShow(showId: $showId) {
-      id
-    }
-  }
-`;
 
 const useStyles = makeStyles(({ palette, spacing }) => ({
   container: {
@@ -45,23 +36,22 @@ interface ShowMarqueeProps {
 
 const ShowMarquee = ({ show, payee }: ShowMarqueeProps) => {
   const classes = useStyles();
-  const [currentUser] = useCurrentUser();
 
-  const { loading, data, error } = useQuery(GET_USER_PAYMENT_FOR_SHOW, {
-    variables: { showId: show.id },
-    skip: !currentUser,
+  const { paymentForShow, paymentForShowQuery } = usePayments({
+    showId: show.id,
   });
 
   const renderBuyTicketButton = () => {
-    if (loading) return <CircularProgress color="secondary" size={58} />;
-    if (error) {
+    if (paymentForShowQuery.loading)
+      return <CircularProgress color="secondary" size={58} />;
+    if (paymentForShowQuery.error) {
       return (
         <Typography className={classes.message}>
           Error checking ticket status
         </Typography>
       );
     }
-    if (data?.getUserPaymentForShow) {
+    if (paymentForShow) {
       return (
         <Typography className={classes.message}>
           You're in{' '}

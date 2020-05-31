@@ -7,6 +7,7 @@ import { Grid, Typography, Divider, CircularProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import useCurrentUser from 'hooks/useCurrentUser';
+import usePayments from 'hooks/usePayments';
 
 import MoneyInputField from './MoneyInputField';
 import AuthForm from './AuthForm';
@@ -66,6 +67,10 @@ const PaymentForm = (props: PaymentFormProps) => {
   const classes = useStyles();
 
   const [currentUser, currentUserQuery] = useCurrentUser();
+  const { refetchPayments } = usePayments({
+    showId: show?.id,
+    payeeUserId: payee.id,
+  });
   const [paymentAmount, setPaymentAmount] = useState(prefilledPaymentAmount);
 
   const savedPaymentMethodQuery = useQuery(GET_SAVED_PAYMENT_METHOD, {
@@ -107,7 +112,7 @@ const PaymentForm = (props: PaymentFormProps) => {
           paymentAmountInCents={paymentAmountInCents}
           payeeUserId={payee.id}
           showId={show?.id}
-          onSuccess={() => window.location.reload()}
+          onSuccess={refetchPayments}
           onDeleteCard={savedPaymentMethodQuery.refetch}
         />
       ) : (
@@ -118,7 +123,7 @@ const PaymentForm = (props: PaymentFormProps) => {
             showId={show?.id}
             onSuccess={() => {
               savedPaymentMethodQuery.refetch();
-              window.location.reload();
+              refetchPayments();
             }}
           />
         </Elements>
