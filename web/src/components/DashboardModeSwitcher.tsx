@@ -38,20 +38,15 @@ const useStyles = makeStyles((theme) => ({
 const DashboardModeSwitcher = () => {
   const classes = useStyles();
 
-  const [currentUser, currentUserQuery] = useCurrentUser();
-  const isInPublicMode = currentUser?.isInPublicMode;
-
+  const [currentUser] = useCurrentUser();
   const [setPublicMode, { data, loading }] = useMutation(SET_PUBLIC_MODE);
-
-  useEffect(() => {
-    if (data && !currentUserQuery.loading) {
-      currentUserQuery.refetch();
-    }
-  }, [data, currentUserQuery]);
 
   const onTogglePublicMode = () => {
     setPublicMode({ variables: { publicMode: !Boolean(isInPublicMode) } });
   };
+
+  const isInPublicMode =
+    data?.setPublicMode.isInPublicMode ?? currentUser?.isInPublicMode;
 
   return (
     <Grid container direction="column">
@@ -78,7 +73,7 @@ const DashboardModeSwitcher = () => {
             <TextButton
               onClick={onTogglePublicMode}
               className={classes.switchStreamModeButton}
-              disabled={loading || currentUserQuery.loading}
+              disabled={loading}
             >
               {`Switch to ${isInPublicMode ? 'private' : 'public'}`}
             </TextButton>
