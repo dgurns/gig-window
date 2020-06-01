@@ -21,9 +21,10 @@ const GET_USER = gql`
       id
       username
       urlSlug
-      stripeAccountId
       isPublishingStream
       isInPublicMode
+      awsMediaPackageOriginEndpointUrl
+      stripeAccountId
     }
   }
 `;

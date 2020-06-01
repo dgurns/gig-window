@@ -1,17 +1,27 @@
 import { getManager } from 'typeorm';
+import subMinutes from 'date-fns/subMinutes';
 import { User } from 'entities/User';
 
 const getUsersWithStaleMediaLiveChannels = async (): Promise<User[]> => {
-  const MAX_INACTIVITY_PERIOD_MILLISECONDS = 900000; // 15 minutes
-  const staleTimestampMarker = Date.now() - MAX_INACTIVITY_PERIOD_MILLISECONDS;
+  const MAX_INACTIVITY_PERIOD_MINUTES = 15;
+  const staleTimestampMarker = subMinutes(
+    Date.now(),
+    MAX_INACTIVITY_PERIOD_MINUTES
+  );
+  const staleTimestampMarkerAsSqlString = staleTimestampMarker
+    .toISOString()
+    .replace('T', ' ');
 
   const usersWithStaleMediaLiveChannels = await getManager()
     .createQueryBuilder(User, 'user')
-    .where('user.awsMediaLiveChannelId != ""')
-    .andWhere('user.lastPublishedStreamEndTimestamp != ""')
-    .andWhere('user.lastPublishedStreamEndTimestamp < :staleTimestampMarker', {
-      staleTimestampMarker,
-    })
+    .where('user.awsMediaLiveChannelId IS NOT NULL')
+    .andWhere('user.lastPublishedStreamEndTimestamp IS NOT NULL')
+    .andWhere(
+      'user.lastPublishedStreamEndTimestamp < :staleTimestampMarkerAsSqlString',
+      {
+        staleTimestampMarkerAsSqlString,
+      }
+    )
     .getMany();
 
   return usersWithStaleMediaLiveChannels;
