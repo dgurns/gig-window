@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import PlayButton from '@material-ui/icons/PlayArrow';
@@ -14,6 +14,7 @@ import VideoPlayer from './VideoPlayer';
 
 const useStyles = makeStyles(({ palette }) => ({
   container: {
+    backgroundColor: palette.common.black,
     height: '100%',
     position: 'relative',
     width: '100%',
@@ -24,6 +25,7 @@ const useStyles = makeStyles(({ palette }) => ({
     position: 'absolute',
     right: 0,
     top: 0,
+    zIndex: 20,
   },
   playButtonContainer: {
     color: palette.common.white,
@@ -36,6 +38,11 @@ const useStyles = makeStyles(({ palette }) => ({
   },
   playButton: {
     fontSize: '10rem',
+  },
+  videoPlayer: {
+    height: '100%',
+    width: '100%',
+    zIndex: 10,
   },
 }));
 
@@ -53,23 +60,30 @@ interface LiveVideoAreaProps {
 const LiveVideoArea = (props: LiveVideoAreaProps) => {
   const classes = useStyles();
 
+  const [isPlaying, setIsPlaying] = useState(false);
+
   return (
     <Grid className={classes.container}>
-      <Grid container className={classes.playerOverlay}>
-        <Grid
-          item
-          container
-          justify="center"
-          alignItems="center"
-          className={classes.playButtonContainer}
-        >
-          <PlayButton id="play-button" className={classes.playButton} />
+      {!isPlaying && (
+        <Grid container className={classes.playerOverlay}>
+          <Grid
+            item
+            container
+            justify="center"
+            alignItems="center"
+            className={classes.playButtonContainer}
+            onClick={() => setIsPlaying(true)}
+          >
+            <PlayButton id="play-button" className={classes.playButton} />
+          </Grid>
         </Grid>
+      )}
+      <Grid item container className={classes.videoPlayer}>
+        <VideoPlayer
+          hlsUrl="https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8"
+          isPlaying={isPlaying}
+        />
       </Grid>
-      <VideoPlayer
-        hlsUrl="https://www.youtube.com/watch?v=ysz5S6PUM-U"
-        isPlaying={false}
-      />
     </Grid>
   );
 };

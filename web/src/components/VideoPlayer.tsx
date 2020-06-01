@@ -9,6 +9,9 @@ interface VideoPlayerProps {
 const VideoPlayer = (props: VideoPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
 
+  console.log('props isPlaying', props.isPlaying);
+  console.log('internal isPlaying', isPlaying);
+
   useEffect(() => {
     if (props.isPlaying) {
       setIsPlaying(true);
@@ -27,8 +30,8 @@ const VideoPlayer = (props: VideoPlayerProps) => {
       controls
       playsinline
       playing={isPlaying}
-      onPause={() => setIsPlaying(false)}
-      onPlay={() => setIsPlaying(true)}
+      // onPause={() => setIsPlaying(false)}
+      // onPlay={() => setIsPlaying(true)}
     />
   );
 };
