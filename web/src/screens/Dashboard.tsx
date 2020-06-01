@@ -15,7 +15,7 @@ import DateTime from 'services/DateTime';
 
 import DashboardSubheader from 'components/DashboardSubheader';
 import DashboardModeSwitcher from 'components/DashboardModeSwitcher';
-import LiveVideoPlayer from 'components/LiveVideoPlayer';
+import VideoPlayer from 'components/VideoPlayer';
 import ChatBox from 'components/ChatBox';
 import HowToBroadcast from 'components/HowToBroadcast';
 
@@ -193,7 +193,10 @@ const Dashboard = () => {
               className={classes.videoContainer}
             >
               {userIsStreamingLive ? (
-                <LiveVideoPlayer hlsUrl={awsMediaPackageOriginEndpointUrl} />
+                <VideoPlayer
+                  hlsUrl={awsMediaPackageOriginEndpointUrl}
+                  isPlaying
+                />
               ) : (
                 renderStreamPreviewMessage()
               )}
