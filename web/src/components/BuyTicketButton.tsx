@@ -13,9 +13,16 @@ interface BuyTicketButtonProps {
   show?: {
     id: number;
   };
+  buttonText?: string;
+  className?: string;
 }
 
-const BuyTicketButton = ({ payee, show }: BuyTicketButtonProps) => {
+const BuyTicketButton = ({
+  payee,
+  show,
+  buttonText,
+  className,
+}: BuyTicketButtonProps) => {
   const [PaymentDialog, setPaymentDialogIsVisible] = useDialog();
 
   if (!payee.id || !payee.username) return null;
@@ -27,8 +34,9 @@ const BuyTicketButton = ({ payee, show }: BuyTicketButtonProps) => {
         size="large"
         color="primary"
         onClick={() => setPaymentDialogIsVisible()}
+        className={className}
       >
-        Buy ticket
+        {buttonText ?? 'Buy ticket'}
       </Button>
 
       <PaymentDialog>

@@ -10,13 +10,19 @@ import addMinutes from 'date-fns/addMinutes';
 import Typography from '@material-ui/core/Typography';
 
 interface CountdownProps {
-  showtime: string;
+  targetDate: string;
+  countdownSuffix?: string;
+  postTargetLabel?: string;
 }
 
-const Countdown = (props: CountdownProps) => {
+const Countdown = ({
+  targetDate,
+  countdownSuffix,
+  postTargetLabel,
+}: CountdownProps) => {
   const calculateTimeOffsets = useCallback(() => {
     const now = new Date();
-    const reference = new Date(props.showtime);
+    const reference = new Date(targetDate);
 
     const days = differenceInDays(reference, now);
     const offsetDisregardingDays = addDays(now, days);
@@ -35,7 +41,7 @@ const Countdown = (props: CountdownProps) => {
       minutes: minutes > 0 ? minutes : undefined,
       seconds: seconds,
     };
-  }, [props.showtime]);
+  }, [targetDate]);
 
   const [timeOffsets, setTimeOffsets] = useState(calculateTimeOffsets());
   const { days, hours, minutes, seconds } = timeOffsets;
@@ -48,18 +54,18 @@ const Countdown = (props: CountdownProps) => {
     return () => clearInterval(timer);
   }, [calculateTimeOffsets]);
 
-  const isAfterShowtime = new Date() > new Date(props.showtime);
+  const isAfterTargetDate = new Date() > new Date(targetDate);
 
   return (
     <Typography color="secondary">
-      {isAfterShowtime ? (
-        'Waiting for show to begin'
+      {isAfterTargetDate ? (
+        postTargetLabel
       ) : (
         <>
           {days && `${days} day${days !== 1 ? 's' : ''}, `}
           {hours && `${hours} hour${hours !== 1 ? 's' : ''}, `}
           {minutes && `${minutes} minute${minutes !== 1 ? 's' : ''}, `}
-          {`${seconds} second${seconds !== 1 ? 's' : ''} until showtime`}
+          {`${seconds} second${seconds !== 1 ? 's' : ''} ${countdownSuffix}`}
         </>
       )}
     </Typography>

@@ -51,6 +51,7 @@ export class PaymentResolver {
     const payments = await getManager()
       .createQueryBuilder(Payment, 'payment')
       .where('payment.payeeUserId = :payeeUserId', { payeeUserId })
+      .andWhere('payment.userId = :userId', { userId: user.id })
       .andWhere(
         onlyRecent
           ? 'payment.createdAt > :recencyThreshold'

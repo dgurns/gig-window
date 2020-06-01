@@ -1,25 +1,25 @@
 import React, { useState } from 'react';
+import addMinutes from 'date-fns/addMinutes';
 import Grid from '@material-ui/core/Grid';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
 import PlayButton from '@material-ui/icons/PlayArrow';
 
-import useUser from 'hooks/useUser';
-import useShows from 'hooks/useShows';
 import usePayments from 'hooks/usePayments';
-import DateTime from 'services/DateTime';
-import Ui from 'services/Ui';
 import User from 'services/User';
 
+import BuyTicketButton from './BuyTicketButton';
+import Countdown from './Countdown';
 import VideoPlayer from './VideoPlayer';
 
-const useStyles = makeStyles(({ palette }) => ({
+const useStyles = makeStyles(({ palette, spacing }) => ({
   container: {
     backgroundColor: palette.common.black,
     height: '100%',
     position: 'relative',
     width: '100%',
   },
-  playerOverlay: {
+  videoOverlay: {
     bottom: 0,
     left: 0,
     position: 'absolute',
@@ -39,6 +39,23 @@ const useStyles = makeStyles(({ palette }) => ({
   playButton: {
     fontSize: '10rem',
   },
+  paywallBackgroundGradient: {
+    background:
+      'linear-gradient(0deg, rgba(0,0,0,1) 20%, rgba(255,255,255,0) 74%)',
+    bottom: 0,
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+  },
+  paywallContent: {
+    marginBottom: spacing(7),
+    textAlign: 'center',
+    zIndex: 30,
+  },
+  buyTicketButton: {
+    marginTop: spacing(2),
+  },
   videoPlayer: {
     height: '100%',
     width: '100%',
@@ -57,15 +74,27 @@ interface LiveVideoAreaProps {
   };
 }
 
-const LiveVideoArea = (props: LiveVideoAreaProps) => {
+const LiveVideoArea = ({ show, payee }: LiveVideoAreaProps) => {
   const classes = useStyles();
 
   const [videoIsStarted, setVideoIsStarted] = useState(false);
+  const {
+    paymentForShow,
+    paymentForShowQuery,
+    recentPaymentsToPayee,
+    recentPaymentsToPayeeQuery,
+  } = usePayments({ showId: show?.id, payeeUserId: payee.id });
+  const isCheckingAccessToLiveStream =
+    paymentForShowQuery.loading || recentPaymentsToPayeeQuery.loading;
+  const hasAccessToLiveStream = User.hasAccessToLiveStream(
+    Boolean(paymentForShow),
+    Boolean(recentPaymentsToPayee?.length)
+  );
 
-  return (
-    <Grid className={classes.container}>
-      {!videoIsStarted && (
-        <Grid container className={classes.playerOverlay}>
+  const renderVideoOverlay = () => {
+    if (!videoIsStarted) {
+      return (
+        <Grid container className={classes.videoOverlay}>
           <Grid
             item
             container
@@ -77,7 +106,49 @@ const LiveVideoArea = (props: LiveVideoAreaProps) => {
             <PlayButton id="play-button" className={classes.playButton} />
           </Grid>
         </Grid>
-      )}
+      );
+    }
+
+    if (hasAccessToLiveStream) {
+      return null;
+    }
+
+    return (
+      <Grid
+        container
+        direction="column"
+        justify="flex-end"
+        alignItems="center"
+        className={classes.videoOverlay}
+      >
+        <Grid className={classes.paywallBackgroundGradient} />
+        {isCheckingAccessToLiveStream ? (
+          <CircularProgress
+            color="secondary"
+            className={classes.paywallContent}
+          />
+        ) : (
+          <Grid className={classes.paywallContent}>
+            <Countdown
+              targetDate={addMinutes(new Date(), 3).toISOString()}
+              countdownSuffix="left in free preview"
+              postTargetLabel="That's the end of your free preview. Pay what you want to join the show!"
+            />
+            <BuyTicketButton
+              payee={payee}
+              show={show}
+              buttonText="Pay what you want"
+              className={classes.buyTicketButton}
+            />
+          </Grid>
+        )}
+      </Grid>
+    );
+  };
+
+  return (
+    <Grid className={classes.container}>
+      {renderVideoOverlay()}
       <Grid item container className={classes.videoPlayer}>
         <VideoPlayer
           hlsUrl="https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8"

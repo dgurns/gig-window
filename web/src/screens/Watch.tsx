@@ -155,10 +155,10 @@ const Watch = () => {
       <Paper elevation={3}>
         <Grid container direction="row" className={classes.videoChatContainer}>
           <Grid item xs={12} sm={8} md={9} className={classes.videoContainer}>
-            {/* {!userIsLive && activeShow && (
+            {!userIsLive && activeShow && (
               <ShowMarquee show={activeShow} payee={user} />
-            )} */}
-            {!userIsLive && <LiveVideoArea show={activeShow} payee={user} />}
+            )}
+            {userIsLive && <LiveVideoArea show={activeShow} payee={user} />}
           </Grid>
           <Grid item xs={false} sm={4} md={3} lg={3} className={classes.chat}>
             <ChatBox userId={user.id} />

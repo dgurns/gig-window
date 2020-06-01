@@ -73,7 +73,11 @@ const ShowMarquee = ({ show, payee }: ShowMarqueeProps) => {
       className={classes.container}
     >
       <Grid item className={classes.countdown}>
-        <Countdown showtime={show.showtime} />
+        <Countdown
+          targetDate={show.showtime}
+          countdownSuffix="until showtime"
+          postTargetLabel="Waiting for show to begin"
+        />
       </Grid>
       {payee.stripeAccountId && renderBuyTicketButton()}
     </Grid>
