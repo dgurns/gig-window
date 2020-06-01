@@ -11,7 +11,9 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import useUser from 'hooks/useUser';
 import useShows from 'hooks/useShows';
+import usePayments from 'hooks/usePayments';
 import DateTime from 'services/DateTime';
+import Ui from 'services/Ui';
 
 import ShowMarquee from 'components/ShowMarquee';
 import ChatBox from 'components/ChatBox';
@@ -83,6 +85,10 @@ const Watch = () => {
 
   const [user, userQuery] = useUser({ urlSlug });
   const [, showsQuery, activeShow] = useShows(user?.id);
+  const { paymentForShow, recentPaymentsToPayee } = usePayments({
+    showId: activeShow?.id,
+    payeeUserId: user?.id,
+  });
 
   if (userQuery.loading) {
     return (
@@ -116,8 +122,15 @@ const Watch = () => {
     }
   };
 
-  const userIsLive = user.isPublishingStream; // TODO: And is in Public mode
-  const shouldShowTipButton = user.stripeAccountId; // TODO: And if there is no Buy button
+  const userIsLive = user.isPublishingStream && user.isInPublicMode;
+  const shouldShowTipButton =
+    !showsQuery.loading &&
+    Ui.shouldShowTipButton({
+      payee: user,
+      isActiveShow: Boolean(activeShow),
+      userHasPaymentForShow: Boolean(paymentForShow),
+      userHasRecentPaymentToPayee: Boolean(recentPaymentsToPayee?.length),
+    });
 
   return (
     <Container disableGutters maxWidth={false}>

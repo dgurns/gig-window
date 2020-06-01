@@ -13,8 +13,8 @@ interface UsePaymentsArgs {
 interface UsePaymentsReturnValue {
   paymentForShow: Payment | undefined;
   paymentForShowQuery: QueryResult<Payment>;
-  paymentsToPayee: Payment[] | undefined;
-  paymentsToPayeeQuery: QueryResult<Payment>;
+  recentPaymentsToPayee: Payment[] | undefined;
+  recentPaymentsToPayeeQuery: QueryResult<Payment>;
   refetchPayments: () => void;
 }
 
@@ -26,9 +26,9 @@ const GET_PAYMENT_FOR_SHOW = gql`
   }
 `;
 
-const GET_PAYMENTS_TO_PAYEE = gql`
+const GET_RECENT_PAYMENTS_TO_PAYEE = gql`
   query GetUserPaymentsToPayee($payeeUserId: Int!) {
-    getUserPaymentsToPayee(payeeUserId: $payeeUserId) {
+    getUserPaymentsToPayee(payeeUserId: $payeeUserId, onlyRecent: true) {
       id
     }
   }
@@ -44,24 +44,25 @@ const usePayments = ({
     variables: { showId },
     skip: !showId || !currentUser,
   });
-  const paymentsToPayeeQuery = useQuery(GET_PAYMENTS_TO_PAYEE, {
+  const recentPaymentsToPayeeQuery = useQuery(GET_RECENT_PAYMENTS_TO_PAYEE, {
     variables: { payeeUserId },
     skip: !payeeUserId || !currentUser,
   });
 
   const paymentForShow = paymentForShowQuery.data?.getUserPaymentForShow;
-  const paymentsToPayee = paymentsToPayeeQuery.data?.getUserPaymentsToPayee;
+  const recentPaymentsToPayee =
+    recentPaymentsToPayeeQuery.data?.getUserPaymentsToPayee;
 
   const refetchPayments = () => {
     paymentForShowQuery.refetch();
-    paymentsToPayeeQuery.refetch();
+    recentPaymentsToPayeeQuery.refetch();
   };
 
   return {
     paymentForShow,
     paymentForShowQuery,
-    paymentsToPayee,
-    paymentsToPayeeQuery,
+    recentPaymentsToPayee,
+    recentPaymentsToPayeeQuery,
     refetchPayments,
   };
 };

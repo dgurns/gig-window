@@ -1,5 +1,13 @@
 import { useQuery, gql, QueryResult } from '@apollo/client';
-import { User } from '../../../api/src/entities/User';
+
+interface User {
+  id: number;
+  username: string;
+  urlSlug: string;
+  isPublishingStream: boolean;
+  isInPublicMode: boolean;
+  stripeAccountId?: string;
+}
 
 interface UserArgs {
   id?: number;
@@ -14,6 +22,7 @@ const GET_USER = gql`
       urlSlug
       stripeAccountId
       isPublishingStream
+      isInPublicMode
     }
   }
 `;

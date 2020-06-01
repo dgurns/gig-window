@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useMutation, gql } from '@apollo/client';
 import { Grid, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -38,12 +38,18 @@ const useStyles = makeStyles((theme) => ({
 const DashboardModeSwitcher = () => {
   const classes = useStyles();
 
-  const [currentUser] = useCurrentUser();
+  const [currentUser, { refetch: refetchCurrentUser }] = useCurrentUser();
   const [setPublicMode, { data, loading }] = useMutation(SET_PUBLIC_MODE);
 
   const onTogglePublicMode = () => {
     setPublicMode({ variables: { publicMode: !Boolean(isInPublicMode) } });
   };
+
+  useEffect(() => {
+    if (data?.setPublicMode) {
+      refetchCurrentUser();
+    }
+  }, [data, refetchCurrentUser]);
 
   const isInPublicMode =
     data?.setPublicMode.isInPublicMode ?? currentUser?.isInPublicMode;
