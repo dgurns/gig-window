@@ -76,7 +76,7 @@ const ShowMarquee = ({ show, payee }: ShowMarqueeProps) => {
         <Countdown
           targetDate={show.showtime}
           countdownSuffix="until showtime"
-          postTargetLabel="Waiting for show to begin"
+          postTargetLabel="Waiting for stream"
         />
       </Grid>
       {payee.stripeAccountId && renderBuyTicketButton()}
