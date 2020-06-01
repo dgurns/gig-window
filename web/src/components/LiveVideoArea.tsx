@@ -70,6 +70,7 @@ interface LiveVideoAreaProps {
   payee: {
     id: number;
     username: string;
+    awsMediaPackageOriginEndpointUrl?: string;
     stripeAccountId?: string;
   };
 }
@@ -151,7 +152,7 @@ const LiveVideoArea = ({ show, payee }: LiveVideoAreaProps) => {
       {renderVideoOverlay()}
       <Grid item container className={classes.videoPlayer}>
         <VideoPlayer
-          hlsUrl="https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8"
+          hlsUrl={payee.awsMediaPackageOriginEndpointUrl}
           shouldPlay={videoIsStarted}
           shouldHideControls={!videoIsStarted}
         />

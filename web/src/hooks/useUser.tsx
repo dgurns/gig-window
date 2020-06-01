@@ -6,6 +6,7 @@ interface User {
   urlSlug: string;
   isPublishingStream: boolean;
   isInPublicMode: boolean;
+  awsMediaPackageOriginEndpointUrl?: string;
   stripeAccountId?: string;
 }
 
