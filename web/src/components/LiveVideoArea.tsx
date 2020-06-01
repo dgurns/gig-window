@@ -60,11 +60,11 @@ interface LiveVideoAreaProps {
 const LiveVideoArea = (props: LiveVideoAreaProps) => {
   const classes = useStyles();
 
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [videoIsStarted, setVideoIsStarted] = useState(false);
 
   return (
     <Grid className={classes.container}>
-      {!isPlaying && (
+      {!videoIsStarted && (
         <Grid container className={classes.playerOverlay}>
           <Grid
             item
@@ -72,7 +72,7 @@ const LiveVideoArea = (props: LiveVideoAreaProps) => {
             justify="center"
             alignItems="center"
             className={classes.playButtonContainer}
-            onClick={() => setIsPlaying(true)}
+            onClick={() => setVideoIsStarted(true)}
           >
             <PlayButton id="play-button" className={classes.playButton} />
           </Grid>
@@ -81,7 +81,8 @@ const LiveVideoArea = (props: LiveVideoAreaProps) => {
       <Grid item container className={classes.videoPlayer}>
         <VideoPlayer
           hlsUrl="https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8"
-          isPlaying={isPlaying}
+          shouldPlay={videoIsStarted}
+          shouldHideControls={!videoIsStarted}
         />
       </Grid>
     </Grid>

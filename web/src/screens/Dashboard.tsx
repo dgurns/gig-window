@@ -193,10 +193,7 @@ const Dashboard = () => {
               className={classes.videoContainer}
             >
               {userIsStreamingLive ? (
-                <VideoPlayer
-                  hlsUrl={awsMediaPackageOriginEndpointUrl}
-                  isPlaying
-                />
+                <VideoPlayer hlsUrl={awsMediaPackageOriginEndpointUrl} />
               ) : (
                 renderStreamPreviewMessage()
               )}

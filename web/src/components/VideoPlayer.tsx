@@ -3,35 +3,35 @@ import ReactPlayer from 'react-player';
 
 interface VideoPlayerProps {
   hlsUrl?: string;
-  isPlaying?: boolean;
+  shouldPlay?: boolean;
+  shouldHideControls?: boolean;
 }
 
-const VideoPlayer = (props: VideoPlayerProps) => {
+const VideoPlayer = ({
+  hlsUrl,
+  shouldPlay = true,
+  shouldHideControls = false,
+}: VideoPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
 
-  console.log('props isPlaying', props.isPlaying);
-  console.log('internal isPlaying', isPlaying);
-
   useEffect(() => {
-    if (props.isPlaying) {
+    if (shouldPlay) {
       setIsPlaying(true);
     }
-  }, [props.isPlaying]);
+  }, [shouldPlay]);
 
-  if (!props.hlsUrl) {
+  if (!hlsUrl) {
     return null;
   }
 
   return (
     <ReactPlayer
-      url={props.hlsUrl}
+      url={hlsUrl}
       height="100%"
       width="100%"
-      controls
+      controls={!shouldHideControls}
       playsinline
       playing={isPlaying}
-      // onPause={() => setIsPlaying(false)}
-      // onPlay={() => setIsPlaying(true)}
     />
   );
 };
