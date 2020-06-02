@@ -84,6 +84,13 @@ const PaymentForm = (props: PaymentFormProps) => {
     currentUserQuery.refetch();
   };
 
+  const onPaymentSuccess = async () => {
+    await Promise.all([savedPaymentMethodQuery.refetch(), refetchPayments()]);
+    if (onSuccess) {
+      onSuccess();
+    }
+  };
+
   const onChangePaymentAmount = debounce((value: string) => {
     if (value === '' || value === '0') {
       return setPaymentAmount('');
@@ -113,10 +120,7 @@ const PaymentForm = (props: PaymentFormProps) => {
           paymentAmountInCents={paymentAmountInCents}
           payeeUserId={payee.id}
           showId={show?.id}
-          onSuccess={() => {
-            refetchPayments();
-            if (onSuccess) onSuccess();
-          }}
+          onSuccess={onPaymentSuccess}
           onDeleteCard={savedPaymentMethodQuery.refetch}
         />
       ) : (
@@ -125,11 +129,7 @@ const PaymentForm = (props: PaymentFormProps) => {
             paymentAmountInCents={paymentAmountInCents}
             payeeUserId={payee.id}
             showId={show?.id}
-            onSuccess={() => {
-              savedPaymentMethodQuery.refetch();
-              refetchPayments();
-              if (onSuccess) onSuccess();
-            }}
+            onSuccess={onPaymentSuccess}
           />
         </Elements>
       );
