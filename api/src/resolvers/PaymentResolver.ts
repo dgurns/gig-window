@@ -4,6 +4,7 @@ import { getManager } from 'typeorm';
 import subHours from 'date-fns/subHours';
 import { CustomContext } from 'authChecker';
 import {
+  GetUserPaymentsArgs,
   GetUserPaymentForShowArgs,
   GetUserPaymentsToPayeeArgs,
   CreatePaymentInput,
@@ -23,6 +24,25 @@ export class PaymentResolver {
     if (!user) throw new Error('User must be logged in');
 
     return Stripe.getLatestPaymentMethodForUser(user);
+  }
+
+  @Query(() => [Payment])
+  getUserPayments(
+    @Args() { limit, offset }: GetUserPaymentsArgs,
+    @Ctx() ctx: CustomContext
+  ) {
+    const user = ctx.getUser();
+    if (!user) throw new Error('User is not logged in');
+
+    return Payment.find({
+      where: { userId: user.id },
+      relations: ['payeeUser'],
+      take: limit,
+      skip: offset,
+      order: {
+        createdAt: 'DESC',
+      },
+    });
   }
 
   @Query(() => Payment, { nullable: true })

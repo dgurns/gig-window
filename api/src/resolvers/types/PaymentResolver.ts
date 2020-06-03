@@ -2,6 +2,15 @@ import { ArgsType, ObjectType, InputType, Field, Int } from 'type-graphql';
 import Stripe from 'stripe';
 
 @ArgsType()
+export class GetUserPaymentsArgs {
+  @Field((type) => Int, { nullable: true, defaultValue: 0 })
+  offset: number;
+
+  @Field((type) => Int, { nullable: true, defaultValue: 20 })
+  limit: number;
+}
+
+@ArgsType()
 export class GetUserPaymentForShowArgs {
   @Field((type) => Int)
   showId: number;
