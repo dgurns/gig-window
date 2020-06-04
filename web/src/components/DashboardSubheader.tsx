@@ -88,7 +88,11 @@ const DashboardSubheader = () => {
           >
             Edit shows
           </Link>
-          <Link to="/" component={RouterLink} className={classes.subheaderLink}>
+          <Link
+            to={`${pathname}/transactions`}
+            component={RouterLink}
+            className={classes.subheaderLink}
+          >
             Transactions
           </Link>
           <TextButton
