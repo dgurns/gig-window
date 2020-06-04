@@ -8,6 +8,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
 
 import useCurrentUser from 'hooks/useCurrentUser';
+import DateTime from 'services/DateTime';
 
 import NavSubheader from 'components/NavSubheader';
 
@@ -67,11 +68,15 @@ const Transactions = () => {
         </Typography>
       );
     }
-    return payments.map(({ createdAt, amountInCents, payeeUser }, index) => (
-      <Typography
-        key={index}
-      >{`${createdAt} $${amountInCents} to ${payeeUser.username}`}</Typography>
-    ));
+    return payments.map(({ createdAt, amountInCents, payeeUser }, index) => {
+      const date = DateTime.formatUserReadableDate(createdAt);
+      const amount = (amountInCents / 100).toFixed(2);
+      return (
+        <Typography
+          key={index}
+        >{`${date} - $${amount} to ${payeeUser.username}`}</Typography>
+      );
+    });
   };
 
   return (

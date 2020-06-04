@@ -133,6 +133,35 @@ export class PaymentResolver {
     }
   }
 
+  @Mutation((returns) => Payment)
+  async refundPayment(
+    @Arg('paymentId') paymentId: number,
+    @Ctx() ctx: CustomContext
+  ) {
+    const user = ctx.getUser();
+    if (!user) throw new Error('User must be logged in to refund a payment');
+
+    const payment = await Payment.findOne({ where: { id: paymentId } });
+    if (!payment) throw new Error('Could not find a payment with that ID');
+    const payeeUser = await User.findOne({
+      where: { id: payment.payeeUserId },
+    });
+    if (!payeeUser) {
+      throw new Error('Could not find the payee user for this payment');
+    }
+
+    const refund = await StripeConnect.refundPaymentIntentAsPayee({
+      paymentIntentId: payment.stripePaymentIntentId,
+      stripeAccountId: payeeUser.stripeAccountId,
+    });
+
+    if (refund?.status === 'succeeded' || refund?.status === 'pending') {
+      return refund;
+    } else {
+      throw new Error('Error refunding this payment');
+    }
+  }
+
   @Mutation((returns) => SetupIntent)
   async createSetupIntent(
     @Ctx() ctx: CustomContext

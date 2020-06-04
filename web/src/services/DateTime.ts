@@ -7,6 +7,11 @@ const formatUserReadableShowtime = (showtime?: number | string) => {
   return format(new Date(showtime), "LLLL d 'at' h:mm a");
 };
 
+const formatUserReadableDate = (date?: number | string) => {
+  if (!date) return '';
+  return format(new Date(date), 'LLLL d');
+};
+
 const showtimeIsStillActive = (showtime?: string | number) => {
   if (!showtime) return;
 
@@ -23,5 +28,6 @@ const showtimeIsStillActive = (showtime?: string | number) => {
 
 export default {
   formatUserReadableShowtime,
+  formatUserReadableDate,
   showtimeIsStillActive,
 };
