@@ -104,7 +104,11 @@ const Watch = () => {
     return (
       <Container disableGutters maxWidth={false}>
         <Grid container direction="row" className={classes.userInfoContainer}>
-          <Typography color="secondary">Could not find this user</Typography>
+          <Typography color="secondary">
+            {userQuery.error
+              ? 'Error fetching user'
+              : 'Could not find this user'}
+          </Typography>
         </Grid>
       </Container>
     );

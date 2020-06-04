@@ -76,10 +76,12 @@ const usePayments = ({
   const paymentForShowQuery = useQuery(GET_PAYMENT_FOR_SHOW, {
     variables: { showId },
     skip: !showId || !currentUser,
+    fetchPolicy: 'cache-and-network',
   });
   const recentPaymentsToPayeeQuery = useQuery(GET_RECENT_PAYMENTS_TO_PAYEE, {
     variables: { payeeUserId },
     skip: !payeeUserId || !currentUser,
+    fetchPolicy: 'cache-and-network',
   });
 
   const payments = paymentsQuery.data?.getUserPayments;

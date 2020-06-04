@@ -54,7 +54,9 @@ export class PaymentResolver {
     const user = ctx.getUser();
     if (!user) throw new Error('User is not logged in');
 
-    return Payment.findOne({ where: { userId: user.id, showId } });
+    return Payment.findOne({
+      where: { userId: user.id, showId, isRefunded: false },
+    });
   }
 
   @Query(() => [Payment])
@@ -73,6 +75,7 @@ export class PaymentResolver {
       .createQueryBuilder(Payment, 'payment')
       .where('payment.payeeUserId = :payeeUserId', { payeeUserId })
       .andWhere('payment.userId = :userId', { userId: user.id })
+      .andWhere('payment.isRefunded = :isRefunded', { isRefunded: false })
       .andWhere(
         onlyRecent
           ? 'payment.createdAt > :recencyThreshold'
