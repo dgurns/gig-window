@@ -43,6 +43,10 @@ export class Payment extends BaseEntity {
   @Column({ default: null })
   showId?: number;
 
+  @Field((type) => Boolean, { nullable: true })
+  @Column({ default: false })
+  isRefunded?: boolean;
+
   @Field()
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;

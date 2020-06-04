@@ -8,6 +8,7 @@ import {
   GetUserPaymentForShowArgs,
   GetUserPaymentsToPayeeArgs,
   CreatePaymentInput,
+  RefundPaymentInput,
   SetupIntent,
   PaymentMethod,
 } from './types/PaymentResolver';
@@ -135,7 +136,7 @@ export class PaymentResolver {
 
   @Mutation((returns) => Payment)
   async refundPayment(
-    @Arg('paymentId') paymentId: number,
+    @Arg('data') { paymentId }: RefundPaymentInput,
     @Ctx() ctx: CustomContext
   ) {
     const user = ctx.getUser();
@@ -156,7 +157,9 @@ export class PaymentResolver {
     });
 
     if (refund?.status === 'succeeded' || refund?.status === 'pending') {
-      return refund;
+      payment.isRefunded = true;
+      await payment.save();
+      return payment;
     } else {
       throw new Error('Error refunding this payment');
     }

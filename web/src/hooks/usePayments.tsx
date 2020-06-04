@@ -3,6 +3,20 @@ import useCurrentUser from 'hooks/useCurrentUser';
 
 interface Payment {
   id: number;
+  createdAt: string;
+  amountInCents: number;
+  isRefunded: boolean;
+  payeeUser: {
+    username: string;
+  };
+}
+
+interface PaymentForShow {
+  id: number;
+}
+
+interface RecentPaymentToPayee {
+  id: number;
 }
 
 interface UsePaymentsArgs {
@@ -11,12 +25,28 @@ interface UsePaymentsArgs {
 }
 
 interface UsePaymentsReturnValue {
-  paymentForShow: Payment | undefined;
-  paymentForShowQuery: QueryResult<Payment>;
-  recentPaymentsToPayee: Payment[] | undefined;
-  recentPaymentsToPayeeQuery: QueryResult<Payment>;
+  payments: Payment[] | undefined;
+  paymentsQuery: QueryResult<Payment>;
+  paymentForShow: PaymentForShow | undefined;
+  paymentForShowQuery: QueryResult<PaymentForShow>;
+  recentPaymentsToPayee: RecentPaymentToPayee[] | undefined;
+  recentPaymentsToPayeeQuery: QueryResult<RecentPaymentToPayee>;
   refetchPayments: () => void;
 }
+
+const GET_PAYMENTS = gql`
+  query GetPayments {
+    getUserPayments {
+      id
+      createdAt
+      amountInCents
+      isRefunded
+      payeeUser {
+        username
+      }
+    }
+  }
+`;
 
 const GET_PAYMENT_FOR_SHOW = gql`
   query GetUserPaymentForShow($showId: Int!) {
@@ -37,9 +67,12 @@ const GET_RECENT_PAYMENTS_TO_PAYEE = gql`
 const usePayments = ({
   showId,
   payeeUserId,
-}: UsePaymentsArgs): UsePaymentsReturnValue => {
+}: UsePaymentsArgs = {}): UsePaymentsReturnValue => {
   const [currentUser] = useCurrentUser();
 
+  const paymentsQuery = useQuery(GET_PAYMENTS, {
+    skip: !currentUser,
+  });
   const paymentForShowQuery = useQuery(GET_PAYMENT_FOR_SHOW, {
     variables: { showId },
     skip: !showId || !currentUser,
@@ -49,16 +82,22 @@ const usePayments = ({
     skip: !payeeUserId || !currentUser,
   });
 
+  const payments = paymentsQuery.data?.getUserPayments;
   const paymentForShow = paymentForShowQuery.data?.getUserPaymentForShow;
   const recentPaymentsToPayee =
     recentPaymentsToPayeeQuery.data?.getUserPaymentsToPayee;
 
   const refetchPayments = () => {
-    paymentForShowQuery.refetch();
-    recentPaymentsToPayeeQuery.refetch();
+    if (!currentUser) return;
+
+    paymentsQuery.refetch();
+    if (showId) paymentForShowQuery.refetch();
+    if (payeeUserId) recentPaymentsToPayeeQuery.refetch();
   };
 
   return {
+    payments,
+    paymentsQuery,
     paymentForShow,
     paymentForShowQuery,
     recentPaymentsToPayee,

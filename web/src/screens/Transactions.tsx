@@ -1,5 +1,6 @@
-import React from 'react';
-import { useQuery, gql } from '@apollo/client';
+import React, { useEffect } from 'react';
+import { useMutation, gql } from '@apollo/client';
+import classnames from 'classnames';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import Link from '@material-ui/core/Link';
@@ -7,29 +8,16 @@ import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
 
-import useCurrentUser from 'hooks/useCurrentUser';
+import usePayments from 'hooks/usePayments';
 import DateTime from 'services/DateTime';
 
 import NavSubheader from 'components/NavSubheader';
+import TextButton from 'components/TextButton';
 
-interface Payment {
-  id: number;
-  createdAt: string;
-  amountInCents: number;
-  payeeUser: {
-    username: string;
-  };
-}
-
-const GET_PAYMENTS = gql`
-  query GetPayments {
-    getUserPayments {
+const REFUND_PAYMENT = gql`
+  mutation RefundPayment($paymentId: Int!) {
+    refundPayment(data: { paymentId: $paymentId }) {
       id
-      createdAt
-      amountInCents
-      payeeUser {
-        username
-      }
     }
   }
 `;
@@ -46,37 +34,87 @@ const useStyles = makeStyles(({ spacing }) => ({
   sectionHeading: {
     marginBottom: spacing(2),
   },
+  refundedPayment: {
+    textDecoration: 'line-through',
+  },
+  refundButton: {
+    marginLeft: spacing(1),
+  },
 }));
 
 const Transactions = () => {
   const classes = useStyles();
-  const [currentUser] = useCurrentUser();
 
-  const getPaymentsQuery = useQuery(GET_PAYMENTS, {
-    skip: !currentUser,
+  const { payments = [], paymentsQuery, refetchPayments } = usePayments();
+
+  const [
+    refundPayment,
+    { data: refundData, loading: refundLoading, error: refundError },
+  ] = useMutation(REFUND_PAYMENT, {
+    errorPolicy: 'all',
   });
-  const payments: Payment[] = getPaymentsQuery.data?.getUserPayments || [];
+
+  useEffect(() => {
+    if (refundData?.refundPayment) {
+      window.alert('Payment has been refunded');
+    }
+    if (refundError) {
+      window.alert('Error creating refund. Please try again');
+    }
+  }, [refundData, refundError]);
+
+  const onRefundPayment = async (paymentId: number, payeeUsername: string) => {
+    if (
+      window.confirm(
+        `Are you sure you want to refund this payment to ${payeeUsername}?`
+      )
+    ) {
+      await refundPayment({ variables: { paymentId } });
+      await refetchPayments();
+    }
+  };
 
   const renderPayments = () => {
-    if (getPaymentsQuery.loading) {
+    if (paymentsQuery.loading) {
       return <CircularProgress color="secondary" />;
     }
-    if (getPaymentsQuery.error) {
+    if (paymentsQuery.error) {
       return (
         <Typography color="error">
           Error fetching payments. Please reload the page.
         </Typography>
       );
     }
-    return payments.map(({ createdAt, amountInCents, payeeUser }, index) => {
-      const date = DateTime.formatUserReadableDate(createdAt);
-      const amount = (amountInCents / 100).toFixed(2);
-      return (
-        <Typography
-          key={index}
-        >{`${date} - $${amount} to ${payeeUser.username}`}</Typography>
-      );
-    });
+    return payments.map(
+      (
+        { id, createdAt, amountInCents, isRefunded, payeeUser: { username } },
+        index
+      ) => {
+        const date = DateTime.formatUserReadableDate(createdAt);
+        const amount = (amountInCents / 100).toFixed(2);
+        return (
+          <Grid container direction="row" alignItems="center" key={index}>
+            <Typography
+              className={classnames({
+                [classes.refundedPayment]: isRefunded,
+              })}
+            >
+              {`${date} - $${amount} to ${username}`}
+              {isRefunded && ' - Refunded'}
+            </Typography>
+            {!isRefunded && (
+              <TextButton
+                disabled={refundLoading}
+                onClick={() => onRefundPayment(id, username)}
+                className={classes.refundButton}
+              >
+                Refund
+              </TextButton>
+            )}
+          </Grid>
+        );
+      }
+    );
   };
 
   return (

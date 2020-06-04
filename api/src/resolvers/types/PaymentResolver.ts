@@ -6,7 +6,7 @@ export class GetUserPaymentsArgs {
   @Field((type) => Int, { nullable: true, defaultValue: 0 })
   offset: number;
 
-  @Field((type) => Int, { nullable: true, defaultValue: 20 })
+  @Field((type) => Int, { nullable: true, defaultValue: 30 })
   limit: number;
 }
 
@@ -38,6 +38,12 @@ export class CreatePaymentInput {
 
   @Field((type) => Boolean, { nullable: true, defaultValue: false })
   shouldDetachPaymentMethodAfter?: boolean;
+}
+
+@InputType()
+export class RefundPaymentInput {
+  @Field((type) => Int)
+  paymentId: number;
 }
 
 @ObjectType()
