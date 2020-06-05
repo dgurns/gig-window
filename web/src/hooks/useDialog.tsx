@@ -3,6 +3,11 @@ import Grid from '@material-ui/core/Grid';
 import DialogComponent from '@material-ui/core/Dialog';
 import { makeStyles } from '@material-ui/core/styles';
 
+interface DialogProps {
+  onClose?: () => void;
+  children?: React.ReactNode;
+}
+
 const useStyles = makeStyles((theme) => ({
   container: {
     flexDirection: 'column',
@@ -20,18 +25,20 @@ const useStyles = makeStyles((theme) => ({
 
 const useDialog = (
   isVisibleByDefault: boolean = false
-): [React.ComponentType, (isVisible?: boolean) => void] => {
+): [(props: DialogProps) => JSX.Element, (isVisible?: boolean) => void] => {
   const classes = useStyles();
 
   const [isVisible, setIsVisible] = useState(isVisibleByDefault);
 
   const Dialog = useCallback(
-    (props) => (
+    (props: DialogProps) => (
       <DialogComponent
         open={isVisible}
-        onClose={() => setIsVisible(false)}
+        onClose={() => {
+          setIsVisible(false);
+          props.onClose && props.onClose();
+        }}
         classes={{ paper: classes.dialogPaper }}
-        {...props}
       >
         <Grid className={classes.container}>{props.children}</Grid>
       </DialogComponent>

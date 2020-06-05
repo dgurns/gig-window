@@ -120,7 +120,7 @@ export class UserResolver {
     const user = ctx.getUser();
     if (!user) throw new Error('User is not logged in');
 
-    if (email === user.email) throw new Error('This email is already saved');
+    if (email === user.email) throw new Error('This is already your email');
 
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser)
@@ -132,6 +132,26 @@ export class UserResolver {
     if (!isValidEmail.test(email)) throw new Error('Invalid email address');
 
     user.email = email;
+    await user.save();
+    return user;
+  }
+
+  @Mutation(() => User)
+  async updateUsername(
+    @Arg('username') username: string,
+    @Ctx() ctx: CustomContext
+  ) {
+    const user = ctx.getUser();
+    if (!user) throw new Error('User is not logged in');
+
+    if (username === user.username) {
+      throw new Error('This is already your username');
+    }
+
+    const existingUser = await User.findOne({ where: { username } });
+    if (existingUser) throw new Error('That username is already in use');
+
+    user.username = username;
     await user.save();
     return user;
   }

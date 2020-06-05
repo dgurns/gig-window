@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
@@ -10,6 +10,11 @@ import useDialog from 'hooks/useDialog';
 import NavSubheader from 'components/NavSubheader';
 import TextButton from 'components/TextButton';
 import EditEmailForm from 'components/EditEmailForm';
+
+enum EditableField {
+  Email = 'email',
+  Username = 'username',
+}
 
 const useStyles = makeStyles(({ spacing }) => ({
   pageContent: {
@@ -27,6 +32,11 @@ const EditProfile = () => {
   const [currentUser, currentUserQuery] = useCurrentUser();
 
   const [EditDialog, showEditDialog] = useDialog();
+  const [fieldToEdit, setFieldToEdit] = useState<EditableField | null>();
+
+  useEffect(() => {
+    showEditDialog(Boolean(fieldToEdit));
+  }, [fieldToEdit, showEditDialog]);
 
   if (!currentUser) return null;
 
@@ -34,7 +44,18 @@ const EditProfile = () => {
 
   const onEditSuccess = () => {
     currentUserQuery.refetch();
-    showEditDialog(false);
+    setFieldToEdit(null);
+  };
+
+  const renderEditForm = () => {
+    switch (fieldToEdit) {
+      case EditableField.Email:
+        return <EditEmailForm email={email} onSuccess={onEditSuccess} />;
+      case EditableField.Username:
+        return 'EditUsernameForm';
+      default:
+        return null;
+    }
   };
 
   return (
@@ -49,12 +70,16 @@ const EditProfile = () => {
         <Grid className={classes.profileSection}>
           <Typography variant="h6">Email</Typography>
           <Typography>{email}</Typography>
-          <TextButton onClick={() => showEditDialog(true)}>Edit</TextButton>
+          <TextButton onClick={() => setFieldToEdit(EditableField.Email)}>
+            Edit
+          </TextButton>
         </Grid>
         <Grid className={classes.profileSection}>
           <Typography variant="h6">Username</Typography>
           <Typography>{username}</Typography>
-          <TextButton>Edit</TextButton>
+          <TextButton onClick={() => setFieldToEdit(EditableField.Username)}>
+            Edit
+          </TextButton>
         </Grid>
         <Grid className={classes.profileSection}>
           <Typography variant="h6">Custom URL</Typography>
@@ -76,8 +101,8 @@ const EditProfile = () => {
         )}
       </Container>
 
-      <EditDialog>
-        <EditEmailForm email={email} onSuccess={onEditSuccess} />
+      <EditDialog onClose={() => setFieldToEdit(null)}>
+        {renderEditForm()}
       </EditDialog>
     </>
   );
