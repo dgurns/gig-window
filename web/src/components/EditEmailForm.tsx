@@ -71,7 +71,7 @@ const EditEmailForm = ({ email, onSuccess }: EditEmailFormProps) => {
           {localValidationError}
         </Typography>
       )}
-      {error && (
+      {!localValidationError && error && (
         <Typography variant="body2" color="error" className={classes.error}>
           {error.graphQLErrors.map(({ message }) => message)}
         </Typography>
