@@ -9,6 +9,7 @@ import useDialog from 'hooks/useDialog';
 
 import NavSubheader from 'components/NavSubheader';
 import TextButton from 'components/TextButton';
+import EditEmailForm from 'components/EditEmailForm';
 
 const useStyles = makeStyles(({ spacing }) => ({
   pageContent: {
@@ -19,20 +20,22 @@ const useStyles = makeStyles(({ spacing }) => ({
   profileSection: {
     marginBottom: spacing(3),
   },
-  editDialogTitle: {
-    marginBottom: spacing(2),
-  },
 }));
 
 const EditProfile = () => {
   const classes = useStyles();
-  const [currentUser] = useCurrentUser();
+  const [currentUser, currentUserQuery] = useCurrentUser();
 
   const [EditDialog, showEditDialog] = useDialog();
 
   if (!currentUser) return null;
 
   const { email, username, urlSlug, stripeAccountId } = currentUser;
+
+  const onEditSuccess = () => {
+    currentUserQuery.refetch();
+    showEditDialog(false);
+  };
 
   return (
     <>
@@ -46,7 +49,7 @@ const EditProfile = () => {
         <Grid className={classes.profileSection}>
           <Typography variant="h6">Email</Typography>
           <Typography>{email}</Typography>
-          <TextButton>Edit</TextButton>
+          <TextButton onClick={() => showEditDialog(true)}>Edit</TextButton>
         </Grid>
         <Grid className={classes.profileSection}>
           <Typography variant="h6">Username</Typography>
@@ -74,9 +77,7 @@ const EditProfile = () => {
       </Container>
 
       <EditDialog>
-        <Typography variant="h6" className={classes.editDialogTitle}>
-          Edit email address
-        </Typography>
+        <EditEmailForm email={email} onSuccess={onEditSuccess} />
       </EditDialog>
     </>
   );

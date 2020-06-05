@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 import { Resolver, Query, Mutation, Arg, Ctx } from 'type-graphql';
-import { getManager } from 'typeorm';
+import { getManager, Not } from 'typeorm';
 import { User } from 'entities/User';
 import {
   GetUserInput,
@@ -73,6 +73,11 @@ export class UserResolver {
       );
     }
 
+    const isValidEmail = new RegExp(
+      /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i
+    );
+    if (!isValidEmail.test(email)) throw new Error('Invalid email address');
+
     const hashedPassword = await bcrypt.hash(data.password, 10);
     const streamKey = uuidv4().replace(/-/g, '');
 
@@ -108,6 +113,27 @@ export class UserResolver {
   logOut(@Ctx() ctx: CustomContext) {
     ctx.logout();
     return true;
+  }
+
+  @Mutation(() => User)
+  async updateEmail(@Arg('email') email: string, @Ctx() ctx: CustomContext) {
+    const user = ctx.getUser();
+    if (!user) throw new Error('User is not logged in');
+
+    if (email === user.email) throw new Error('This email is already saved');
+
+    const existingUser = await User.findOne({ where: { email } });
+    if (existingUser)
+      throw new Error('That email is being used on another account');
+
+    const isValidEmail = new RegExp(
+      /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i
+    );
+    if (!isValidEmail.test(email)) throw new Error('Invalid email address');
+
+    user.email = email;
+    await user.save();
+    return user;
   }
 
   @Mutation(() => User)
