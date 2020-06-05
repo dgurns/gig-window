@@ -78,7 +78,11 @@ const DashboardSubheader = () => {
           justify="center"
           alignItems="center"
         >
-          <Link to="/" component={RouterLink} className={classes.subheaderLink}>
+          <Link
+            to={`${pathname}/edit-profile`}
+            component={RouterLink}
+            className={classes.subheaderLink}
+          >
             Edit profile
           </Link>
           <Link

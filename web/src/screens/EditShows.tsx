@@ -44,7 +44,7 @@ const useStyles = makeStyles(({ spacing }) => ({
     width: '100%',
   },
   section: {
-    marginBottom: spacing(4),
+    marginBottom: spacing(5),
   },
   sectionHeading: {
     marginBottom: spacing(2),

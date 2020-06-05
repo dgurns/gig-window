@@ -7,6 +7,7 @@ import Header from 'components/Header';
 import Home from 'screens/Home';
 import Watch from 'screens/Watch';
 import Dashboard from 'screens/Dashboard';
+import EditProfile from 'screens/EditProfile';
 import EditShows from 'screens/EditShows';
 import Transactions from 'screens/Transactions';
 import LinkStripeAccount from 'screens/LinkStripeAccount';
@@ -38,6 +39,9 @@ function App() {
 
         <Route path={`/${currentUserUrlSlug}`}>
           <Switch>
+            <Route exact path="/:currentUserUrlSlug/edit-profile">
+              <EditProfile />
+            </Route>
             <Route exact path="/:currentUserUrlSlug/edit-shows">
               <EditShows />
             </Route>
