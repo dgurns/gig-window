@@ -52,7 +52,7 @@ const EditUrlSlugForm = ({ urlSlug, onSuccess }: EditUrlSlugFormProps) => {
         history.push(`/${updatedUrlSlug}/edit-profile`);
       }
     }
-  }, [data, onSuccess]);
+  }, [data, onSuccess, history]);
 
   const onSaveClicked = () => {
     setLocalValidationError('');
