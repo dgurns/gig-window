@@ -10,10 +10,13 @@ import useDialog from 'hooks/useDialog';
 import NavSubheader from 'components/NavSubheader';
 import TextButton from 'components/TextButton';
 import EditEmailForm from 'components/EditEmailForm';
+import EditUsernameForm from 'components/EditUsernameForm';
+import EditUrlSlugForm from 'components/EditUrlSlugForm';
 
 enum EditableField {
   Email = 'email',
   Username = 'username',
+  UrlSlug = 'urlSlug',
 }
 
 const useStyles = makeStyles(({ spacing }) => ({
@@ -32,11 +35,11 @@ const EditProfile = () => {
   const [currentUser, currentUserQuery] = useCurrentUser();
 
   const [EditDialog, showEditDialog] = useDialog();
-  const [fieldToEdit, setFieldToEdit] = useState<EditableField | null>();
+  const [activeField, setActiveField] = useState<EditableField | null>();
 
   useEffect(() => {
-    showEditDialog(Boolean(fieldToEdit));
-  }, [fieldToEdit, showEditDialog]);
+    showEditDialog(Boolean(activeField));
+  }, [activeField, showEditDialog]);
 
   if (!currentUser) return null;
 
@@ -44,15 +47,19 @@ const EditProfile = () => {
 
   const onEditSuccess = () => {
     currentUserQuery.refetch();
-    setFieldToEdit(null);
+    setActiveField(null);
   };
 
   const renderEditForm = () => {
-    switch (fieldToEdit) {
+    switch (activeField) {
       case EditableField.Email:
         return <EditEmailForm email={email} onSuccess={onEditSuccess} />;
       case EditableField.Username:
-        return 'EditUsernameForm';
+        return (
+          <EditUsernameForm username={username} onSuccess={onEditSuccess} />
+        );
+      case EditableField.UrlSlug:
+        return <EditUrlSlugForm urlSlug={urlSlug} onSuccess={onEditSuccess} />;
       default:
         return null;
     }
@@ -70,14 +77,14 @@ const EditProfile = () => {
         <Grid className={classes.profileSection}>
           <Typography variant="h6">Email</Typography>
           <Typography>{email}</Typography>
-          <TextButton onClick={() => setFieldToEdit(EditableField.Email)}>
+          <TextButton onClick={() => setActiveField(EditableField.Email)}>
             Edit
           </TextButton>
         </Grid>
         <Grid className={classes.profileSection}>
           <Typography variant="h6">Username</Typography>
           <Typography>{username}</Typography>
-          <TextButton onClick={() => setFieldToEdit(EditableField.Username)}>
+          <TextButton onClick={() => setActiveField(EditableField.Username)}>
             Edit
           </TextButton>
         </Grid>
@@ -86,7 +93,9 @@ const EditProfile = () => {
           <Typography>
             {window.location.origin}/{urlSlug}
           </Typography>
-          <TextButton>Edit</TextButton>
+          <TextButton onClick={() => setActiveField(EditableField.UrlSlug)}>
+            Edit
+          </TextButton>
         </Grid>
         <Grid className={classes.profileSection}>
           <Typography variant="h6">Password</Typography>
@@ -101,7 +110,7 @@ const EditProfile = () => {
         )}
       </Container>
 
-      <EditDialog onClose={() => setFieldToEdit(null)}>
+      <EditDialog onClose={() => setActiveField(null)}>
         {renderEditForm()}
       </EditDialog>
     </>

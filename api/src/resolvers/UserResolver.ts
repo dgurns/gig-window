@@ -157,6 +157,33 @@ export class UserResolver {
   }
 
   @Mutation(() => User)
+  async updateUrlSlug(
+    @Arg('urlSlug') urlSlug: string,
+    @Ctx() ctx: CustomContext
+  ) {
+    const user = ctx.getUser();
+    if (!user) throw new Error('User is not logged in');
+
+    if (urlSlug === user.urlSlug) {
+      throw new Error('This is already your custom URL');
+    }
+    const isLowercaseLetters = new RegExp(/^[a-z]+$/).test(urlSlug);
+    if (!isLowercaseLetters) {
+      throw new Error('Custom URL can only contain lowercase letters');
+    }
+    if (urlSlug.length > 30) {
+      throw new Error('Custom URL must be less than 30 characters');
+    }
+
+    const existingUser = await User.findOne({ where: { urlSlug } });
+    if (existingUser) throw new Error('That custom URL is already in use');
+
+    user.urlSlug = urlSlug;
+    await user.save();
+    return user;
+  }
+
+  @Mutation(() => User)
   async completeStripeConnectOauthFlow(
     @Arg('authorizationCode') authorizationCode: string,
     @Ctx() ctx: CustomContext

@@ -3,14 +3,14 @@ import { useMutation, gql } from '@apollo/client';
 import { Grid, Typography, TextField, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-interface EditEmailFormProps {
-  email: string;
+interface EditUsernameFormProps {
+  username: string;
   onSuccess?: () => void;
 }
 
-const UPDATE_EMAIL = gql`
-  mutation UpdateEmail($email: String!) {
-    updateEmail(email: $email) {
+const UPDATE_USERNAME = gql`
+  mutation UpdateUsername($username: String!) {
+    updateUsername(username: $username) {
       id
     }
   }
@@ -27,17 +27,20 @@ const useStyles = makeStyles(({ spacing }) => ({
   },
 }));
 
-const EditEmailForm = ({ email, onSuccess }: EditEmailFormProps) => {
+const EditUsernameForm = ({ username, onSuccess }: EditUsernameFormProps) => {
   const classes = useStyles();
-  const [updateEmail, { loading, data, error }] = useMutation(UPDATE_EMAIL, {
-    errorPolicy: 'all',
-  });
+  const [updateUsername, { loading, data, error }] = useMutation(
+    UPDATE_USERNAME,
+    {
+      errorPolicy: 'all',
+    }
+  );
 
-  const [updatedEmail, setUpdatedEmail] = useState(email);
+  const [updatedUsername, setUpdatedUsername] = useState(username);
   const [localValidationError, setLocalValidationError] = useState('');
 
   useEffect(() => {
-    if (data?.updateEmail.id) {
+    if (data?.updateUsername.id) {
       if (onSuccess) {
         onSuccess();
       }
@@ -46,21 +49,21 @@ const EditEmailForm = ({ email, onSuccess }: EditEmailFormProps) => {
 
   const onSaveClicked = () => {
     setLocalValidationError('');
-    if (!updatedEmail) {
-      return setLocalValidationError('Please enter an email');
-    } else if (updatedEmail === email) {
-      return setLocalValidationError('This is already your email');
+    if (!updatedUsername) {
+      return setLocalValidationError('Please enter a username');
+    } else if (updatedUsername === username) {
+      return setLocalValidationError('This is already your username');
     }
-    updateEmail({ variables: { email: updatedEmail } });
+    updateUsername({ variables: { username: updatedUsername } });
   };
 
   return (
     <Grid container item direction="column" xs={12}>
       <TextField
-        value={updatedEmail}
-        onChange={({ target: { value } }) => setUpdatedEmail(value)}
+        value={updatedUsername}
+        onChange={({ target: { value } }) => setUpdatedUsername(value)}
         variant="outlined"
-        label="Email"
+        label="Username"
         className={classes.formField}
       />
       {localValidationError && (
@@ -86,4 +89,4 @@ const EditEmailForm = ({ email, onSuccess }: EditEmailFormProps) => {
   );
 };
 
-export default EditEmailForm;
+export default EditUsernameForm;
