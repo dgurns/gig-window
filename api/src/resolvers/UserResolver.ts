@@ -12,6 +12,7 @@ import { CustomContext } from 'authChecker';
 import LiveVideoInfrastructure from 'services/LiveVideoInfrastructure';
 import Stripe from 'services/stripe/Stripe';
 import StripeConnect from 'services/stripe/Connect';
+import UserService from 'services/User';
 
 @Resolver()
 export class UserResolver {
@@ -73,10 +74,14 @@ export class UserResolver {
       );
     }
 
-    const isValidEmail = new RegExp(
-      /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i
-    );
-    if (!isValidEmail.test(email)) throw new Error('Invalid email address');
+    if (!UserService.isValidEmail(email)) {
+      throw new Error('Invalid email address');
+    }
+    if (!UserService.isSecurePassword(password)) {
+      throw new Error(
+        'Password must be at least 8 characters and contain a number'
+      );
+    }
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
     const streamKey = uuidv4().replace(/-/g, '');
@@ -126,10 +131,8 @@ export class UserResolver {
     if (existingUser)
       throw new Error('That email is being used on another account');
 
-    const isValidEmail = new RegExp(
-      /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i
-    );
-    if (!isValidEmail.test(email)) throw new Error('Invalid email address');
+    if (!UserService.isValidEmail(email))
+      throw new Error('Invalid email address');
 
     user.email = email;
     await user.save();
@@ -179,6 +182,26 @@ export class UserResolver {
     if (existingUser) throw new Error('That custom URL is already in use');
 
     user.urlSlug = urlSlug;
+    await user.save();
+    return user;
+  }
+
+  @Mutation(() => User)
+  async updatePassword(
+    @Arg('password') password: string,
+    @Ctx() ctx: CustomContext
+  ) {
+    const user = ctx.getUser();
+    if (!user) throw new Error('User is not logged in');
+
+    if (!UserService.isSecurePassword(password)) {
+      throw new Error(
+        'Password must be at least 8 characters and contain a number'
+      );
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    user.hashedPassword = hashedPassword;
     await user.save();
     return user;
   }

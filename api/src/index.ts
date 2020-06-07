@@ -28,9 +28,7 @@ const { RTMP_ORIGIN, UI_ORIGIN, SERVER_PORT, COOKIE_SESSION_KEY } = process.env;
 
 async function start() {
   try {
-    const connection = await createDatabaseConnection(typeOrmConfig);
-    // TODO: Remove this for production
-    await connection.synchronize();
+    await createDatabaseConnection(typeOrmConfig);
 
     initializePassport();
 

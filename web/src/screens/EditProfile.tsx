@@ -12,11 +12,13 @@ import TextButton from 'components/TextButton';
 import EditEmailForm from 'components/EditEmailForm';
 import EditUsernameForm from 'components/EditUsernameForm';
 import EditUrlSlugForm from 'components/EditUrlSlugForm';
+import EditPasswordForm from 'components/EditPasswordForm';
 
 enum EditableField {
   Email = 'email',
   Username = 'username',
   UrlSlug = 'urlSlug',
+  Password = 'password',
 }
 
 const useStyles = makeStyles(({ spacing }) => ({
@@ -60,6 +62,8 @@ const EditProfile = () => {
         );
       case EditableField.UrlSlug:
         return <EditUrlSlugForm urlSlug={urlSlug} onSuccess={onEditSuccess} />;
+      case EditableField.Password:
+        return <EditPasswordForm onSuccess={onEditSuccess} />;
       default:
         return null;
     }
@@ -99,7 +103,9 @@ const EditProfile = () => {
         </Grid>
         <Grid className={classes.profileSection}>
           <Typography variant="h6">Password</Typography>
-          <TextButton>Change</TextButton>
+          <TextButton onClick={() => setActiveField(EditableField.Password)}>
+            Change
+          </TextButton>
         </Grid>
         {stripeAccountId && (
           <Grid className={classes.profileSection}>
