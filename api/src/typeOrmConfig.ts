@@ -10,6 +10,10 @@ const typeOrmConfig: PostgresConnectionOptions = {
   synchronize: false,
   logging: false,
   entities: ['./src/entities/*.ts'],
+  migrations: ['migrations/*.js'],
+  cli: {
+    migrationsDir: 'migrations',
+  },
 };
 
 export { typeOrmConfig };
