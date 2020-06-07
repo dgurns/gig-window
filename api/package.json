@@ -8,6 +8,7 @@
     "start:dist": "node 'dist/index.js'",
     "build:dev": "nodemon 'src/index.ts' --exec 'ts-node -r tsconfig-paths/register' index.ts -e ts,graphql",
     "build:dist": "tsc -p .",
+    "migration:generate": "yarn typeorm migration:generate -n $NAME",
     "test": "echo \"Error: no test specified\" && exit 1",
     "typeorm": "ts-node ./node_modules/.bin/typeorm"
   },
