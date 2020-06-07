@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useMutation, gql } from '@apollo/client';
-import { Grid, Typography, TextField, Button } from '@material-ui/core';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 
 interface LogInFormProps {
@@ -24,6 +27,9 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(3),
     textAlign: 'center',
   },
+  submitButton: {
+    width: '100%',
+  },
 }));
 
 const LogInForm = (props: LogInFormProps) => {
@@ -43,41 +49,45 @@ const LogInForm = (props: LogInFormProps) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const onLogInClicked = () => {
+  const onLogInClicked = (event: React.FormEvent) => {
+    event.preventDefault();
     logIn({ variables: { email, password } });
   };
 
   return (
     <Grid container direction="column">
-      <TextField
-        value={email}
-        onChange={({ target: { value } }) => setEmail(value)}
-        variant="outlined"
-        label="Email"
-        className={classes.formField}
-      />
-      <TextField
-        value={password}
-        onChange={({ target: { value } }) => setPassword(value)}
-        variant="outlined"
-        label="Password"
-        type="password"
-        className={classes.formField}
-      />
-      {error && (
-        <Typography variant="body2" color="error" className={classes.error}>
-          {error.graphQLErrors.map(({ message }) => message)}
-        </Typography>
-      )}
-      <Button
-        onClick={onLogInClicked}
-        color="primary"
-        variant="contained"
-        size="medium"
-        disabled={loading}
-      >
-        {props.submitLabel}
-      </Button>
+      <form onSubmit={onLogInClicked}>
+        <TextField
+          value={email}
+          onChange={({ target: { value } }) => setEmail(value)}
+          variant="outlined"
+          label="Email"
+          className={classes.formField}
+        />
+        <TextField
+          value={password}
+          onChange={({ target: { value } }) => setPassword(value)}
+          variant="outlined"
+          label="Password"
+          type="password"
+          className={classes.formField}
+        />
+        {error && (
+          <Typography variant="body2" color="error" className={classes.error}>
+            {error.graphQLErrors.map(({ message }) => message)}
+          </Typography>
+        )}
+        <Button
+          color="primary"
+          variant="contained"
+          size="medium"
+          disabled={loading}
+          type="submit"
+          className={classes.submitButton}
+        >
+          {props.submitLabel}
+        </Button>
+      </form>
     </Grid>
   );
 };

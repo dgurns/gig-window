@@ -3,6 +3,7 @@ import { useMutation, gql } from '@apollo/client';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
 
 import TextButton from './TextButton';
@@ -40,6 +41,13 @@ const useStyles = makeStyles(({ spacing }) => ({
   error: {
     marginBottom: spacing(3),
     textAlign: 'center',
+  },
+  hiddenField: {
+    height: 0,
+    width: 0,
+  },
+  submitButton: {
+    width: '100%',
   },
 }));
 
@@ -98,7 +106,7 @@ const PayWithSavedCard = (props: PayWithSavedCardProps) => {
     }
   }, [deleteCardMutation.data, deleteCardMutation.error, onDeleteCard]);
 
-  const onSubmitPayment = async (event: React.MouseEvent<HTMLElement>) => {
+  const onSubmitPayment = async (event: React.FormEvent) => {
     event.preventDefault();
     setPaymentError('');
     createPayment({
@@ -130,44 +138,48 @@ const PayWithSavedCard = (props: PayWithSavedCardProps) => {
 
   return (
     <Grid container direction="column">
-      <Grid
-        item
-        container
-        direction="row"
-        justify="space-between"
-        className={classes.savedCardWrapper}
-      >
-        <Typography>
-          {card.brand.toUpperCase()} ending in {card.last4}
-        </Typography>
-        <TextButton
-          onClick={() => deleteCard({ variables: { paymentMethodId: id } })}
-          disabled={deleteCardMutation.loading}
+      <form onSubmit={onSubmitPayment}>
+        <Grid
+          item
+          container
+          direction="row"
+          justify="space-between"
+          className={classes.savedCardWrapper}
         >
-          delete
-        </TextButton>
-      </Grid>
+          <Typography>
+            {card.brand.toUpperCase()} ending in {card.last4}
+          </Typography>
+          <TextButton
+            onClick={() => deleteCard({ variables: { paymentMethodId: id } })}
+            disabled={deleteCardMutation.loading}
+          >
+            delete
+          </TextButton>
+        </Grid>
 
-      {paymentError && (
-        <Typography variant="body2" color="error" className={classes.error}>
-          {paymentError}
-        </Typography>
-      )}
-      {deleteCardError && (
-        <Typography variant="body2" color="error" className={classes.error}>
-          {deleteCardError}
-        </Typography>
-      )}
+        {paymentError && (
+          <Typography variant="body2" color="error" className={classes.error}>
+            {paymentError}
+          </Typography>
+        )}
+        {deleteCardError && (
+          <Typography variant="body2" color="error" className={classes.error}>
+            {deleteCardError}
+          </Typography>
+        )}
 
-      <Button
-        variant="contained"
-        color="primary"
-        size="medium"
-        onClick={onSubmitPayment}
-        disabled={shouldDisableButton}
-      >
-        {buttonLabel}
-      </Button>
+        <TextField autoFocus className={classes.hiddenField} />
+        <Button
+          variant="contained"
+          color="primary"
+          size="medium"
+          type="submit"
+          disabled={shouldDisableButton}
+          className={classes.submitButton}
+        >
+          {buttonLabel}
+        </Button>
+      </form>
     </Grid>
   );
 };

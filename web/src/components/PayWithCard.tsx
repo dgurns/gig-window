@@ -70,6 +70,9 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
     marginBottom: spacing(3),
     textAlign: 'center',
   },
+  submitButton: {
+    width: '100%',
+  },
 }));
 
 const cardElementOptions = {
@@ -126,7 +129,7 @@ const PayWithCard = (props: PayWithCardProps) => {
     }
   }, [payment.data, payment.error, onSuccess]);
 
-  const onSubmit = async (event: React.MouseEvent<HTMLElement>) => {
+  const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!stripe || !elements) return;
 
@@ -190,52 +193,55 @@ const PayWithCard = (props: PayWithCardProps) => {
 
   return (
     <Grid container direction="column">
-      <Grid className={classes.cardElementWrapper}>
-        <CircularProgress
-          className={classnames(classes.cardElementLoading, {
-            [classes.cardElementLoadingHidden]: cardElementIsReady,
-          })}
-          size={18}
-          color="secondary"
-        />
-        <CardElement
-          options={cardElementOptions}
-          onReady={() => setCardElementIsReady(true)}
-        />
-      </Grid>
-
-      <FormControlLabel
-        label="Use this card for future payments"
-        control={
-          <Checkbox
-            checked={shouldSaveCard}
-            onChange={() => setShouldSaveCard(!shouldSaveCard)}
-            color="primary"
+      <form onSubmit={onSubmit}>
+        <Grid className={classes.cardElementWrapper}>
+          <CircularProgress
+            className={classnames(classes.cardElementLoading, {
+              [classes.cardElementLoadingHidden]: cardElementIsReady,
+            })}
+            size={18}
+            color="secondary"
           />
-        }
-        className={classnames([
-          classes.saveCard,
-          {
-            [classes.saveCardVisible]: cardElementIsReady,
-          },
-        ])}
-      />
+          <CardElement
+            options={cardElementOptions}
+            onReady={() => setCardElementIsReady(true)}
+          />
+        </Grid>
 
-      {paymentError && (
-        <Typography variant="body2" color="error" className={classes.error}>
-          {paymentError}
-        </Typography>
-      )}
+        <FormControlLabel
+          label="Use this card for future payments"
+          control={
+            <Checkbox
+              checked={shouldSaveCard}
+              onChange={() => setShouldSaveCard(!shouldSaveCard)}
+              color="primary"
+            />
+          }
+          className={classnames([
+            classes.saveCard,
+            {
+              [classes.saveCardVisible]: cardElementIsReady,
+            },
+          ])}
+        />
 
-      <Button
-        variant="contained"
-        color="primary"
-        size="medium"
-        onClick={onSubmit}
-        disabled={shouldDisableButton}
-      >
-        {buttonLabel}
-      </Button>
+        {paymentError && (
+          <Typography variant="body2" color="error" className={classes.error}>
+            {paymentError}
+          </Typography>
+        )}
+
+        <Button
+          variant="contained"
+          color="primary"
+          size="medium"
+          disabled={shouldDisableButton}
+          type="submit"
+          className={classes.submitButton}
+        >
+          {buttonLabel}
+        </Button>
+      </form>
     </Grid>
   );
 };

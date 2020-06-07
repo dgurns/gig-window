@@ -24,6 +24,9 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(3),
     textAlign: 'center',
   },
+  submitButton: {
+    width: '100%',
+  },
 }));
 
 const SignUpForm = (props: SignUpFormProps) => {
@@ -46,7 +49,8 @@ const SignUpForm = (props: SignUpFormProps) => {
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [localValidationError, setLocalValidationError] = useState('');
 
-  const onSignUpClicked = () => {
+  const onSignUp = (event: React.FormEvent) => {
+    event.preventDefault();
     setLocalValidationError('');
 
     if (password !== passwordConfirmation) {
@@ -58,55 +62,58 @@ const SignUpForm = (props: SignUpFormProps) => {
 
   return (
     <Grid container direction="column">
-      <TextField
-        value={email}
-        onChange={({ target: { value } }) => setEmail(value)}
-        variant="outlined"
-        label="Email"
-        className={classes.formField}
-      />
-      <TextField
-        value={username}
-        onChange={({ target: { value } }) => setUsername(value)}
-        variant="outlined"
-        label="Username (or artist/venue name)"
-        className={classes.formField}
-      />
-      <TextField
-        value={password}
-        onChange={({ target: { value } }) => setPassword(value)}
-        variant="outlined"
-        label="Password"
-        type="password"
-        className={classes.formField}
-      />
-      <TextField
-        value={passwordConfirmation}
-        onChange={({ target: { value } }) => setPasswordConfirmation(value)}
-        variant="outlined"
-        label="Password, one more time"
-        type="password"
-        className={classes.formField}
-      />
-      {localValidationError && (
-        <Typography variant="body2" color="error" className={classes.error}>
-          {localValidationError}
-        </Typography>
-      )}
-      {error && (
-        <Typography variant="body2" color="error" className={classes.error}>
-          {error.graphQLErrors.map(({ message }) => message)}
-        </Typography>
-      )}
-      <Button
-        onClick={onSignUpClicked}
-        color="primary"
-        variant="contained"
-        size="medium"
-        disabled={loading}
-      >
-        {props.submitLabel}
-      </Button>
+      <form onSubmit={onSignUp}>
+        <TextField
+          value={email}
+          onChange={({ target: { value } }) => setEmail(value)}
+          variant="outlined"
+          label="Email"
+          className={classes.formField}
+        />
+        <TextField
+          value={username}
+          onChange={({ target: { value } }) => setUsername(value)}
+          variant="outlined"
+          label="Username (or artist/venue name)"
+          className={classes.formField}
+        />
+        <TextField
+          value={password}
+          onChange={({ target: { value } }) => setPassword(value)}
+          variant="outlined"
+          label="Password"
+          type="password"
+          className={classes.formField}
+        />
+        <TextField
+          value={passwordConfirmation}
+          onChange={({ target: { value } }) => setPasswordConfirmation(value)}
+          variant="outlined"
+          label="Password, one more time"
+          type="password"
+          className={classes.formField}
+        />
+        {localValidationError && (
+          <Typography variant="body2" color="error" className={classes.error}>
+            {localValidationError}
+          </Typography>
+        )}
+        {error && (
+          <Typography variant="body2" color="error" className={classes.error}>
+            {error.graphQLErrors.map(({ message }) => message)}
+          </Typography>
+        )}
+        <Button
+          color="primary"
+          variant="contained"
+          size="medium"
+          disabled={loading}
+          type="submit"
+          className={classes.submitButton}
+        >
+          {props.submitLabel}
+        </Button>
+      </form>
     </Grid>
   );
 };

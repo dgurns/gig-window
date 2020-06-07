@@ -76,6 +76,11 @@ export default createMuiTheme({
         margin: 10,
       },
     },
+    MuiFormControl: {
+      root: {
+        display: 'flex',
+      },
+    },
     MuiInputBase: {
       input: {
         fontSize: '1rem',
