@@ -13,7 +13,6 @@ import { buildSchema } from 'type-graphql';
 import depthLimit from 'graphql-depth-limit';
 import { buildContext } from 'graphql-passport';
 
-import { typeOrmConfig } from './typeOrmConfig';
 import { initializePassport } from './initializePassport';
 import { restRouter } from './restRouter';
 import { authChecker } from './authChecker';
@@ -28,7 +27,7 @@ const { RTMP_ORIGIN, UI_ORIGIN, SERVER_PORT, COOKIE_SESSION_KEY } = process.env;
 
 async function start() {
   try {
-    await createDatabaseConnection(typeOrmConfig);
+    await createDatabaseConnection();
 
     initializePassport();
 
