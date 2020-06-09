@@ -88,6 +88,12 @@ export class User extends BaseEntity {
   @Column({ nullable: true, default: null })
   awsMediaPackageOriginEndpointUrl: string;
 
+  // AWS S3
+
+  @Field((type) => String, { nullable: true })
+  @Column({ nullable: true, default: null })
+  photoS3Key: string;
+
   // Stripe
 
   @Field((type) => String, { nullable: true })
