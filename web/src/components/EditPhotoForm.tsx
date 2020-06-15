@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import { Grid, Typography, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+
+import Image from 'services/Image';
 
 interface EditPhotoForm {
   photoS3Key: string;
@@ -29,6 +31,7 @@ const useStyles = makeStyles(({ spacing }) => ({
 
 const EditPhotoForm = ({ photoS3Key, onSuccess }: EditPhotoForm) => {
   const classes = useStyles();
+  const imageRef = useRef<HTMLImageElement | undefined>();
 
   // GraphQL mutation
   const loading = false;
@@ -43,10 +46,24 @@ const EditPhotoForm = ({ photoS3Key, onSuccess }: EditPhotoForm) => {
   });
   const [localValidationError, setLocalValidationError] = useState('');
 
-  const onSaveClicked = () => {
+  useEffect(() => {
+    return () => {
+      if (selectedFileObjectUrl) {
+        URL.revokeObjectURL(selectedFileObjectUrl);
+      }
+    };
+  }, [selectedFileObjectUrl]);
+
+  const onSaveClicked = async () => {
     setLocalValidationError('');
-    // validate
-    // upload
+    const imageElement = imageRef.current;
+    if (!selectedFileObjectUrl || !imageElement) {
+      return setLocalValidationError('Please choose a file');
+    }
+    const generatedImageBlob = await Image.generateImageBlobFromCrop(
+      imageElement,
+      crop
+    );
   };
 
   const onFileChanged = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,6 +88,7 @@ const EditPhotoForm = ({ photoS3Key, onSuccess }: EditPhotoForm) => {
           src={selectedFileObjectUrl}
           crop={crop}
           onChange={(newCrop) => setCrop(newCrop)}
+          onImageLoaded={(image) => (imageRef.current = image)}
           keepSelection
           className={classes.cropper}
         />
@@ -90,7 +108,7 @@ const EditPhotoForm = ({ photoS3Key, onSuccess }: EditPhotoForm) => {
         color="primary"
         variant="contained"
         size="medium"
-        disabled={loading}
+        disabled={loading || imageRef.current === undefined}
       >
         {loading ? 'Saving...' : 'Save'}
       </Button>
