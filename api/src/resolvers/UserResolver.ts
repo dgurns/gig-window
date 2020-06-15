@@ -120,6 +120,12 @@ export class UserResolver {
     return true;
   }
 
+  // generatePresignedPhotoUrl
+
+  // markPhotoAsUploaded
+
+  // deletePhoto
+
   @Mutation(() => User)
   async updateEmail(@Arg('email') email: string, @Ctx() ctx: CustomContext) {
     const user = ctx.getUser();
