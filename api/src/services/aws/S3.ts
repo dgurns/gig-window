@@ -15,7 +15,10 @@ const S3 = new AwsS3({
 });
 
 const getSignedPutUrl = (key: string): Promise<string> => {
-  const params = { Bucket: AWS_S3_BUCKET, Key: key };
+  const params = {
+    Bucket: AWS_S3_BUCKET,
+    Key: key,
+  };
   return S3.getSignedUrlPromise('putObject', params);
 };
 

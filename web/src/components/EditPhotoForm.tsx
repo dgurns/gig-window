@@ -1,10 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useMutation, gql } from '@apollo/client';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import { Grid, Typography, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Image from 'services/Image';
+
+const GENERATE_PRESIGNED_URL = gql`
+  mutation GeneratePresignedUrl {
+    generatePresignedImageUploadUrl
+  }
+`;
 
 interface EditPhotoForm {
   onSuccess?: () => void;
@@ -32,7 +39,12 @@ const EditPhotoForm = ({ onSuccess }: EditPhotoForm) => {
   const classes = useStyles();
   const imageRef = useRef<HTMLImageElement | undefined>();
 
-  // GraphQL mutation
+  const [generatePresignedUrl, generatePresignedUrlMutation] = useMutation(
+    GENERATE_PRESIGNED_URL,
+    {
+      errorPolicy: 'all',
+    }
+  );
   const loading = false;
 
   const [selectedFileObjectUrl, setSelectedFileObjectUrl] = useState('');
@@ -63,6 +75,32 @@ const EditPhotoForm = ({ onSuccess }: EditPhotoForm) => {
       imageElement,
       crop
     );
+    const presignedUrlResponse = await generatePresignedUrl();
+    const presignedUrl =
+      presignedUrlResponse.data?.generatePresignedImageUploadUrl;
+    if (!presignedUrl) {
+      return setLocalValidationError(
+        'Error preparing image for upload. Please try again.'
+      );
+    }
+
+    // Need to send fetch with matching signature to S3
+
+    try {
+      const response = await fetch(presignedUrl, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'image/jpeg',
+        },
+        body: generatedImageBlob,
+      });
+      console.log('response', response);
+      // if (onSuccess) {
+      //   onSuccess();
+      // }
+    } catch {
+      return setLocalValidationError('Error uploading image. Please try again');
+    }
   };
 
   const onFileChanged = (event: React.ChangeEvent<HTMLInputElement>) => {
