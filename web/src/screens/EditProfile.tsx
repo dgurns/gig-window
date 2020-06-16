@@ -53,7 +53,13 @@ const EditProfile = () => {
 
   if (!currentUser) return null;
 
-  const { photoS3Key, email, username, urlSlug, stripeAccountId } = currentUser;
+  const {
+    profileImageS3Key,
+    email,
+    username,
+    urlSlug,
+    stripeAccountId,
+  } = currentUser;
 
   const onEditSuccess = () => {
     currentUserQuery.refetch();
@@ -63,9 +69,7 @@ const EditProfile = () => {
   const renderEditForm = () => {
     switch (activeField) {
       case EditableField.Photo:
-        return (
-          <EditPhotoForm photoS3Key={photoS3Key} onSuccess={onEditSuccess} />
-        );
+        return <EditPhotoForm onSuccess={onEditSuccess} />;
       case EditableField.Email:
         return <EditEmailForm email={email} onSuccess={onEditSuccess} />;
       case EditableField.Username:
@@ -87,7 +91,7 @@ const EditProfile = () => {
       <Container maxWidth="md" disableGutters className={classes.pageContent}>
         <Grid className={classes.profileSection}>
           <Typography variant="h6">Photo</Typography>
-          {photoS3Key ? (
+          {profileImageS3Key ? (
             <img
               src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.daytonlocal.com%2Fimages%2Fmusic%2Fdayton-celtic-festival-gaelic-storm.jpg&f=1&nofb=1"
               alt="User"
@@ -97,7 +101,7 @@ const EditProfile = () => {
             <Typography color="secondary">Nothing yet</Typography>
           )}
           <TextButton onClick={() => setActiveField(EditableField.Photo)}>
-            {photoS3Key ? 'Edit' : 'Upload'}
+            {profileImageS3Key ? 'Edit' : 'Upload'}
           </TextButton>
         </Grid>
         <Grid className={classes.profileSection}>

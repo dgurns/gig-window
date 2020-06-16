@@ -20,6 +20,7 @@ const GET_CURRENT_USER = gql`
       awsMediaLiveChannelId
       awsMediaPackageChannelId
       awsMediaPackageOriginEndpointUrl
+      profileImageS3Key
       stripeCustomerId
       stripeAccountId
     }

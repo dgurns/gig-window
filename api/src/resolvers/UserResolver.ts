@@ -12,6 +12,7 @@ import { CustomContext } from 'authChecker';
 import LiveVideoInfrastructure from 'services/LiveVideoInfrastructure';
 import Stripe from 'services/stripe/Stripe';
 import StripeConnect from 'services/stripe/Connect';
+import AwsS3 from 'services/aws/S3';
 import UserService from 'services/User';
 
 @Resolver()
@@ -120,11 +121,27 @@ export class UserResolver {
     return true;
   }
 
-  // generatePresignedPhotoUrl
+  @Mutation(() => String)
+  async generatePresignedImageUploadUrl(@Ctx() ctx: CustomContext) {
+    const user = ctx.getUser();
+    if (!user) throw new Error('User is not logged in');
 
-  // markPhotoAsUploaded
+    const s3Key = UserService.generateProfileImageS3Key(user.id);
+    const presignedUrl = await AwsS3.getSignedPutUrl(s3Key);
+    return presignedUrl;
+  }
 
-  // deletePhoto
+  @Mutation(() => User)
+  async markProfileImageAsUploaded(@Ctx() ctx: CustomContext) {
+    const user = ctx.getUser();
+    if (!user) throw new Error('User is not logged in');
+
+    const s3Key = UserService.generateProfileImageS3Key(user.id);
+
+    user.profileImageS3Key = s3Key;
+    await user.save();
+    return user;
+  }
 
   @Mutation(() => User)
   async updateEmail(@Arg('email') email: string, @Ctx() ctx: CustomContext) {

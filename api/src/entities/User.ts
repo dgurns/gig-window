@@ -92,7 +92,7 @@ export class User extends BaseEntity {
 
   @Field((type) => String, { nullable: true })
   @Column({ nullable: true, default: null })
-  photoS3Key: string;
+  profileImageS3Key: string;
 
   // Stripe
 

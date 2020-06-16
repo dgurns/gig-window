@@ -7,7 +7,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Image from 'services/Image';
 
 interface EditPhotoForm {
-  photoS3Key: string;
   onSuccess?: () => void;
 }
 
@@ -29,7 +28,7 @@ const useStyles = makeStyles(({ spacing }) => ({
   },
 }));
 
-const EditPhotoForm = ({ photoS3Key, onSuccess }: EditPhotoForm) => {
+const EditPhotoForm = ({ onSuccess }: EditPhotoForm) => {
   const classes = useStyles();
   const imageRef = useRef<HTMLImageElement | undefined>();
 
