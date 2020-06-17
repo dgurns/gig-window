@@ -73,15 +73,7 @@ const ChatBox = (props: ChatBoxProps) => {
   const renderChatEvent = (chatEvent: Chat, index: number) => {
     const { message, user } = chatEvent;
     if (message) {
-      return (
-        <ChatMessage
-          userImageUrl="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fm.media-amazon.com%2Fimages%2FM%2FMV5BOTk1MzAzMDUxMF5BMl5BanBnXkFtZTgwODgyMTQxNjM%40._V1_UY98_CR3%2C0%2C67%2C98_AL_.jpg&f=1&nofb=1"
-          userUrlSlug={user.urlSlug}
-          username={user.username}
-          message={message}
-          key={index}
-        />
-      );
+      return <ChatMessage user={user} message={message} key={index} />;
     }
   };
 

@@ -9,6 +9,7 @@ const GET_CHAT_EVENTS = gql`
       user {
         urlSlug
         username
+        profileImageUrl
       }
       message
     }
@@ -22,6 +23,7 @@ const CHAT_EVENTS_SUBSCRIPTION = gql`
       user {
         urlSlug
         username
+        profileImageUrl
       }
       message
     }
@@ -35,6 +37,7 @@ const CREATE_CHAT = gql`
       user {
         urlSlug
         username
+        profileImageUrl
       }
       message
     }

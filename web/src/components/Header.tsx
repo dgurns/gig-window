@@ -10,24 +10,32 @@ import useDialog from 'hooks/useDialog';
 import AuthForm from 'components/AuthForm';
 import TextButton from 'components/TextButton';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(({ palette, spacing }) => ({
   container: {
-    backgroundColor: theme.palette.common.black,
-    height: 56,
-    padding: '0 10px',
+    backgroundColor: palette.common.black,
+    height: 58,
+    padding: `0 ${spacing(1)}px`,
   },
   logo: {
     marginLeft: 6,
   },
   button: {
-    color: theme.palette.common.white,
-    marginLeft: theme.spacing(2),
+    color: palette.common.white,
+    marginLeft: spacing(2),
   },
   userLink: {
-    color: theme.palette.common.white,
+    color: palette.common.white,
   },
   userIcon: {
-    marginLeft: theme.spacing(1),
+    marginLeft: spacing(1),
+  },
+  userImage: {
+    backgroundPosition: 'center',
+    backgroundSize: 'cover',
+    borderRadius: 20,
+    height: 40,
+    marginLeft: spacing(1),
+    width: 40,
   },
 }));
 
@@ -91,11 +99,20 @@ const Header = () => {
             >
               <Grid container direction="row" alignItems="center">
                 <Typography>{currentUser.username}</Typography>
-                <AccountCircleIcon
-                  color="secondary"
-                  fontSize="large"
-                  className={classes.userIcon}
-                />
+                {currentUser.profileImageUrl ? (
+                  <Grid
+                    className={classes.userImage}
+                    style={{
+                      backgroundImage: `url(${currentUser.profileImageUrl})`,
+                    }}
+                  />
+                ) : (
+                  <AccountCircleIcon
+                    color="secondary"
+                    fontSize="large"
+                    className={classes.userIcon}
+                  />
+                )}
               </Grid>
             </Link>
           )}

@@ -2,24 +2,31 @@ import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Grid, Link, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { User } from 'hooks/useUser';
 
 interface ChatMessageProps {
-  userImageUrl: string;
-  userUrlSlug: string;
-  username: string;
+  user: User;
   message?: string;
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(({ spacing, palette }) => ({
   container: {
-    marginBottom: theme.spacing(1),
-    marginTop: theme.spacing(1),
+    marginBottom: spacing(1),
+    marginTop: spacing(1),
   },
   userImage: {
     borderRadius: 20,
     height: 40,
-    marginRight: theme.spacing(1),
+    marginRight: spacing(1),
+    backgroundPosition: 'center',
     backgroundSize: 'cover',
+    width: 40,
+  },
+  userImagePlaceholder: {
+    backgroundColor: palette.background.default,
+    borderRadius: 20,
+    height: 40,
+    marginRight: spacing(1),
     width: 40,
   },
   textContainer: {
@@ -28,29 +35,37 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ChatMessage = (props: ChatMessageProps) => {
+const ChatMessage = ({ user, message }: ChatMessageProps) => {
   const classes = useStyles();
+
+  if (!user || !message) {
+    return null;
+  }
 
   return (
     <Grid container direction="row" className={classes.container}>
-      <RouterLink to={props.userUrlSlug}>
-        <Grid
-          item
-          className={classes.userImage}
-          style={{ backgroundImage: `url(${props.userImageUrl})` }}
-        />
+      <RouterLink to={user.urlSlug}>
+        {user.profileImageUrl ? (
+          <Grid
+            item
+            className={classes.userImage}
+            style={{ backgroundImage: `url(${user.profileImageUrl})` }}
+          />
+        ) : (
+          <Grid item className={classes.userImagePlaceholder} />
+        )}
       </RouterLink>
       <Grid item className={classes.textContainer}>
         <Link
           variant="body1"
           component={RouterLink}
-          to={props.userUrlSlug}
+          to={user.urlSlug}
           color="textPrimary"
         >
-          {props.username}
+          {user.username}
         </Link>
         <Typography variant="body1" color="textSecondary">
-          {props.message}
+          {message}
         </Typography>
       </Grid>
     </Grid>

@@ -1,6 +1,6 @@
 import { useQuery, gql, QueryResult } from '@apollo/client';
 
-interface User {
+export interface User {
   id: number;
   username: string;
   urlSlug: string;
