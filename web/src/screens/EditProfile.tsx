@@ -34,7 +34,7 @@ const useStyles = makeStyles(({ spacing }) => ({
   },
   profileImage: {
     display: 'block',
-    height: 95,
+    height: 80,
     marginBottom: 4,
     marginTop: 4,
   },

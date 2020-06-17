@@ -12,6 +12,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import useCurrentUser from 'hooks/useCurrentUser';
 import useShows from 'hooks/useShows';
 import DateTime from 'services/DateTime';
+import Image from 'services/Image';
 
 import DashboardSubheader from 'components/DashboardSubheader';
 import DashboardModeSwitcher from 'components/DashboardModeSwitcher';
@@ -40,8 +41,9 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   artistImage: {
-    height: 72,
+    height: 80,
     marginRight: theme.spacing(2),
+    width: 80 * Image.DEFAULT_IMAGE_ASPECT_RATIO,
     [theme.breakpoints.down('xs')]: {
       marginTop: theme.spacing(2),
     },

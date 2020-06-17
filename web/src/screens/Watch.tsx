@@ -15,6 +15,7 @@ import usePayments from 'hooks/usePayments';
 import DateTime from 'services/DateTime';
 import Ui from 'services/Ui';
 import User from 'services/User';
+import Image from 'services/Image';
 
 import ShowMarquee from 'components/ShowMarquee';
 import LiveVideoArea from 'components/LiveVideoArea';
@@ -42,8 +43,9 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   userImage: {
-    height: 72,
+    height: 80,
     marginRight: theme.spacing(2),
+    width: 80 * Image.DEFAULT_IMAGE_ASPECT_RATIO,
     [theme.breakpoints.down('xs')]: {
       marginTop: theme.spacing(2),
     },

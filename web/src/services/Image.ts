@@ -1,10 +1,16 @@
 import ReactCrop from 'react-image-crop';
 
+const DEFAULT_IMAGE_ASPECT_RATIO = 3 / 2;
+
 const generateImageBlobFromCrop = (
   image: HTMLImageElement,
   crop: ReactCrop.Crop
 ): Promise<Blob | null> | undefined => {
-  const cropAspectRatio = (crop?.width ?? 16) / (crop?.height ?? 9);
+  let cropAspectRatio = DEFAULT_IMAGE_ASPECT_RATIO;
+  if (crop.width && crop.height) {
+    cropAspectRatio = crop.width / crop.height;
+  }
+
   const OUTPUT_IMAGE_WIDTH = 240;
   const OUTPUT_IMAGE_HEIGHT = Math.round(OUTPUT_IMAGE_WIDTH / cropAspectRatio);
 
@@ -41,5 +47,6 @@ const generateImageBlobFromCrop = (
 };
 
 export default {
+  DEFAULT_IMAGE_ASPECT_RATIO,
   generateImageBlobFromCrop,
 };

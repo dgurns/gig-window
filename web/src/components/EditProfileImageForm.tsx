@@ -60,7 +60,7 @@ const EditProfileImageForm = ({ onSuccess }: EditProfileImageForm) => {
 
   const [selectedFileObjectUrl, setSelectedFileObjectUrl] = useState('');
   const [crop, setCrop] = useState<ReactCrop.Crop>({
-    aspect: 16 / 9,
+    aspect: Image.DEFAULT_IMAGE_ASPECT_RATIO,
     unit: '%',
     width: 80,
     x: 10,
