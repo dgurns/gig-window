@@ -21,10 +21,6 @@ const MARK_PROFILE_IMAGE_AS_UPLOADED = gql`
   }
 `;
 
-interface EditProfileImageForm {
-  onSuccess?: () => void;
-}
-
 const useStyles = makeStyles(({ spacing }) => ({
   formField: {
     marginBottom: spacing(3),
@@ -43,7 +39,7 @@ const useStyles = makeStyles(({ spacing }) => ({
   },
 }));
 
-const EditProfileImageForm = ({ onSuccess }: EditProfileImageForm) => {
+const EditProfileImageForm = () => {
   const classes = useStyles();
   const imageRef = useRef<HTMLImageElement | undefined>();
 
@@ -104,11 +100,9 @@ const EditProfileImageForm = ({ onSuccess }: EditProfileImageForm) => {
         body: generatedImageBlob,
       });
       await markProfileImageAsUploaded();
-
       setImageIsUploading(false);
-      if (onSuccess) {
-        return onSuccess();
-      }
+      // Reload to force an image refetch
+      window.location.reload();
     } catch {
       setImageIsUploading(false);
       return setLocalValidationError('Error uploading image. Please try again');

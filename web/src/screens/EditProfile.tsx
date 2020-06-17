@@ -69,7 +69,7 @@ const EditProfile = () => {
   const renderEditForm = () => {
     switch (activeField) {
       case EditableField.ProfileImage:
-        return <EditProfileImageForm onSuccess={onEditSuccess} />;
+        return <EditProfileImageForm />;
       case EditableField.Email:
         return <EditEmailForm email={email} onSuccess={onEditSuccess} />;
       case EditableField.Username:
