@@ -4,6 +4,7 @@ interface User {
   id: number;
   username: string;
   urlSlug: string;
+  profileImageUrl?: string;
   isPublishingStream: boolean;
   isInPublicMode: boolean;
   awsMediaPackageOriginEndpointUrl?: string;
@@ -21,6 +22,7 @@ const GET_USER = gql`
       id
       username
       urlSlug
+      profileImageUrl
       isPublishingStream
       isInPublicMode
       awsMediaPackageOriginEndpointUrl

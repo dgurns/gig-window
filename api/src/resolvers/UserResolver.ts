@@ -126,7 +126,7 @@ export class UserResolver {
     const user = ctx.getUser();
     if (!user) throw new Error('User is not logged in');
 
-    const s3Key = UserService.generateProfileImageS3Key(user.id);
+    const s3Key = UserService.generateProfileImageAwsS3Key(user.id);
     const presignedUrl = await AwsS3.getSignedPutUrl(s3Key);
     return presignedUrl;
   }
@@ -136,9 +136,10 @@ export class UserResolver {
     const user = ctx.getUser();
     if (!user) throw new Error('User is not logged in');
 
-    const s3Key = UserService.generateProfileImageS3Key(user.id);
+    const s3Key = UserService.generateProfileImageAwsS3Key(user.id);
+    const url = AwsS3.getFullS3Url(s3Key);
 
-    user.profileImageS3Key = s3Key;
+    user.profileImageUrl = url;
     await user.save();
     return user;
   }

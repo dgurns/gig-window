@@ -18,12 +18,12 @@ const isSecurePassword = (password?: string) => {
   return true;
 };
 
-const generateProfileImageS3Key = (userId: number) => {
+const generateProfileImageAwsS3Key = (userId: number) => {
   return `users/${userId}/profileImage.jpeg`;
 };
 
 export default {
   isValidEmail,
   isSecurePassword,
-  generateProfileImageS3Key,
+  generateProfileImageAwsS3Key,
 };

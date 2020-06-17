@@ -9,14 +9,14 @@ import useDialog from 'hooks/useDialog';
 
 import NavSubheader from 'components/NavSubheader';
 import TextButton from 'components/TextButton';
-import EditPhotoForm from 'components/EditPhotoForm';
+import EditProfileImageForm from 'components/EditProfileImageForm';
 import EditEmailForm from 'components/EditEmailForm';
 import EditUsernameForm from 'components/EditUsernameForm';
 import EditUrlSlugForm from 'components/EditUrlSlugForm';
 import EditPasswordForm from 'components/EditPasswordForm';
 
 enum EditableField {
-  Photo = 'photo',
+  ProfileImage = 'profileImage',
   Email = 'email',
   Username = 'username',
   UrlSlug = 'urlSlug',
@@ -32,9 +32,9 @@ const useStyles = makeStyles(({ spacing }) => ({
   profileSection: {
     marginBottom: spacing(3),
   },
-  userPhoto: {
+  profileImage: {
     display: 'block',
-    height: 72,
+    height: 95,
     marginBottom: 4,
     marginTop: 4,
   },
@@ -54,7 +54,7 @@ const EditProfile = () => {
   if (!currentUser) return null;
 
   const {
-    profileImageS3Key,
+    profileImageUrl,
     email,
     username,
     urlSlug,
@@ -68,8 +68,8 @@ const EditProfile = () => {
 
   const renderEditForm = () => {
     switch (activeField) {
-      case EditableField.Photo:
-        return <EditPhotoForm onSuccess={onEditSuccess} />;
+      case EditableField.ProfileImage:
+        return <EditProfileImageForm onSuccess={onEditSuccess} />;
       case EditableField.Email:
         return <EditEmailForm email={email} onSuccess={onEditSuccess} />;
       case EditableField.Username:
@@ -90,18 +90,20 @@ const EditProfile = () => {
       <NavSubheader title="Edit profile" />
       <Container maxWidth="md" disableGutters className={classes.pageContent}>
         <Grid className={classes.profileSection}>
-          <Typography variant="h6">Photo</Typography>
-          {profileImageS3Key ? (
+          <Typography variant="h6">Image</Typography>
+          {profileImageUrl ? (
             <img
-              src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.daytonlocal.com%2Fimages%2Fmusic%2Fdayton-celtic-festival-gaelic-storm.jpg&f=1&nofb=1"
+              src={profileImageUrl}
               alt="User"
-              className={classes.userPhoto}
+              className={classes.profileImage}
             />
           ) : (
             <Typography color="secondary">Nothing yet</Typography>
           )}
-          <TextButton onClick={() => setActiveField(EditableField.Photo)}>
-            {profileImageS3Key ? 'Edit' : 'Upload'}
+          <TextButton
+            onClick={() => setActiveField(EditableField.ProfileImage)}
+          >
+            {profileImageUrl ? 'Edit' : 'Upload'}
           </TextButton>
         </Grid>
         <Grid className={classes.profileSection}>

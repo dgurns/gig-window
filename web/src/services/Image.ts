@@ -4,8 +4,9 @@ const generateImageBlobFromCrop = (
   image: HTMLImageElement,
   crop: ReactCrop.Crop
 ): Promise<Blob | null> | undefined => {
+  const cropAspectRatio = (crop?.width ?? 16) / (crop?.height ?? 9);
   const OUTPUT_IMAGE_WIDTH = 240;
-  const OUTPUT_IMAGE_HEIGHT = 135;
+  const OUTPUT_IMAGE_HEIGHT = Math.round(OUTPUT_IMAGE_WIDTH / cropAspectRatio);
 
   const canvas = document.createElement('canvas');
   const scaleX = image.naturalWidth / image.width;

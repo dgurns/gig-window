@@ -13,7 +13,15 @@ const GENERATE_PRESIGNED_URL = gql`
   }
 `;
 
-interface EditPhotoForm {
+const MARK_PROFILE_IMAGE_AS_UPLOADED = gql`
+  mutation MarkProfileImageAsUploaded {
+    markProfileImageAsUploaded {
+      profileImageUrl
+    }
+  }
+`;
+
+interface EditProfileImageForm {
   onSuccess?: () => void;
 }
 
@@ -35,17 +43,20 @@ const useStyles = makeStyles(({ spacing }) => ({
   },
 }));
 
-const EditPhotoForm = ({ onSuccess }: EditPhotoForm) => {
+const EditProfileImageForm = ({ onSuccess }: EditProfileImageForm) => {
   const classes = useStyles();
   const imageRef = useRef<HTMLImageElement | undefined>();
 
-  const [generatePresignedUrl, generatePresignedUrlMutation] = useMutation(
-    GENERATE_PRESIGNED_URL,
-    {
-      errorPolicy: 'all',
-    }
-  );
-  const loading = false;
+  const [
+    generatePresignedUrl,
+    generatePresignedUrlMutation,
+  ] = useMutation(GENERATE_PRESIGNED_URL, { errorPolicy: 'all' });
+  const [
+    markProfileImageAsUploaded,
+    markProfileImageAsUploadedMutation,
+  ] = useMutation(MARK_PROFILE_IMAGE_AS_UPLOADED, {
+    errorPolicy: 'all',
+  });
 
   const [selectedFileObjectUrl, setSelectedFileObjectUrl] = useState('');
   const [crop, setCrop] = useState<ReactCrop.Crop>({
@@ -55,7 +66,9 @@ const EditPhotoForm = ({ onSuccess }: EditPhotoForm) => {
     x: 10,
     y: 10,
   });
+
   const [localValidationError, setLocalValidationError] = useState('');
+  const [imageIsUploading, setImageIsUploading] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -84,21 +97,20 @@ const EditPhotoForm = ({ onSuccess }: EditPhotoForm) => {
       );
     }
 
-    // Need to send fetch with matching signature to S3
-
+    setImageIsUploading(true);
     try {
-      const response = await fetch(presignedUrl, {
+      await fetch(presignedUrl, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'image/jpeg',
-        },
         body: generatedImageBlob,
       });
-      console.log('response', response);
-      // if (onSuccess) {
-      //   onSuccess();
-      // }
+      await markProfileImageAsUploaded();
+
+      setImageIsUploading(false);
+      if (onSuccess) {
+        return onSuccess();
+      }
     } catch {
+      setImageIsUploading(false);
       return setLocalValidationError('Error uploading image. Please try again');
     }
   };
@@ -111,6 +123,13 @@ const EditPhotoForm = ({ onSuccess }: EditPhotoForm) => {
     const objectUrl = URL.createObjectURL(selectedFile);
     setSelectedFileObjectUrl(objectUrl);
   };
+
+  const isLoading =
+    generatePresignedUrlMutation.loading ||
+    imageIsUploading ||
+    markProfileImageAsUploadedMutation.loading;
+
+  const shouldDisableButton = imageRef.current === undefined || isLoading;
 
   return (
     <Grid container item direction="column" xs={12}>
@@ -135,22 +154,17 @@ const EditPhotoForm = ({ onSuccess }: EditPhotoForm) => {
           {localValidationError}
         </Typography>
       )}
-      {/* {!localValidationError && error && (
-        <Typography variant="body2" color="error" className={classes.error}>
-          {error.graphQLErrors.map(({ message }) => message)}
-        </Typography>
-      )} */}
       <Button
         onClick={onSaveClicked}
         color="primary"
         variant="contained"
         size="medium"
-        disabled={loading || imageRef.current === undefined}
+        disabled={shouldDisableButton}
       >
-        {loading ? 'Saving...' : 'Save'}
+        {isLoading ? 'Saving...' : 'Save'}
       </Button>
     </Grid>
   );
 };
 
-export default EditPhotoForm;
+export default EditProfileImageForm;

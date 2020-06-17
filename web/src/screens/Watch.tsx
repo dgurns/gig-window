@@ -144,11 +144,13 @@ const Watch = () => {
   return (
     <Container disableGutters maxWidth={false}>
       <Grid container direction="row" className={classes.userInfoContainer}>
-        <img
-          src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.daytonlocal.com%2Fimages%2Fmusic%2Fdayton-celtic-festival-gaelic-storm.jpg&f=1&nofb=1"
-          alt="Watch"
-          className={classes.userImage}
-        />
+        {user.profileImageUrl && (
+          <img
+            src={user.profileImageUrl}
+            alt="Watch"
+            className={classes.userImage}
+          />
+        )}
         <Grid item className={classes.userText}>
           <Typography variant="h6">{user.username}</Typography>
           <Typography variant="body1" color="textSecondary">

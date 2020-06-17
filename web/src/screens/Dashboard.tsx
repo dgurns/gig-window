@@ -108,6 +108,7 @@ const Dashboard = () => {
   const {
     id,
     username,
+    profileImageUrl,
     isPublishingStream,
     liveVideoInfrastructureError,
     awsMediaPackageOriginEndpointUrl,
@@ -161,11 +162,13 @@ const Dashboard = () => {
 
       <Container disableGutters maxWidth={false}>
         <Grid container direction="row" className={classes.artistInfoContainer}>
-          <img
-            src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.daytonlocal.com%2Fimages%2Fmusic%2Fdayton-celtic-festival-gaelic-storm.jpg&f=1&nofb=1"
-            alt="User"
-            className={classes.artistImage}
-          />
+          {profileImageUrl && (
+            <img
+              src={profileImageUrl}
+              alt="User"
+              className={classes.artistImage}
+            />
+          )}
           <Grid item className={classes.artistText}>
             <Typography variant="h6">{username}</Typography>
             <Typography color="textSecondary">
