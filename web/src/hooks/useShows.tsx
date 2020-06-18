@@ -1,12 +1,7 @@
 import { useMemo } from 'react';
 import { useQuery, gql, QueryResult } from '@apollo/client';
-import Show from 'services/Show';
-
-interface Show {
-  id: number;
-  title: string;
-  showtime: string;
-}
+import ShowService from 'services/Show';
+import { Show } from 'types';
 
 const GET_SHOWS = gql`
   query GetShowsForUser($userId: Int!) {
@@ -27,7 +22,7 @@ const useShows = (
   });
 
   const shows = getShowsQuery.data?.getShowsForUser;
-  const activeShow = useMemo(() => Show.getActiveShow(shows), [shows]);
+  const activeShow = useMemo(() => ShowService.getActiveShow(shows), [shows]);
 
   return [shows, getShowsQuery, activeShow];
 };

@@ -1,4 +1,13 @@
-import { Query, Resolver, Mutation, Arg, Args, Ctx } from 'type-graphql';
+import {
+  Query,
+  Resolver,
+  Mutation,
+  Publisher,
+  PubSub,
+  Arg,
+  Args,
+  Ctx,
+} from 'type-graphql';
 import StripeLib from 'stripe';
 import { getManager } from 'typeorm';
 import subHours from 'date-fns/subHours';
@@ -92,7 +101,8 @@ export class PaymentResolver {
   @Mutation((returns) => Payment)
   async createPayment(
     @Arg('data') data: CreatePaymentInput,
-    @Ctx() ctx: CustomContext
+    @Ctx() ctx: CustomContext,
+    @PubSub('PAYMENT_CREATED') publish: Publisher<Payment>
   ): Promise<Payment> {
     const user = ctx.getUser();
     if (!user) {
@@ -131,6 +141,11 @@ export class PaymentResolver {
         stripePaymentIntentId: paymentIntent.id,
       });
       await payment.save();
+
+      payment.user = user;
+      payment.payeeUser = payee;
+      await publish(payment);
+
       return payment;
     } else {
       throw new Error('Error creating PaymentIntent');

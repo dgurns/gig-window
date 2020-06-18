@@ -1,11 +1,6 @@
 import closestIndexTo from 'date-fns/closestIndexTo';
 import DateTime from 'services/DateTime';
-
-interface Show {
-  id: number;
-  title: string;
-  showtime: string;
-}
+import { Show } from 'types';
 
 const getActiveShow = (shows?: Show[]): Show | undefined => {
   if (!shows || shows.length === 0) {

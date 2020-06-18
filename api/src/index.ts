@@ -19,6 +19,7 @@ import { authChecker } from './authChecker';
 import { User } from 'entities/User';
 import { UserResolver } from 'resolvers/UserResolver';
 import { ChatResolver } from 'resolvers/ChatResolver';
+import { ChatEventResolver } from 'resolvers/ChatEventResolver';
 import { PaymentResolver } from 'resolvers/PaymentResolver';
 import { AdminResolver } from 'resolvers/AdminResolver';
 import { ShowResolver } from 'resolvers/ShowResolver';
@@ -65,6 +66,7 @@ async function start() {
       resolvers: [
         UserResolver,
         ChatResolver,
+        ChatEventResolver,
         PaymentResolver,
         ShowResolver,
         AdminResolver,

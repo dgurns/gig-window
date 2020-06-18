@@ -2,11 +2,10 @@ import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Grid, Link, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { User } from 'hooks/useUser';
+import { Chat } from 'types';
 
 interface ChatMessageProps {
-  user: User;
-  message?: string;
+  chat: Chat;
 }
 
 const useStyles = makeStyles(({ spacing, palette }) => ({
@@ -32,15 +31,18 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
   textContainer: {
     flex: 1,
     flexDirection: 'column',
+    marginTop: -5,
   },
 }));
 
-const ChatMessage = ({ user, message }: ChatMessageProps) => {
+const ChatMessage = ({ chat }: ChatMessageProps) => {
   const classes = useStyles();
 
-  if (!user || !message) {
+  if (!chat) {
     return null;
   }
+
+  const { user, message } = chat;
 
   return (
     <Grid container direction="row" className={classes.container}>

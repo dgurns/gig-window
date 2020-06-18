@@ -1,7 +1,7 @@
 import { useQuery, gql, QueryResult } from '@apollo/client';
 import useCurrentUser from 'hooks/useCurrentUser';
 
-interface Payment {
+export interface Payment {
   id: number;
   createdAt: string;
   amountInCents: number;

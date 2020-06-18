@@ -1,17 +1,36 @@
 import { useEffect } from 'react';
 import { useQuery, useMutation, gql } from '@apollo/client';
-import { Chat } from '../../../api/src/entities/Chat';
+import { Chat, Payment } from 'types';
+
+export interface ChatEvent {
+  chat?: Chat;
+  payment?: Payment;
+}
 
 const GET_CHAT_EVENTS = gql`
   query GetChatEvents($parentUserId: Int!) {
     getChatEvents(parentUserId: $parentUserId) {
-      id
-      user {
-        urlSlug
-        username
-        profileImageUrl
+      chat {
+        id
+        user {
+          urlSlug
+          username
+          profileImageUrl
+        }
+        message
       }
-      message
+      payment {
+        id
+        user {
+          urlSlug
+          username
+          profileImageUrl
+        }
+        payeeUser {
+          username
+        }
+        amountInCents
+      }
     }
   }
 `;
@@ -19,13 +38,27 @@ const GET_CHAT_EVENTS = gql`
 const CHAT_EVENTS_SUBSCRIPTION = gql`
   subscription ChatEventsSubscription($parentUserId: Int!) {
     newChatEvent(parentUserId: $parentUserId) {
-      id
-      user {
-        urlSlug
-        username
-        profileImageUrl
+      chat {
+        id
+        user {
+          urlSlug
+          username
+          profileImageUrl
+        }
+        message
       }
-      message
+      payment {
+        id
+        user {
+          urlSlug
+          username
+          profileImageUrl
+        }
+        payeeUser {
+          username
+        }
+        amountInCents
+      }
     }
   }
 `;
@@ -46,7 +79,7 @@ const CREATE_CHAT = gql`
 
 const useChat = (
   parentUserId?: number
-): [Chat[], (message?: string) => void] => {
+): [ChatEvent[], (message?: string) => void] => {
   const { subscribeToMore, ...getChatEventsResult } = useQuery(
     GET_CHAT_EVENTS,
     {

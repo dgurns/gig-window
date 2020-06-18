@@ -1,5 +1,5 @@
 import { useQuery, gql, QueryResult } from '@apollo/client';
-import { User } from '../../../api/src/entities/User';
+import { User } from 'types';
 
 interface UseCurrentUserOptions {
   pollInterval?: number;

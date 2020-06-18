@@ -1,15 +1,5 @@
 import { useQuery, gql, QueryResult } from '@apollo/client';
-
-export interface User {
-  id: number;
-  username: string;
-  urlSlug: string;
-  profileImageUrl?: string;
-  isPublishingStream: boolean;
-  isInPublicMode: boolean;
-  awsMediaPackageOriginEndpointUrl?: string;
-  stripeAccountId?: string;
-}
+import { User } from 'types';
 
 interface UserArgs {
   id?: number;

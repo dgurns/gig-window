@@ -4,23 +4,30 @@ import { Grid, Link, Typography } from '@material-ui/core';
 import { green } from '@material-ui/core/colors';
 import { makeStyles } from '@material-ui/core/styles';
 
+import { Payment } from 'types';
+
 interface TipMessageProps {
-  userImageUrl: string;
-  userUrlSlug: string;
-  username: string;
-  tipAmount: number;
+  payment: Payment;
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(({ spacing, palette }) => ({
   container: {
-    marginBottom: theme.spacing(1),
-    marginTop: theme.spacing(1),
+    marginBottom: spacing(1),
+    marginTop: spacing(1),
   },
   userImage: {
     borderRadius: 20,
     height: 40,
-    marginRight: theme.spacing(1),
+    marginRight: spacing(1),
+    backgroundPosition: 'center',
     backgroundSize: 'cover',
+    width: 40,
+  },
+  userImagePlaceholder: {
+    backgroundColor: palette.background.default,
+    borderRadius: 20,
+    height: 40,
+    marginRight: spacing(1),
     width: 40,
   },
   username: {
@@ -30,29 +37,40 @@ const useStyles = makeStyles((theme) => ({
     color: green[500],
     display: 'inline',
     flex: 1,
+    marginTop: 6,
   },
 }));
 
-const TipMessage = (props: TipMessageProps) => {
+const TipMessage = ({ payment }: TipMessageProps) => {
   const classes = useStyles();
+
+  if (!payment) return null;
+
+  const { user, amountInCents } = payment;
 
   return (
     <Grid container direction="row" className={classes.container}>
-      <Grid
-        item
-        className={classes.userImage}
-        style={{ backgroundImage: `url(${props.userImageUrl})` }}
-      />
+      <RouterLink to={user.urlSlug}>
+        {user.profileImageUrl ? (
+          <Grid
+            item
+            className={classes.userImage}
+            style={{ backgroundImage: `url(${user.profileImageUrl})` }}
+          />
+        ) : (
+          <Grid item className={classes.userImagePlaceholder} />
+        )}
+      </RouterLink>
       <Typography variant="body1" className={classes.tipMessage}>
         <Link
           variant="body1"
           component={RouterLink}
-          to={props.userUrlSlug}
+          to={user.urlSlug}
           className={classes.username}
         >
-          {props.username}
+          {user.username}
         </Link>{' '}
-        tipped ${props.tipAmount}!
+        tipped ${amountInCents / 100}!
       </Typography>
     </Grid>
   );

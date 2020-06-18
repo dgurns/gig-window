@@ -2,11 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Grid, TextField } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { Chat } from '../../../api/src/entities/Chat';
 import useCurrentUser from 'hooks/useCurrentUser';
-import useChat from 'hooks/useChat';
+import useChat, { ChatEvent } from 'hooks/useChat';
 
 import ChatMessage from 'components/ChatMessage';
+import TipMessage from 'components/TipMessage';
 
 interface ChatBoxProps {
   userId?: number;
@@ -70,10 +70,12 @@ const ChatBox = (props: ChatBoxProps) => {
     }
   };
 
-  const renderChatEvent = (chatEvent: Chat, index: number) => {
-    const { message, user } = chatEvent;
-    if (message) {
-      return <ChatMessage user={user} message={message} key={index} />;
+  const renderChatEvent = (chatEvent: ChatEvent, index: number) => {
+    const { chat, payment } = chatEvent;
+    if (chat) {
+      return <ChatMessage chat={chat} key={index} />;
+    } else if (payment) {
+      return <TipMessage payment={payment} key={index} />;
     }
   };
 
