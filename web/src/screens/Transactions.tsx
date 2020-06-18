@@ -130,7 +130,7 @@ const Transactions = () => {
             <Link href="https://dashboard.stripe.com">your Stripe account</Link>
             . From there you can view accounting and customer details. <br />
             If any users want refunds, they should request them from their own
-            accounts.
+            Transactions page on Corona Window.
           </Typography>
         </Grid>
         <Grid className={classes.section}>
