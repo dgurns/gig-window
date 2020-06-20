@@ -1,4 +1,4 @@
-import { InputType, Field, Int } from 'type-graphql';
+import { InputType, ArgsType, Field, Int } from 'type-graphql';
 
 @InputType()
 export class GetUserInput {
@@ -28,4 +28,13 @@ export class LogInInput {
 
   @Field()
   password: string;
+}
+
+@ArgsType()
+export class NewUserEventArgs {
+  @Field((type) => Int, { nullable: true })
+  userId?: number;
+
+  @Field((type) => String, { nullable: true })
+  userUrlSlug?: string;
 }

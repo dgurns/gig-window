@@ -87,7 +87,7 @@ const Watch = () => {
   const { pathname } = useLocation();
   const urlSlug = pathname.split('/')[1];
 
-  const [user, userQuery] = useUser({ urlSlug });
+  const [user, userQuery] = useUser({ urlSlug, subscribe: true });
   const [, showsQuery, activeShow] = useShows(user?.id);
   const { paymentForShow, recentPaymentsToPayee } = usePayments({
     showId: activeShow?.id,

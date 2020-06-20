@@ -7,7 +7,7 @@ import cors from 'cors';
 import compression from 'compression';
 import cookieSession from 'cookie-session';
 import passport from 'passport';
-import { ApolloServer } from 'apollo-server-express';
+import { ApolloServer, PubSub } from 'apollo-server-express';
 import { createConnection as createDatabaseConnection } from 'typeorm';
 import { buildSchema } from 'type-graphql';
 import depthLimit from 'graphql-depth-limit';
@@ -25,6 +25,8 @@ import { AdminResolver } from 'resolvers/AdminResolver';
 import { ShowResolver } from 'resolvers/ShowResolver';
 
 const { RTMP_ORIGIN, UI_ORIGIN, SERVER_PORT, COOKIE_SESSION_KEY } = process.env;
+
+export const pubSub = new PubSub();
 
 async function start() {
   try {
@@ -71,6 +73,7 @@ async function start() {
         ShowResolver,
         AdminResolver,
       ],
+      pubSub,
       authChecker,
       dateScalarMode: 'isoDate',
       validate: false,

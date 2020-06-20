@@ -1,10 +1,22 @@
 import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
-import { Resolver, Query, Mutation, Arg, Ctx } from 'type-graphql';
-import { getManager, Not } from 'typeorm';
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Subscription,
+  Arg,
+  Args,
+  Root,
+  Ctx,
+  PubSub,
+  Publisher,
+} from 'type-graphql';
+import { getManager } from 'typeorm';
 import { User } from 'entities/User';
 import {
   GetUserInput,
+  NewUserEventArgs,
   SignUpInput,
   LogInInput,
 } from 'resolvers/types/UserResolver';
@@ -256,13 +268,33 @@ export class UserResolver {
   @Mutation(() => User)
   async setPublicMode(
     @Arg('publicMode') publicMode: boolean,
-    @Ctx() ctx: CustomContext
+    @Ctx() ctx: CustomContext,
+    @PubSub('PUBLIC_MODE_UPDATED') publish: Publisher<User>
   ) {
     const user = ctx.getUser();
     if (!user) throw new Error('User is not logged in');
 
     user.isInPublicMode = publicMode;
     await user.save();
+
+    await publish(user);
+
     return user;
+  }
+
+  @Subscription({
+    topics: ['PUBLIC_MODE_UPDATED', 'IS_PUBLISHING_STREAM_UPDATED'],
+    filter: ({ payload, args }) => {
+      if (payload.id === args.userId || payload.urlSlug === args.userUrlSlug) {
+        return true;
+      }
+      return false;
+    },
+  })
+  newUserEvent(
+    @Root() payload: User,
+    @Args() { userId, userUrlSlug }: NewUserEventArgs
+  ): User {
+    return payload;
   }
 }
