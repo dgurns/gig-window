@@ -1,9 +1,10 @@
 import { Resolver, Query, Mutation, Args, Arg, Ctx, Int } from 'type-graphql';
-import { getManager } from 'typeorm';
+import { getManager, MoreThan } from 'typeorm';
 import subMinutes from 'date-fns/subMinutes';
 import { CustomContext } from 'authChecker';
 import { Show } from 'entities/Show';
 import {
+  GetShowsArgs,
   GetShowsForUserArgs,
   CreateShowInput,
   UpdateShowInput,
@@ -12,6 +13,24 @@ import {
 
 @Resolver()
 export class ShowResolver {
+  @Query(() => [Show])
+  async getShows(@Args() { minShowtime, take, skip }: GetShowsArgs) {
+    const minimumShowtime = minShowtime ? new Date(minShowtime) : new Date();
+    const dateToCompareAsSqlString = minimumShowtime
+      .toISOString()
+      .replace('T', ' ');
+    const shows = await Show.find({
+      where: { showtime: MoreThan(dateToCompareAsSqlString) },
+      relations: ['user'],
+      order: {
+        showtime: 'ASC',
+      },
+      take,
+      skip,
+    });
+    return shows;
+  }
+
   @Query(() => [Show])
   async getShowsForUser(@Args() { userId, onlyUpcoming }: GetShowsForUserArgs) {
     const dateIncludingGracePeriod = subMinutes(new Date(), 240);

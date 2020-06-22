@@ -10,7 +10,7 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 
 import useCurrentUser from 'hooks/useCurrentUser';
-import useShows from 'hooks/useShows';
+import useShowsForUser from 'hooks/useShowsForUser';
 import DateTime from 'services/DateTime';
 import Image from 'services/Image';
 
@@ -87,6 +87,7 @@ const useStyles = makeStyles((theme) => ({
 const Dashboard = () => {
   const classes = useStyles();
 
+  // TODO: Use subscription instead of polling
   const [currentUser] = useCurrentUser({
     pollInterval: 3000,
   });
@@ -95,7 +96,7 @@ const Dashboard = () => {
   });
   const userIsStreamingLive =
     isStreamingLiveQuery.data?.checkUserIsStreamingLive;
-  const [, showsQuery, activeShow] = useShows(currentUser?.id);
+  const [, showsQuery, activeShow] = useShowsForUser(currentUser?.id);
 
   if (!currentUser) {
     return (

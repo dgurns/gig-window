@@ -1,10 +1,20 @@
 import format from 'date-fns/format';
+import isToday from 'date-fns/isToday';
+import isTomorrow from 'date-fns/isTomorrow';
 import addMinutes from 'date-fns/addMinutes';
 import compareAsc from 'date-fns/compareAsc';
 
 const formatUserReadableShowtime = (showtime?: number | string) => {
   if (!showtime) return '';
-  return format(new Date(showtime), "LLLL d 'at' h:mm a");
+
+  const showtimeAsDate = new Date(showtime);
+  if (isToday(showtimeAsDate)) {
+    return format(showtimeAsDate, "'Today at' h:mm a");
+  } else if (isTomorrow(showtimeAsDate)) {
+    return format(showtimeAsDate, "'Tomorrow at' h:mm a");
+  } else {
+    return format(new Date(showtime), "LLLL d 'at' h:mm a");
+  }
 };
 
 const formatUserReadableDate = (date?: number | string) => {

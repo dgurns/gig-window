@@ -1,30 +1,47 @@
-import { useMemo } from 'react';
-import { useQuery, gql, QueryResult } from '@apollo/client';
-import ShowService from 'services/Show';
+import { useQuery, gql, QueryHookOptions, QueryResult } from '@apollo/client';
 import { Show } from 'types';
 
 const GET_SHOWS = gql`
-  query GetShowsForUser($userId: Int!) {
-    getShowsForUser(userId: $userId) {
+  query GetShows($minShowtime: String, $take: Int, $skip: Int) {
+    getShows(minShowtime: $minShowtime, take: $take, skip: $skip) {
       id
       title
       showtime
+      user {
+        id
+        username
+        urlSlug
+        profileImageUrl
+      }
     }
   }
 `;
 
-const useShows = (
-  userId?: number
-): [Show[] | undefined, QueryResult<Show>, Show | undefined] => {
+interface UseShowsArgs {
+  minShowtime?: string;
+  take?: number;
+  skip?: number;
+  queryOptions?: QueryHookOptions;
+}
+
+const useShows = ({
+  minShowtime,
+  take,
+  skip,
+  queryOptions,
+}: UseShowsArgs = {}): [Show[] | undefined, QueryResult<Show>] => {
   const getShowsQuery = useQuery(GET_SHOWS, {
-    variables: { userId },
-    skip: !userId,
+    variables: {
+      minShowtime,
+      take,
+      skip,
+    },
+    ...queryOptions,
   });
 
-  const shows = getShowsQuery.data?.getShowsForUser;
-  const activeShow = useMemo(() => ShowService.getActiveShow(shows), [shows]);
+  const shows = getShowsQuery.data?.getShows;
 
-  return [shows, getShowsQuery, activeShow];
+  return [shows, getShowsQuery];
 };
 
 export default useShows;

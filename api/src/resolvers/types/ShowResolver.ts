@@ -1,6 +1,18 @@
 import { ArgsType, InputType, Field, Int } from 'type-graphql';
 
 @ArgsType()
+export class GetShowsArgs {
+  @Field((type) => String, { nullable: true })
+  minShowtime?: string;
+
+  @Field((type) => Int, { nullable: true, defaultValue: 20 })
+  take?: number;
+
+  @Field((type) => Int, { nullable: true, defaultValue: 0 })
+  skip?: number;
+}
+
+@ArgsType()
 export class GetShowsForUserArgs {
   @Field((type) => Int)
   userId: number;

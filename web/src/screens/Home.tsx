@@ -1,26 +1,73 @@
-import React from 'react';
-import { Container, Typography, Grid } from '@material-ui/core';
+import React, { useMemo } from 'react';
+import subHours from 'date-fns/subHours';
+import subMinutes from 'date-fns/subMinutes';
+import Container from '@material-ui/core/Container';
+import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 import { makeStyles } from '@material-ui/core/styles';
 
-import Subheader from 'components/Subheader';
-import ShowCard from 'components/ShowCard';
+import useShows from 'hooks/useShows';
 
-const useStyles = makeStyles((theme) => ({
+import Subheader from 'components/Subheader';
+import UpcomingShowCard from 'components/UpcomingShowCard';
+
+const useStyles = makeStyles(({ spacing }) => ({
   pageContent: {
-    padding: theme.spacing(2),
-    paddingTop: theme.spacing(4),
+    padding: spacing(2),
+    paddingTop: spacing(4),
     width: '100%',
   },
   sectionHeading: {
     marginBottom: 15,
   },
-  showCards: {
-    marginBottom: 35,
+  upcomingShowCards: {
+    marginBottom: spacing(4),
+  },
+  showCard: {
+    marginBottom: spacing(1),
   },
 }));
 
 const Home = () => {
   const classes = useStyles();
+
+  const minShowtimeToFetch = useMemo(
+    () => subHours(new Date(), 3).toISOString(),
+    []
+  );
+  const [shows = [], showsQuery] = useShows({
+    minShowtime: minShowtimeToFetch,
+    take: 30,
+    skip: 0,
+    queryOptions: { fetchPolicy: 'cache-and-network' },
+  });
+
+  const upcomingShowThreshold = useMemo(() => subMinutes(new Date(), 15), []);
+  const upcomingShows = shows.filter(
+    ({ showtime }) => new Date(showtime) > upcomingShowThreshold
+  );
+
+  const renderUpcomingShows = () => {
+    if (showsQuery.loading) {
+      return <CircularProgress color="secondary" />;
+    } else if (showsQuery.error) {
+      return (
+        <Typography color="secondary">Error loading upcoming shows</Typography>
+      );
+    } else {
+      return (
+        <Grid item container xs={12} spacing={2}>
+          {upcomingShows.map((show, index) => (
+            <Grid item xs={12} sm={6} className={classes.showCard} key={index}>
+              <UpcomingShowCard show={show} />
+            </Grid>
+          ))}
+        </Grid>
+      );
+    }
+  };
 
   return (
     <>
@@ -29,27 +76,10 @@ const Home = () => {
       </Subheader>
       <Container maxWidth="md" disableGutters className={classes.pageContent}>
         <Typography variant="h6" className={classes.sectionHeading}>
-          Live now
+          Upcoming shows
         </Typography>
-        <Grid container item xs={12} spacing={2} className={classes.showCards}>
-          <Grid item xs={12} sm={6}>
-            <ShowCard />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <ShowCard />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <ShowCard />
-          </Grid>
-        </Grid>
-
-        <Typography variant="h6" className={classes.sectionHeading}>
-          7:30 pm
-        </Typography>
-        <Grid container item xs={12} spacing={2} className={classes.showCards}>
-          <Grid item xs={12} sm={6}>
-            <ShowCard />
-          </Grid>
+        <Grid item xs={12} className={classes.upcomingShowCards}>
+          {renderUpcomingShows()}
         </Grid>
       </Container>
     </>

@@ -10,7 +10,7 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 
 import useUser from 'hooks/useUser';
-import useShows from 'hooks/useShows';
+import useShowsForUser from 'hooks/useShowsForUser';
 import usePayments from 'hooks/usePayments';
 import DateTime from 'services/DateTime';
 import Ui from 'services/Ui';
@@ -88,7 +88,7 @@ const Watch = () => {
   const urlSlug = pathname.split('/')[1];
 
   const [user, userQuery] = useUser({ urlSlug, subscribe: true });
-  const [, showsQuery, activeShow] = useShows(user?.id);
+  const [, showsQuery, activeShow] = useShowsForUser(user?.id);
   const { paymentForShow, recentPaymentsToPayee } = usePayments({
     showId: activeShow?.id,
     payeeUserId: user?.id,
