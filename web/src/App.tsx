@@ -9,7 +9,7 @@ import Watch from 'screens/Watch';
 import Dashboard from 'screens/Dashboard';
 import EditProfile from 'screens/EditProfile';
 import EditShows from 'screens/EditShows';
-import Transactions from 'screens/Transactions';
+import Payments from 'screens/Payments';
 import LinkStripeAccount from 'screens/LinkStripeAccount';
 
 function App() {
@@ -45,8 +45,8 @@ function App() {
             <Route exact path="/:currentUserUrlSlug/edit-shows">
               <EditShows />
             </Route>
-            <Route exact path="/:currentUserUrlSlug/transactions">
-              <Transactions />
+            <Route exact path="/:currentUserUrlSlug/payments">
+              <Payments />
             </Route>
             <Route>
               <Dashboard />

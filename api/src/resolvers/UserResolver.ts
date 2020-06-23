@@ -62,6 +62,17 @@ export class UserResolver {
     return LiveVideoInfrastructure.checkUserIsStreamingLive(user);
   }
 
+  @Query(() => [User])
+  async getUsersStreamingLive() {
+    const usersStreamingLive = await User.find({
+      where: {
+        isInPublicMode: true,
+        isPublishingStream: true,
+      },
+    });
+    return usersStreamingLive;
+  }
+
   @Mutation(() => User)
   async signUp(@Arg('data') data: SignUpInput, @Ctx() ctx: CustomContext) {
     const { email, username, password } = data;

@@ -19,6 +19,10 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
   message: {
     color: palette.common.white,
   },
+  buyTicketWrapper: {
+    height: 65,
+    width: 'auto',
+  },
 }));
 
 interface ShowMarqueeProps {
@@ -41,14 +45,15 @@ const ShowMarquee = ({ show, payee }: ShowMarqueeProps) => {
   });
 
   const renderBuyTicketButton = () => {
-    if (paymentForShowQuery.error) {
+    if (paymentForShowQuery.loading) {
+      return null;
+    } else if (paymentForShowQuery.error) {
       return (
         <Typography className={classes.message}>
           Error checking ticket status
         </Typography>
       );
-    }
-    if (paymentForShow) {
+    } else if (paymentForShow) {
       return (
         <Typography className={classes.message}>
           You're in{' '}
@@ -57,8 +62,9 @@ const ShowMarquee = ({ show, payee }: ShowMarqueeProps) => {
           </span>
         </Typography>
       );
+    } else {
+      return <BuyTicketButton payee={payee} show={show} />;
     }
-    return <BuyTicketButton payee={payee} show={show} />;
   };
 
   return (
@@ -76,7 +82,14 @@ const ShowMarquee = ({ show, payee }: ShowMarqueeProps) => {
           postTargetLabel="Waiting for stream"
         />
       </Grid>
-      {payee.stripeAccountId && renderBuyTicketButton()}
+      <Grid
+        item
+        container
+        direction="column"
+        className={classes.buyTicketWrapper}
+      >
+        {payee.stripeAccountId && renderBuyTicketButton()}
+      </Grid>
     </Grid>
   );
 };

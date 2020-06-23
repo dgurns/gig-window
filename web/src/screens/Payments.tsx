@@ -42,7 +42,7 @@ const useStyles = makeStyles(({ spacing }) => ({
   },
 }));
 
-const Transactions = () => {
+const Payments = () => {
   const classes = useStyles();
 
   const { payments = [], paymentsQuery, refetchPayments } = usePayments();
@@ -119,7 +119,7 @@ const Transactions = () => {
 
   return (
     <>
-      <NavSubheader title="Transactions" />
+      <NavSubheader title="Payments" />
       <Container maxWidth="md" disableGutters className={classes.pageContent}>
         <Grid className={classes.section}>
           <Typography variant="h6" className={classes.sectionHeading}>
@@ -130,7 +130,7 @@ const Transactions = () => {
             <Link href="https://dashboard.stripe.com">your Stripe account</Link>
             . From there you can view accounting and customer details. <br />
             If any users want refunds, they should request them from their own
-            Transactions page on Corona Window.
+            Payments page on Corona Window.
           </Typography>
         </Grid>
         <Grid className={classes.section}>
@@ -144,4 +144,4 @@ const Transactions = () => {
   );
 };
 
-export default Transactions;
+export default Payments;

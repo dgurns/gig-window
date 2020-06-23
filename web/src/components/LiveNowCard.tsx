@@ -4,12 +4,18 @@ import { Card, CardMedia, Grid, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { grey } from '@material-ui/core/colors';
 
-import { Show } from 'types';
-import DateTime from 'services/DateTime';
+import { User, Show } from 'types';
 
-const useStyles = makeStyles(({ spacing }) => ({
-  showtime: {
+const useStyles = makeStyles(({ palette, spacing }) => ({
+  liveLabel: {
     marginBottom: 6,
+  },
+  liveCircle: {
+    backgroundColor: palette.error.main,
+    borderRadius: 6,
+    height: 11,
+    marginRight: 5,
+    width: 11,
   },
   cardLink: {
     textDecoration: 'none',
@@ -37,28 +43,32 @@ const useStyles = makeStyles(({ spacing }) => ({
   },
 }));
 
-interface UpcomingShowCardProps {
-  show: Show;
+interface LiveNowCardProps {
+  user: User;
+  show?: Show;
 }
 
-const UpcomingShowCard = ({ show }: UpcomingShowCardProps) => {
+const LiveNowCard = ({ user, show }: LiveNowCardProps) => {
   const classes = useStyles();
 
   return (
     <>
-      <Typography color="secondary" className={classes.showtime}>
-        {DateTime.formatUserReadableShowtime(show.showtime)}
-      </Typography>
-      <Link to={show.user.urlSlug} className={classes.cardLink}>
+      <Grid
+        container
+        direction="row"
+        alignItems="center"
+        className={classes.liveLabel}
+      >
+        <div className={classes.liveCircle} />
+        <Typography color="error">Live</Typography>
+      </Grid>
+      <Link to={user.urlSlug} className={classes.cardLink}>
         <Card className={classes.card} elevation={3}>
-          <CardMedia
-            image={show.user.profileImageUrl}
-            className={classes.image}
-          />
+          <CardMedia image={user.profileImageUrl} className={classes.image} />
           <Grid className={classes.textContent}>
-            <Typography variant="body1">{show.title}</Typography>
+            {show && <Typography variant="body1">{show.title}</Typography>}
             <Typography variant="body1" color="textSecondary">
-              {show.user.username}
+              {user.username}
             </Typography>
           </Grid>
         </Card>
@@ -67,4 +77,4 @@ const UpcomingShowCard = ({ show }: UpcomingShowCardProps) => {
   );
 };
 
-export default UpcomingShowCard;
+export default LiveNowCard;

@@ -93,11 +93,11 @@ const DashboardSubheader = () => {
             Edit shows
           </Link>
           <Link
-            to={`${pathname}/transactions`}
+            to={`${pathname}/payments`}
             component={RouterLink}
             className={classes.subheaderLink}
           >
-            Transactions
+            Payments
           </Link>
           <TextButton
             onClick={() => logOut()}

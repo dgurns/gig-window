@@ -3,6 +3,7 @@ import isToday from 'date-fns/isToday';
 import isTomorrow from 'date-fns/isTomorrow';
 import addMinutes from 'date-fns/addMinutes';
 import compareAsc from 'date-fns/compareAsc';
+import differenceInMinutes from 'date-fns/differenceInMinutes';
 
 const formatUserReadableShowtime = (showtime?: number | string) => {
   if (!showtime) return '';
@@ -36,8 +37,26 @@ const showtimeIsStillActive = (showtime?: string | number) => {
   return false;
 };
 
+const showtimeIsSoon = (showtime?: string | number): boolean => {
+  if (!showtime) return false;
+
+  const SOON_PERIOD_IN_MINUTES = 30;
+  const minutesUntilShowtime = differenceInMinutes(
+    new Date(showtime),
+    new Date()
+  );
+  if (
+    minutesUntilShowtime > 0 &&
+    minutesUntilShowtime <= SOON_PERIOD_IN_MINUTES
+  ) {
+    return true;
+  }
+  return false;
+};
+
 export default {
   formatUserReadableShowtime,
   formatUserReadableDate,
   showtimeIsStillActive,
+  showtimeIsSoon,
 };
