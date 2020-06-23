@@ -1,5 +1,4 @@
 import React from 'react';
-import { useQuery, gql } from '@apollo/client';
 import {
   Paper,
   Grid,
@@ -19,12 +18,6 @@ import DashboardModeSwitcher from 'components/DashboardModeSwitcher';
 import VideoPlayer from 'components/VideoPlayer';
 import ChatBox from 'components/ChatBox';
 import HowToBroadcast from 'components/HowToBroadcast';
-
-const CHECK_USER_IS_STREAMING_LIVE = gql`
-  {
-    checkUserIsStreamingLive
-  }
-`;
 
 const useStyles = makeStyles((theme) => ({
   pageContent: {
@@ -87,15 +80,7 @@ const useStyles = makeStyles((theme) => ({
 const Dashboard = () => {
   const classes = useStyles();
 
-  // TODO: Use subscription instead of polling
-  const [currentUser] = useCurrentUser({
-    pollInterval: 3000,
-  });
-  const isStreamingLiveQuery = useQuery(CHECK_USER_IS_STREAMING_LIVE, {
-    pollInterval: 10000,
-  });
-  const userIsStreamingLive =
-    isStreamingLiveQuery.data?.checkUserIsStreamingLive;
+  const [currentUser] = useCurrentUser({ subscribe: true });
   const [, showsQuery, activeShow] = useShowsForUser(currentUser?.id);
 
   if (!currentUser) {
@@ -192,27 +177,18 @@ const Dashboard = () => {
               container
               xs={12}
               sm={8}
-              md={9}
               direction="column"
               justify="center"
               alignItems="center"
               className={classes.videoContainer}
             >
-              {userIsStreamingLive ? (
+              {currentUser.isPublishingStream ? (
                 <VideoPlayer hlsUrl={awsMediaPackageOriginEndpointUrl} />
               ) : (
                 renderStreamPreviewMessage()
               )}
             </Grid>
-            <Grid
-              item
-              container
-              xs={false}
-              sm={4}
-              md={3}
-              lg={3}
-              className={classes.chat}
-            >
+            <Grid item container xs={false} sm={4} className={classes.chat}>
               <ChatBox userId={id} />
             </Grid>
           </Grid>
@@ -223,7 +199,7 @@ const Dashboard = () => {
           item
           direction="column"
           xs={12}
-          md={9}
+          sm={8}
           className={classes.howTo}
         >
           <HowToBroadcast />
