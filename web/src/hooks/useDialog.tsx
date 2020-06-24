@@ -11,6 +11,7 @@ interface DialogProps {
 const useStyles = makeStyles((theme) => ({
   container: {
     flexDirection: 'column',
+    overflowY: 'scroll',
     padding: theme.spacing(3),
     width: 400,
     [theme.breakpoints.down('xs')]: {

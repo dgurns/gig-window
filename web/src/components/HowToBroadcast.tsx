@@ -27,9 +27,9 @@ const HowToBroadcast = () => {
         1. Pick a streaming software - anything that lets you stream to an RTMP
         URL. Many people like <Link href="https://obsproject.com/">OBS</Link>{' '}
         (laptop/desktop) or{' '}
-        <Link href="https://streamlabs.com/">Streamlabs</Link> (iOS/Android),
-        which are free and open source. Both have plenty of help resources and
-        guides for getting started.
+        <Link href="https://streamlabs.com/mobile-app">Streamlabs</Link>{' '}
+        (iPad/iPhone/Android), which are free and open source. Both have plenty
+        of help resources and guides for getting started.
       </Typography>
       <Typography className={classes.howToItem}>
         2. Send your stream to this RTMP URL:

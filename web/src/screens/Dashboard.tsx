@@ -132,7 +132,7 @@ const Dashboard = () => {
         <Typography variant="body1" className={classes.streamPreviewMessage}>
           {!isPublishingStream
             ? 'No stream detected'
-            : 'Stream detected! Starting up video infrastructure... (takes about 60 seconds)'}
+            : 'Stream detected! Starting up video infrastructure... (takes a minute or two from a cold start)'}
         </Typography>
         {isPublishingStream && (
           <CircularProgress

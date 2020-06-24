@@ -23,6 +23,7 @@ const wsLink = new WebSocketLink({
   uri: process.env.REACT_APP_GRAPHQL_WEBSOCKETS_URL || '',
   options: {
     reconnect: true,
+    timeout: 3000,
   },
 });
 const splitLink = split(

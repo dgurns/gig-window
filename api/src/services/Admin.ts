@@ -3,7 +3,7 @@ import subMinutes from 'date-fns/subMinutes';
 import { User } from 'entities/User';
 
 const getUsersWithStaleMediaLiveChannels = async (): Promise<User[]> => {
-  const MAX_INACTIVITY_PERIOD_MINUTES = 15;
+  const MAX_INACTIVITY_PERIOD_MINUTES = 1; // TODO: Change to 15 in production
   const staleTimestampMarker = subMinutes(
     Date.now(),
     MAX_INACTIVITY_PERIOD_MINUTES

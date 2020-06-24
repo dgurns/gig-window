@@ -122,13 +122,15 @@ const describeChannel = (
 
 const stopChannel = (
   channelId: string
-): Promise<PromiseResult<StopChannelResponse, AWSError>> => {
+): Promise<PromiseResult<StopChannelResponse, AWSError>> | void => {
+  if (!channelId) return;
   return MediaLive.stopChannel({ ChannelId: channelId }).promise();
 };
 
 const deleteChannel = (
   channelId: string
-): Promise<PromiseResult<DeleteChannelResponse, AWSError>> => {
+): Promise<PromiseResult<DeleteChannelResponse, AWSError>> | void => {
+  if (!channelId) return;
   return MediaLive.deleteChannel({ ChannelId: channelId }).promise();
 };
 
