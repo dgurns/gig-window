@@ -40,7 +40,7 @@ const checkInfrastructureIsConfiguredForUser = async (user: User) => {
   return false;
 };
 
-const checkUserIsStreamingLive = async (user: User) => {
+const checkUserLiveVideoIsActive = async (user: User) => {
   if (!user.isPublishingStream) return false;
 
   const infrastructureIsConfigured = checkInfrastructureIsConfiguredForUser(
@@ -53,7 +53,7 @@ const checkUserIsStreamingLive = async (user: User) => {
   );
   if (describeChannelResponse.State === 'RUNNING') {
     // If user is publishing stream, infrastructure is ready, and channel
-    // is 'RUNNING', we know user is streaming live
+    // is 'RUNNING', we know the user's live video is active
     return true;
   }
 
@@ -75,6 +75,6 @@ const deleteStaleResources = async (): Promise<number> => {
 export default {
   startInfrastructureForUser,
   checkInfrastructureIsConfiguredForUser,
-  checkUserIsStreamingLive,
+  checkUserLiveVideoIsActive,
   deleteStaleResources,
 };

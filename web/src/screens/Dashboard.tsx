@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Paper,
   Grid,
@@ -10,6 +10,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import useCurrentUser from 'hooks/useCurrentUser';
 import useShowsForUser from 'hooks/useShowsForUser';
+import useLiveVideo from 'hooks/useLiveVideo';
 import DateTime from 'services/DateTime';
 import Image from 'services/Image';
 
@@ -81,6 +82,29 @@ const Dashboard = () => {
   const classes = useStyles();
 
   const [currentUser] = useCurrentUser({ subscribe: true });
+  const {
+    id,
+    username,
+    profileImageUrl,
+    isPublishingStream,
+    liveVideoInfrastructureError,
+    awsMediaPackageOriginEndpointUrl,
+  } = currentUser ?? {};
+
+  const [liveVideoIsActive, { startPolling, stopPolling }] = useLiveVideo({
+    userId: currentUser?.id,
+  });
+  useEffect(() => {
+    if (isPublishingStream && !liveVideoIsActive) {
+      return startPolling(3000);
+    } else {
+      return stopPolling();
+    }
+  }, [liveVideoIsActive, isPublishingStream, stopPolling, startPolling]);
+  useEffect(() => {
+    return () => stopPolling();
+  }, [stopPolling]);
+
   const [, showsQuery, activeShow] = useShowsForUser(currentUser?.id);
 
   if (!currentUser) {
@@ -92,15 +116,6 @@ const Dashboard = () => {
       </Container>
     );
   }
-
-  const {
-    id,
-    username,
-    profileImageUrl,
-    isPublishingStream,
-    liveVideoInfrastructureError,
-    awsMediaPackageOriginEndpointUrl,
-  } = currentUser;
 
   const renderStreamPreviewMessage = () => {
     if (isPublishingStream && liveVideoInfrastructureError) {
@@ -115,10 +130,9 @@ const Dashboard = () => {
     return (
       <>
         <Typography variant="body1" className={classes.streamPreviewMessage}>
-          {!isPublishingStream && 'No stream detected'}
-          {isPublishingStream &&
-            !awsMediaPackageOriginEndpointUrl &&
-            'Stream detected! Starting up video infrastructure... (takes about 60 seconds)'}
+          {!isPublishingStream
+            ? 'No stream detected'
+            : 'Stream detected! Starting up video infrastructure... (takes about 60 seconds)'}
         </Typography>
         {isPublishingStream && (
           <CircularProgress
@@ -182,7 +196,7 @@ const Dashboard = () => {
               alignItems="center"
               className={classes.videoContainer}
             >
-              {currentUser.isPublishingStream ? (
+              {liveVideoIsActive ? (
                 <VideoPlayer hlsUrl={awsMediaPackageOriginEndpointUrl} />
               ) : (
                 renderStreamPreviewMessage()

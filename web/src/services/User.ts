@@ -1,13 +1,3 @@
-const isStreamingLive = (
-  isPublishingStream?: boolean,
-  isInPublicMode?: boolean
-) => {
-  if (isPublishingStream && isInPublicMode) {
-    return true;
-  }
-  return false;
-};
-
 const hasAccessToLiveStream = (
   hasPaymentForShow?: boolean,
   hasRecentPaymentToPayee?: boolean
@@ -19,6 +9,5 @@ const hasAccessToLiveStream = (
 };
 
 export default {
-  isStreamingLive,
   hasAccessToLiveStream,
 };

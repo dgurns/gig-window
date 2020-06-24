@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import {
   Paper,
@@ -11,10 +11,10 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import useUser from 'hooks/useUser';
 import useShowsForUser from 'hooks/useShowsForUser';
+import useLiveVideo from 'hooks/useLiveVideo';
 import usePayments from 'hooks/usePayments';
 import DateTime from 'services/DateTime';
 import Ui from 'services/Ui';
-import User from 'services/User';
 import Image from 'services/Image';
 
 import ShowMarquee from 'components/ShowMarquee';
@@ -88,6 +88,25 @@ const Watch = () => {
   const urlSlug = pathname.split('/')[1];
 
   const [user, userQuery] = useUser({ urlSlug, subscribe: true });
+  const userIsStreamingLive = Boolean(
+    user?.isPublishingStream && user?.isInPublicMode
+  );
+  const [liveVideoIsActive, { startPolling, stopPolling }] = useLiveVideo({
+    userId: user?.id,
+  });
+
+  useEffect(() => {
+    if (userIsStreamingLive && !liveVideoIsActive) {
+      return startPolling(3000);
+    } else {
+      return stopPolling();
+    }
+  }, [liveVideoIsActive, userIsStreamingLive, stopPolling, startPolling]);
+
+  useEffect(() => {
+    return () => stopPolling();
+  }, [stopPolling]);
+
   const [, showsQuery, activeShow] = useShowsForUser(user?.id);
   const { paymentForShow, recentPaymentsToPayee } = usePayments({
     showId: activeShow?.id,
@@ -130,10 +149,7 @@ const Watch = () => {
     }
   };
 
-  const userIsLive = User.isStreamingLive(
-    user.isPublishingStream,
-    user.isInPublicMode
-  );
+  const shouldShowLiveVideo = userIsStreamingLive && liveVideoIsActive;
   const shouldShowTipButton =
     !showsQuery.loading &&
     Ui.shouldShowTipButton({
@@ -163,10 +179,12 @@ const Watch = () => {
       <Paper elevation={3}>
         <Grid container direction="row" className={classes.videoChatContainer}>
           <Grid item xs={12} sm={8} className={classes.videoContainer}>
-            {!userIsLive && activeShow && (
+            {!shouldShowLiveVideo && activeShow && (
               <ShowMarquee show={activeShow} payee={user} />
             )}
-            {userIsLive && <LiveVideoArea show={activeShow} payee={user} />}
+            {shouldShowLiveVideo && (
+              <LiveVideoArea show={activeShow} payee={user} />
+            )}
           </Grid>
           <Grid item xs={false} sm={4} className={classes.chat}>
             <ChatBox userId={user.id} />

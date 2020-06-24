@@ -16,6 +16,7 @@ import { getManager } from 'typeorm';
 import { User } from 'entities/User';
 import {
   GetUserInput,
+  CheckUserLiveVideoIsActiveArgs,
   NewUserEventArgs,
   SignUpInput,
   LogInInput,
@@ -54,14 +55,6 @@ export class UserResolver {
     return ctx.getUser();
   }
 
-  @Query(() => Boolean)
-  async checkUserIsStreamingLive(@Ctx() ctx: CustomContext) {
-    const user = ctx.getUser();
-    if (!user) return false;
-
-    return LiveVideoInfrastructure.checkUserIsStreamingLive(user);
-  }
-
   @Query(() => [User])
   async getUsersStreamingLive() {
     const usersStreamingLive = await User.find({
@@ -71,6 +64,23 @@ export class UserResolver {
       },
     });
     return usersStreamingLive;
+  }
+
+  @Query(() => Boolean)
+  async checkUserLiveVideoIsActive(
+    @Args() { userId, userUrlSlug }: CheckUserLiveVideoIsActiveArgs
+  ) {
+    let user;
+    if (userId) {
+      user = await User.findOne({ where: { id: userId } });
+    } else if (userUrlSlug) {
+      user = await User.findOne({ where: { urlSlug: userUrlSlug } });
+    }
+    if (!user) {
+      throw new Error('Could not find user');
+    }
+
+    return await LiveVideoInfrastructure.checkUserLiveVideoIsActive(user);
   }
 
   @Mutation(() => User)

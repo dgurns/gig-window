@@ -19,9 +19,8 @@ const shouldShowTipButton = ({
 }: ShouldShowTipButtonArgs) => {
   if (!payee || !payee.stripeAccountId) return false;
 
-  const isStreamingLive = User.isStreamingLive(
-    payee.isPublishingStream,
-    payee.isInPublicMode
+  const isStreamingLive = Boolean(
+    payee.isPublishingStream && payee.isInPublicMode
   );
   if (!isActiveShow && !isStreamingLive) {
     return true;
