@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import addMinutes from 'date-fns/addMinutes';
 import Grid from '@material-ui/core/Grid';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
 import PlayButton from '@material-ui/icons/PlayArrow';
 
@@ -79,14 +78,10 @@ const LiveVideoArea = ({ show, payee }: LiveVideoAreaProps) => {
   const classes = useStyles();
 
   const [videoIsStarted, setVideoIsStarted] = useState(false);
-  const {
-    paymentForShow,
-    paymentForShowQuery,
-    recentPaymentsToPayee,
-    recentPaymentsToPayeeQuery,
-  } = usePayments({ showId: show?.id, payeeUserId: payee.id });
-  const isCheckingAccessToLiveStream =
-    paymentForShowQuery.loading || recentPaymentsToPayeeQuery.loading;
+  const { paymentForShow, recentPaymentsToPayee } = usePayments({
+    showId: show?.id,
+    payeeUserId: payee.id,
+  });
   const hasAccessToLiveStream = User.hasAccessToLiveStream(
     Boolean(paymentForShow),
     Boolean(recentPaymentsToPayee?.length)
@@ -123,26 +118,19 @@ const LiveVideoArea = ({ show, payee }: LiveVideoAreaProps) => {
         className={classes.videoOverlay}
       >
         <Grid className={classes.paywallBackgroundGradient} />
-        {isCheckingAccessToLiveStream ? (
-          <CircularProgress
-            color="secondary"
-            className={classes.paywallContent}
+        <Grid className={classes.paywallContent}>
+          <Countdown
+            targetDate={addMinutes(new Date(), 3).toISOString()}
+            countdownSuffix="left in free preview"
+            postTargetLabel="That's the end of your free preview. Pay what you want to join the show!"
           />
-        ) : (
-          <Grid className={classes.paywallContent}>
-            <Countdown
-              targetDate={addMinutes(new Date(), 3).toISOString()}
-              countdownSuffix="left in free preview"
-              postTargetLabel="That's the end of your free preview. Pay what you want to join the show!"
-            />
-            <BuyTicketButton
-              payee={payee}
-              show={show}
-              buttonText="Pay what you want"
-              className={classes.buyTicketButton}
-            />
-          </Grid>
-        )}
+          <BuyTicketButton
+            payee={payee}
+            show={show}
+            buttonText="Pay what you want"
+            className={classes.buyTicketButton}
+          />
+        </Grid>
       </Grid>
     );
   };

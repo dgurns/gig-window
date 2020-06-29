@@ -97,11 +97,7 @@ const Home = () => {
     if (dataLoading) {
       return <Typography color="secondary">Loading...</Typography>;
     } else if (dataError) {
-      return (
-        <Typography color="secondary">
-          Error loading shows. Please reload the page
-        </Typography>
-      );
+      return <Typography color="secondary">Error loading shows</Typography>;
     } else if (noData) {
       return (
         <Typography color="secondary">No live or upcoming shows</Typography>

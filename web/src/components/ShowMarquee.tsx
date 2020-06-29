@@ -45,9 +45,7 @@ const ShowMarquee = ({ show, payee }: ShowMarqueeProps) => {
   });
 
   const renderBuyTicketButton = () => {
-    if (paymentForShowQuery.loading) {
-      return null;
-    } else if (paymentForShowQuery.error) {
+    if (paymentForShowQuery.error) {
       return (
         <Typography className={classes.message}>
           Error checking ticket status

@@ -54,7 +54,12 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
   },
   videoChatContainer: {
+    flexDirection: 'row',
     height: 520,
+    [theme.breakpoints.down('xs')]: {
+      flexDirection: 'column',
+      height: 'auto',
+    },
   },
   videoContainer: {
     backgroundColor: theme.palette.common.black,
@@ -62,13 +67,17 @@ const useStyles = makeStyles((theme) => ({
     backgroundPosition: 'center',
     backgroundSize: 'cover',
     height: '100%',
-    minHeight: 250,
-    maxHeight: 520,
     position: 'relative',
+    [theme.breakpoints.down('xs')]: {
+      height: 260,
+    },
   },
   chat: {
     backgroundColor: theme.palette.common.white,
-    height: 520,
+    height: '100%',
+    [theme.breakpoints.down('xs')]: {
+      height: 260,
+    },
   },
   tools: {
     marginTop: theme.spacing(2),
@@ -177,7 +186,7 @@ const Watch = () => {
         </Grid>
       </Grid>
       <Paper elevation={3}>
-        <Grid container direction="row" className={classes.videoChatContainer}>
+        <Grid container className={classes.videoChatContainer}>
           <Grid item xs={12} sm={8} className={classes.videoContainer}>
             {!shouldShowLiveVideo && activeShow && (
               <ShowMarquee show={activeShow} payee={user} />

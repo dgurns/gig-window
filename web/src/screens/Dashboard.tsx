@@ -46,12 +46,19 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
   },
   videoChatContainer: {
+    flexDirection: 'row',
     height: 520,
+    [theme.breakpoints.down('xs')]: {
+      flexDirection: 'column',
+      height: 'auto',
+    },
   },
   videoContainer: {
     backgroundColor: theme.palette.common.black,
-    maxHeight: 520,
-    minHeight: 250,
+    height: '100%',
+    [theme.breakpoints.down('xs')]: {
+      minHeight: 230,
+    },
   },
   streamPreviewMessage: {
     color: theme.palette.common.white,
@@ -63,6 +70,10 @@ const useStyles = makeStyles((theme) => ({
   },
   chat: {
     backgroundColor: theme.palette.common.white,
+    height: '100%',
+    [theme.breakpoints.down('xs')]: {
+      height: 260,
+    },
   },
   tools: {
     marginTop: theme.spacing(2),
@@ -181,11 +192,7 @@ const Dashboard = () => {
 
         <Paper elevation={3}>
           <DashboardModeSwitcher />
-          <Grid
-            container
-            direction="row"
-            className={classes.videoChatContainer}
-          >
+          <Grid container className={classes.videoChatContainer}>
             <Grid
               item
               container

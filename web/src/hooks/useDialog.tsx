@@ -21,6 +21,9 @@ const useStyles = makeStyles((theme) => ({
   },
   dialogPaper: {
     overflow: 'visible',
+    [theme.breakpoints.down('xs')]: {
+      width: '100%',
+    },
   },
 }));
 
