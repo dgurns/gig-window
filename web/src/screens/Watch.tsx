@@ -97,7 +97,7 @@ const Watch = () => {
   const urlSlug = pathname.split('/')[1];
 
   const [user, userQuery] = useUser({ urlSlug, subscribe: true });
-  const [liveVideoIsActive] = useLiveVideo({ user });
+  const [liveVideoIsActive, liveVideoIsActiveQuery] = useLiveVideo({ user });
 
   const [, showsQuery, activeShow] = useShowsForUser(user?.id);
   const { paymentForShow, recentPaymentsToPayee } = usePayments({
@@ -105,7 +105,7 @@ const Watch = () => {
     payeeUserId: user?.id,
   });
 
-  if (userQuery.loading) {
+  if (userQuery.loading || liveVideoIsActiveQuery.loading) {
     return (
       <Container disableGutters maxWidth={false}>
         <Grid container direction="row" className={classes.userInfoContainer}>

@@ -72,6 +72,7 @@ const usePayments = ({
 
   const paymentsQuery = useQuery(GET_PAYMENTS, {
     skip: !currentUser,
+    fetchPolicy: 'cache-and-network',
   });
   const paymentForShowQuery = useQuery(GET_PAYMENT_FOR_SHOW, {
     variables: { showId },

@@ -63,6 +63,7 @@ const useStyles = makeStyles((theme) => ({
   streamPreviewMessage: {
     color: theme.palette.common.white,
     marginRight: theme.spacing(2),
+    textAlign: 'center',
   },
   startingVideoInfrastructureProgress: {
     marginTop: theme.spacing(2),
@@ -98,10 +99,13 @@ const Dashboard = () => {
     username,
     profileImageUrl,
     isPublishingStream,
+    awsMediaLiveChannelId,
     liveVideoInfrastructureError,
   } = currentUser ?? {};
 
-  const [liveVideoIsActive] = useLiveVideo({ user: currentUser });
+  const [liveVideoIsActive, liveVideoIsActiveQuery] = useLiveVideo({
+    user: currentUser,
+  });
   const [, showsQuery, activeShow] = useShowsForUser(currentUser?.id);
 
   if (!currentUser) {
@@ -115,30 +119,39 @@ const Dashboard = () => {
   }
 
   const renderStreamPreviewMessage = () => {
-    if (isPublishingStream && liveVideoInfrastructureError) {
+    if (liveVideoIsActiveQuery.loading) {
+      return null;
+    } else if (isPublishingStream && liveVideoInfrastructureError) {
       return (
         <Typography variant="body1" className={classes.streamPreviewMessage}>
           Error starting live video infrastructure. Please restart your
           broadcast on your encoder.
         </Typography>
       );
+    } else {
+      return (
+        <>
+          <Typography variant="body1" className={classes.streamPreviewMessage}>
+            {!isPublishingStream && 'No stream detected'}
+            {isPublishingStream && 'Stream detected!'}
+            <br />
+            {isPublishingStream &&
+              !liveVideoIsActive &&
+              'Activating video infrastructure... '}
+            {isPublishingStream &&
+              !liveVideoIsActive &&
+              !awsMediaLiveChannelId &&
+              '(takes a minute or two at first)'}
+          </Typography>
+          {isPublishingStream && (
+            <CircularProgress
+              color="secondary"
+              className={classes.startingVideoInfrastructureProgress}
+            />
+          )}
+        </>
+      );
     }
-
-    return (
-      <>
-        <Typography variant="body1" className={classes.streamPreviewMessage}>
-          {!isPublishingStream
-            ? 'No stream detected'
-            : 'Stream detected! Starting up video infrastructure... (takes a minute or two from a cold start)'}
-        </Typography>
-        {isPublishingStream && (
-          <CircularProgress
-            color="secondary"
-            className={classes.startingVideoInfrastructureProgress}
-          />
-        )}
-      </>
-    );
   };
 
   const renderActiveShowText = () => {

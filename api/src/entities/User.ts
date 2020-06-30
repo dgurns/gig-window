@@ -48,6 +48,10 @@ export class User extends BaseEntity {
 
   @Field({ nullable: true })
   @Column({ type: 'timestamptz', nullable: true, default: null })
+  lastPublishedStreamStartTimestamp: Date;
+
+  @Field({ nullable: true })
+  @Column({ type: 'timestamptz', nullable: true, default: null })
   lastPublishedStreamEndTimestamp: Date;
 
   @Field((type) => String, { nullable: true })

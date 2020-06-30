@@ -1,3 +1,4 @@
+import addSeconds from 'date-fns/addSeconds';
 import { User } from 'entities/User';
 import AwsMediaLive from 'services/aws/MediaLive';
 import AwsMediaPackage from 'services/aws/MediaPackage';
@@ -51,9 +52,16 @@ const checkUserLiveVideoIsActive = async (user: User) => {
   const describeChannelResponse = await AwsMediaLive.describeChannel(
     user.awsMediaLiveChannelId
   );
-  if (describeChannelResponse.State === 'RUNNING') {
-    // If user is publishing stream, infrastructure is ready, and channel
-    // is 'RUNNING', we know the user's live video is active
+  if (describeChannelResponse.State !== 'RUNNING') {
+    return false;
+  }
+
+  const INITIAL_STREAM_PROCESSING_TIME_IN_SECONDS = 10;
+  const streamIsReadyThreshold = addSeconds(
+    new Date(user.lastPublishedStreamStartTimestamp),
+    INITIAL_STREAM_PROCESSING_TIME_IN_SECONDS
+  );
+  if (new Date() > streamIsReadyThreshold) {
     return true;
   }
 

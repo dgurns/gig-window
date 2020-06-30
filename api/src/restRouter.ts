@@ -16,6 +16,7 @@ restRouter.get('/rtmp-event', async (req: Request, res: Response) => {
     const eventType = req.query.call;
     if (eventType === 'publish') {
       user.isPublishingStream = true;
+      user.lastPublishedStreamStartTimestamp = new Date();
       await user.save();
 
       await pubSub.publish('IS_PUBLISHING_STREAM_UPDATED', user);
