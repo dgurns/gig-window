@@ -56,6 +56,7 @@ async function start() {
     app.use(compression());
     app.use(
       cookieSession({
+        name: 'session',
         maxAge: 30 * 24 * 60 * 60 * 1000,
         keys: [COOKIE_SESSION_KEY || 'defaultCookieSessionKey'],
       })

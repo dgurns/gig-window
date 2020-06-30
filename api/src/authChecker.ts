@@ -16,14 +16,15 @@ export interface CustomContext {
   res?: Response;
   req: {
     user?: User;
+    session: CookieSessionInterfaces.CookieSessionObject;
   };
 }
 
 export const authChecker: AuthChecker<CustomContext> = (
   {
     context: {
-      req: { user }
-    }
+      req: { user },
+    },
   },
   roles
 ) => {
