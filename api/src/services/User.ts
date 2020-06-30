@@ -8,18 +8,15 @@ const isValidEmail = (email?: string) => {
 };
 
 const isSecurePassword = (password?: string) => {
-  if (!password || password.length < 8) {
-    return false;
-  }
-  const containsNumber = /\d/.test(password);
-  if (!containsNumber) {
+  if (!password || password.length < 6) {
     return false;
   }
   return true;
 };
 
 const generateProfileImageAwsS3Key = (userId: number) => {
-  return `users/${userId}/profileImage.jpeg`;
+  const timestamp = Date.now();
+  return `users/${userId}/${timestamp}.jpeg`;
 };
 
 export default {

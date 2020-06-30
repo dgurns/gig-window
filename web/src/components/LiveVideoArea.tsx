@@ -4,6 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import PlayButton from '@material-ui/icons/PlayArrow';
 
+import useCurrentUser from 'hooks/useCurrentUser';
 import usePayments from 'hooks/usePayments';
 import User from 'services/User';
 
@@ -32,11 +33,12 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
     height: '100%',
     width: '100%',
     '&:hover #play-button': {
-      fontSize: '12rem',
+      transform: 'scale(1.18)',
     },
   },
   playButton: {
     fontSize: '10rem',
+    transition: 'all 0.2s ease',
   },
   paywallBackgroundGradient: {
     background:
@@ -66,7 +68,7 @@ interface LiveVideoAreaProps {
   show?: {
     id: number;
   };
-  payee: {
+  payee?: {
     id: number;
     username: string;
     awsMediaPackageOriginEndpointUrl?: string;
@@ -77,15 +79,17 @@ interface LiveVideoAreaProps {
 const LiveVideoArea = ({ show, payee }: LiveVideoAreaProps) => {
   const classes = useStyles();
 
-  const [videoIsStarted, setVideoIsStarted] = useState(false);
+  const [currentUser] = useCurrentUser();
   const { paymentForShow, recentPaymentsToPayee } = usePayments({
     showId: show?.id,
-    payeeUserId: payee.id,
+    payeeUserId: payee?.id,
   });
   const hasAccessToLiveStream = User.hasAccessToLiveStream(
     Boolean(paymentForShow),
     Boolean(recentPaymentsToPayee?.length)
   );
+
+  const [videoIsStarted, setVideoIsStarted] = useState(false);
 
   const renderVideoOverlay = () => {
     if (!videoIsStarted) {
@@ -105,7 +109,7 @@ const LiveVideoArea = ({ show, payee }: LiveVideoAreaProps) => {
       );
     }
 
-    if (hasAccessToLiveStream) {
+    if (!payee || hasAccessToLiveStream) {
       return null;
     }
 
@@ -135,12 +139,16 @@ const LiveVideoArea = ({ show, payee }: LiveVideoAreaProps) => {
     );
   };
 
+  const hlsUrl = payee
+    ? payee.awsMediaPackageOriginEndpointUrl
+    : currentUser?.awsMediaPackageOriginEndpointUrl;
+
   return (
     <Grid className={classes.container}>
       {renderVideoOverlay()}
       <Grid item container className={classes.videoPlayer}>
         <VideoPlayer
-          hlsUrl={payee.awsMediaPackageOriginEndpointUrl}
+          hlsUrl={hlsUrl}
           shouldPlay={videoIsStarted}
           shouldHideControls={!videoIsStarted}
         />

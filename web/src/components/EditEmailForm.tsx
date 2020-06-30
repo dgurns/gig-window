@@ -3,11 +3,6 @@ import { useMutation, gql } from '@apollo/client';
 import { Grid, Typography, TextField, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-interface EditEmailFormProps {
-  email: string;
-  onSuccess?: () => void;
-}
-
 const UPDATE_EMAIL = gql`
   mutation UpdateEmail($email: String!) {
     updateEmail(email: $email) {
@@ -26,6 +21,11 @@ const useStyles = makeStyles(({ spacing }) => ({
     textAlign: 'center',
   },
 }));
+
+interface EditEmailFormProps {
+  email: string;
+  onSuccess?: () => void;
+}
 
 const EditEmailForm = ({ email, onSuccess }: EditEmailFormProps) => {
   const classes = useStyles();

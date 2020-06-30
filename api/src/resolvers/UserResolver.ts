@@ -112,9 +112,7 @@ export class UserResolver {
       throw new Error('Invalid email address');
     }
     if (!UserService.isSecurePassword(password)) {
-      throw new Error(
-        'Password must be at least 8 characters and contain a number'
-      );
+      throw new Error('Password must be at least 6 characters');
     }
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
@@ -165,14 +163,14 @@ export class UserResolver {
   }
 
   @Mutation(() => User)
-  async markProfileImageAsUploaded(@Ctx() ctx: CustomContext) {
+  async updateProfileImageUrl(
+    @Arg('profileImageUrl') profileImageUrl: string,
+    @Ctx() ctx: CustomContext
+  ) {
     const user = ctx.getUser();
     if (!user) throw new Error('User is not logged in');
 
-    const s3Key = UserService.generateProfileImageAwsS3Key(user.id);
-    const url = AwsS3.getFullS3Url(s3Key);
-
-    user.profileImageUrl = url;
+    user.profileImageUrl = profileImageUrl;
     await user.save();
     return user;
   }

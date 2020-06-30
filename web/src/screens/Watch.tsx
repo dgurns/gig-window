@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useLocation } from 'react-router-dom';
 import {
   Paper,
@@ -97,24 +97,7 @@ const Watch = () => {
   const urlSlug = pathname.split('/')[1];
 
   const [user, userQuery] = useUser({ urlSlug, subscribe: true });
-  const userIsStreamingLive = Boolean(
-    user?.isPublishingStream && user?.isInPublicMode
-  );
-  const [liveVideoIsActive, { startPolling, stopPolling }] = useLiveVideo({
-    userId: user?.id,
-  });
-
-  useEffect(() => {
-    if (userIsStreamingLive && !liveVideoIsActive) {
-      return startPolling(3000);
-    } else {
-      return stopPolling();
-    }
-  }, [liveVideoIsActive, userIsStreamingLive, stopPolling, startPolling]);
-
-  useEffect(() => {
-    return () => stopPolling();
-  }, [stopPolling]);
+  const [liveVideoIsActive] = useLiveVideo({ user });
 
   const [, showsQuery, activeShow] = useShowsForUser(user?.id);
   const { paymentForShow, recentPaymentsToPayee } = usePayments({
@@ -158,7 +141,7 @@ const Watch = () => {
     }
   };
 
-  const shouldShowLiveVideo = userIsStreamingLive && liveVideoIsActive;
+  const shouldShowLiveVideo = user?.isInPublicMode && liveVideoIsActive;
   const shouldShowTipButton =
     !showsQuery.loading &&
     Ui.shouldShowTipButton({

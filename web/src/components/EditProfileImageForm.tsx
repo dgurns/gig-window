@@ -13,9 +13,9 @@ const GENERATE_PRESIGNED_URL = gql`
   }
 `;
 
-const MARK_PROFILE_IMAGE_AS_UPLOADED = gql`
-  mutation MarkProfileImageAsUploaded {
-    markProfileImageAsUploaded {
+const UPDATE_PROFILE_IMAGE_URL = gql`
+  mutation UpdateProfileImageUrl($profileImageUrl: String!) {
+    updateProfileImageUrl(profileImageUrl: $profileImageUrl) {
       profileImageUrl
     }
   }
@@ -39,7 +39,11 @@ const useStyles = makeStyles(({ spacing }) => ({
   },
 }));
 
-const EditProfileImageForm = () => {
+interface EditProfileImageFormProps {
+  onSuccess?: () => void;
+}
+
+const EditProfileImageForm = ({ onSuccess }: EditProfileImageFormProps) => {
   const classes = useStyles();
   const imageRef = useRef<HTMLImageElement | undefined>();
 
@@ -47,12 +51,12 @@ const EditProfileImageForm = () => {
     generatePresignedUrl,
     generatePresignedUrlMutation,
   ] = useMutation(GENERATE_PRESIGNED_URL, { errorPolicy: 'all' });
-  const [
-    markProfileImageAsUploaded,
-    markProfileImageAsUploadedMutation,
-  ] = useMutation(MARK_PROFILE_IMAGE_AS_UPLOADED, {
-    errorPolicy: 'all',
-  });
+  const [updateProfileImageUrl, updateProfileImageUrlMutation] = useMutation(
+    UPDATE_PROFILE_IMAGE_URL,
+    {
+      errorPolicy: 'all',
+    }
+  );
 
   const [selectedFileObjectUrl, setSelectedFileObjectUrl] = useState('');
   const [crop, setCrop] = useState<ReactCrop.Crop>({
@@ -97,12 +101,19 @@ const EditProfileImageForm = () => {
     try {
       await fetch(presignedUrl, {
         method: 'PUT',
+        headers: {
+          'Cache-Control': 'max-age=31536000', // 1 year
+        },
         body: generatedImageBlob,
       });
-      await markProfileImageAsUploaded();
+      const newProfileImageUrl = presignedUrl.split('?')[0];
+      await updateProfileImageUrl({
+        variables: { profileImageUrl: newProfileImageUrl },
+      });
       setImageIsUploading(false);
-      // Reload to force an image refetch
-      window.location.reload();
+      if (onSuccess) {
+        onSuccess();
+      }
     } catch {
       setImageIsUploading(false);
       return setLocalValidationError('Error uploading image. Please try again');
@@ -121,7 +132,7 @@ const EditProfileImageForm = () => {
   const isLoading =
     generatePresignedUrlMutation.loading ||
     imageIsUploading ||
-    markProfileImageAsUploadedMutation.loading;
+    updateProfileImageUrlMutation.loading;
 
   const shouldDisableButton = imageRef.current === undefined || isLoading;
 

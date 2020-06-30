@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   Paper,
   Grid,
@@ -16,7 +16,7 @@ import Image from 'services/Image';
 
 import DashboardSubheader from 'components/DashboardSubheader';
 import DashboardModeSwitcher from 'components/DashboardModeSwitcher';
-import VideoPlayer from 'components/VideoPlayer';
+import LiveVideoArea from 'components/LiveVideoArea';
 import ChatBox from 'components/ChatBox';
 import HowToBroadcast from 'components/HowToBroadcast';
 
@@ -99,23 +99,9 @@ const Dashboard = () => {
     profileImageUrl,
     isPublishingStream,
     liveVideoInfrastructureError,
-    awsMediaPackageOriginEndpointUrl,
   } = currentUser ?? {};
 
-  const [liveVideoIsActive, { startPolling, stopPolling }] = useLiveVideo({
-    userId: currentUser?.id,
-  });
-  useEffect(() => {
-    if (isPublishingStream && !liveVideoIsActive) {
-      return startPolling(3000);
-    } else {
-      return stopPolling();
-    }
-  }, [liveVideoIsActive, isPublishingStream, stopPolling, startPolling]);
-  useEffect(() => {
-    return () => stopPolling();
-  }, [stopPolling]);
-
+  const [liveVideoIsActive] = useLiveVideo({ user: currentUser });
   const [, showsQuery, activeShow] = useShowsForUser(currentUser?.id);
 
   if (!currentUser) {
@@ -204,7 +190,7 @@ const Dashboard = () => {
               className={classes.videoContainer}
             >
               {liveVideoIsActive ? (
-                <VideoPlayer hlsUrl={awsMediaPackageOriginEndpointUrl} />
+                <LiveVideoArea />
               ) : (
                 renderStreamPreviewMessage()
               )}

@@ -1,4 +1,6 @@
+import { useEffect } from 'react';
 import { useQuery, gql, QueryHookOptions, QueryResult } from '@apollo/client';
+import { User } from 'types';
 
 const CHECK_USER_LIVE_VIDEO_IS_ACTIVE = gql`
   query CheckUserLiveVideoIsActive($userId: Int, $userUrlSlug: String) {
@@ -7,26 +9,47 @@ const CHECK_USER_LIVE_VIDEO_IS_ACTIVE = gql`
 `;
 
 interface UseLiveVideoArgs {
-  userId?: number;
-  userUrlSlug?: string;
+  user?: User;
   queryOptions?: QueryHookOptions;
 }
 
 const useLiveVideo = ({
-  userId,
-  userUrlSlug,
+  user,
   queryOptions,
 }: UseLiveVideoArgs): [boolean, QueryResult<boolean>] => {
+  const { id, urlSlug, isPublishingStream } = user ?? {};
+
   const liveVideoIsActiveQuery = useQuery(CHECK_USER_LIVE_VIDEO_IS_ACTIVE, {
     variables: {
-      userId,
-      userUrlSlug,
+      userId: id,
+      userUrlSlug: urlSlug,
     },
+    skip: !user,
     ...queryOptions,
   });
+  const { data, startPolling, stopPolling, refetch } = liveVideoIsActiveQuery;
 
-  const liveVideoIsActive =
-    liveVideoIsActiveQuery.data?.checkUserLiveVideoIsActive ?? false;
+  const liveVideoIsActive = data?.checkUserLiveVideoIsActive ?? false;
+
+  useEffect(() => {
+    if (isPublishingStream && !liveVideoIsActive) {
+      startPolling(3000);
+    } else if (isPublishingStream && liveVideoIsActive) {
+      stopPolling();
+    } else if (!isPublishingStream && liveVideoIsActive) {
+      refetch();
+    }
+  }, [
+    isPublishingStream,
+    liveVideoIsActive,
+    startPolling,
+    stopPolling,
+    refetch,
+  ]);
+
+  useEffect(() => {
+    return () => stopPolling();
+  }, [stopPolling]);
 
   return [liveVideoIsActive, liveVideoIsActiveQuery];
 };
