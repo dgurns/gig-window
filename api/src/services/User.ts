@@ -15,8 +15,7 @@ const isSecurePassword = (password?: string) => {
 };
 
 const generateProfileImageAwsS3Key = (userId: number) => {
-  const timestamp = Date.now();
-  return `users/${userId}/${timestamp}.jpeg`;
+  return `users/${userId}/profileImage.jpeg`;
 };
 
 export default {

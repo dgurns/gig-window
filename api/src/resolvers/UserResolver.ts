@@ -170,7 +170,8 @@ export class UserResolver {
     const user = ctx.getUser();
     if (!user) throw new Error('User is not logged in');
 
-    user.profileImageUrl = profileImageUrl;
+    // Add `updated` param to invalidate cache on changed image
+    user.profileImageUrl = `${profileImageUrl}?updated=${Date.now()}`;
     await user.save();
     return user;
   }
