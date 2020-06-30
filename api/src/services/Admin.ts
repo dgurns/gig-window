@@ -15,6 +15,7 @@ const getUsersWithStaleMediaLiveChannels = async (): Promise<User[]> => {
   const usersWithStaleMediaLiveChannels = await getManager()
     .createQueryBuilder(User, 'user')
     .where('user.awsMediaLiveChannelId IS NOT NULL')
+    .andWhere("user.awsMediaLiveChannelId <> ''")
     .andWhere('user.lastPublishedStreamEndTimestamp IS NOT NULL')
     .andWhere(
       'user.lastPublishedStreamEndTimestamp < :staleTimestampMarkerAsSqlString',
