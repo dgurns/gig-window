@@ -8,7 +8,7 @@ interface UseFreePreviewArgs {
 
 interface UseFreePreviewReturnValue {
   freePreviewIsUsed: boolean;
-  freePreviewExpiryDate: Date | undefined;
+  freePreviewExpiryDate: string | undefined;
   setFreePreviewExpiryDate: () => void;
 }
 
@@ -50,18 +50,21 @@ const useFreePreview = ({
 
   const FREE_PREVIEW_VALIDITY_PERIOD_HOURS = 4;
   const freePreviewValidityThreshold = addHours(
-    new Date(),
+    new Date(existingExpiryDate),
     FREE_PREVIEW_VALIDITY_PERIOD_HOURS
   );
   const now = new Date();
-  if (now < existingExpiryDate) {
+  if (now < new Date(existingExpiryDate)) {
     // Free preview has not been used yet
     return {
       freePreviewIsUsed: false,
       freePreviewExpiryDate: existingExpiryDate,
       setFreePreviewExpiryDate,
     };
-  } else if (now > existingExpiryDate && now < freePreviewValidityThreshold) {
+  } else if (
+    now > new Date(existingExpiryDate) &&
+    now < freePreviewValidityThreshold
+  ) {
     // Free preview is used, and still valid
     return {
       freePreviewIsUsed: true,

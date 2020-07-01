@@ -88,7 +88,6 @@ const LiveVideoArea = ({ show, payee }: LiveVideoAreaProps) => {
   const hasAccessToLiveVideo = UserService.hasAccessToLiveVideo({
     paymentForShow,
     recentPaymentsToPayee,
-    freePreviewIsUsed,
   });
 
   const [videoIsStarted, setVideoIsStarted] = useState(false);
@@ -116,8 +115,6 @@ const LiveVideoArea = ({ show, payee }: LiveVideoAreaProps) => {
         setFreePreviewExpiryDate();
       }
 
-      console.log('expiry date', freePreviewExpiryDate);
-
       return (
         <Grid
           container
@@ -130,7 +127,7 @@ const LiveVideoArea = ({ show, payee }: LiveVideoAreaProps) => {
           <Grid className={classes.paywallContent}>
             {freePreviewExpiryDate && (
               <Countdown
-                targetDate={freePreviewExpiryDate.toISOString()}
+                targetDate={freePreviewExpiryDate}
                 countdownSuffix="left in free preview"
                 postTargetLabel="That's the end of your free preview. Pay what you want to join the show!"
                 onTargetDateReached={() => window.location.reload()}

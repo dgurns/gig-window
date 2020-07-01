@@ -152,13 +152,12 @@ const Watch = () => {
     const hasAccessToLiveVideo = User.hasAccessToLiveVideo({
       paymentForShow,
       recentPaymentsToPayee,
-      freePreviewIsUsed,
     });
 
-    if (shouldShowLiveVideo && hasAccessToLiveVideo) {
-      return <LiveVideoArea show={activeShow} payee={user} />;
-    } else if (shouldShowLiveVideo && !hasAccessToLiveVideo) {
+    if (shouldShowLiveVideo && freePreviewIsUsed && !hasAccessToLiveVideo) {
       return <Paywall show={activeShow} payee={user} />;
+    } else if (shouldShowLiveVideo) {
+      return <LiveVideoArea show={activeShow} payee={user} />;
     } else if (activeShow) {
       return <ShowMarquee show={activeShow} payee={user} />;
     }
