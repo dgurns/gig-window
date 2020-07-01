@@ -10,7 +10,7 @@ export const buildCreateOriginEndpointParams = (user: User) => ({
   Whitelist: [],
   HlsPackage: {
     SegmentDurationSeconds: 2,
-    PlaylistWindowSeconds: 6,
+    PlaylistWindowSeconds: 8,
     AdMarkers: 'NONE',
     ProgramDateTimeIntervalSeconds: 0,
     UseAudioRenditionGroup: false,

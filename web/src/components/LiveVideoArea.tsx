@@ -78,11 +78,7 @@ const LiveVideoArea = ({ show, payee }: LiveVideoAreaProps) => {
     showId: show?.id,
     payeeUserId: payee?.id,
   });
-  const {
-    freePreviewIsUsed,
-    freePreviewExpiryDate,
-    setFreePreviewExpiryDate,
-  } = useFreePreview({
+  const { freePreviewExpiryDate, setFreePreviewExpiryDate } = useFreePreview({
     userUrlSlug: payee?.urlSlug,
   });
   const hasAccessToLiveVideo = UserService.hasAccessToLiveVideo({
