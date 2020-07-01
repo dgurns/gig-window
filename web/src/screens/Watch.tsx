@@ -11,14 +11,17 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import useUser from 'hooks/useUser';
 import useShowsForUser from 'hooks/useShowsForUser';
+import useFreePreview from 'hooks/useFreePreview';
 import useLiveVideo from 'hooks/useLiveVideo';
 import usePayments from 'hooks/usePayments';
 import DateTime from 'services/DateTime';
 import Ui from 'services/Ui';
 import Image from 'services/Image';
+import User from 'services/User';
 
 import ShowMarquee from 'components/ShowMarquee';
 import LiveVideoArea from 'components/LiveVideoArea';
+import Paywall from 'components/Paywall';
 import ChatBox from 'components/ChatBox';
 import TipButton from 'components/TipButton';
 
@@ -97,6 +100,9 @@ const Watch = () => {
   const urlSlug = pathname.split('/')[1];
 
   const [user, userQuery] = useUser({ urlSlug, subscribe: true });
+  const { freePreviewIsUsed } = useFreePreview({
+    userUrlSlug: urlSlug,
+  });
   const [liveVideoIsActive, liveVideoIsActiveQuery] = useLiveVideo({ user });
 
   const [, showsQuery, activeShow] = useShowsForUser(user?.id);
@@ -141,14 +147,30 @@ const Watch = () => {
     }
   };
 
-  const shouldShowLiveVideo = user?.isInPublicMode && liveVideoIsActive;
+  const renderVideoArea = () => {
+    const shouldShowLiveVideo = user?.isInPublicMode && liveVideoIsActive;
+    const hasAccessToLiveVideo = User.hasAccessToLiveVideo({
+      paymentForShow,
+      recentPaymentsToPayee,
+      freePreviewIsUsed,
+    });
+
+    if (shouldShowLiveVideo && hasAccessToLiveVideo) {
+      return <LiveVideoArea show={activeShow} payee={user} />;
+    } else if (shouldShowLiveVideo && !hasAccessToLiveVideo) {
+      return <Paywall show={activeShow} payee={user} />;
+    } else if (activeShow) {
+      return <ShowMarquee show={activeShow} payee={user} />;
+    }
+  };
+
   const shouldShowTipButton =
     !showsQuery.loading &&
     Ui.shouldShowTipButton({
       payee: user,
       isActiveShow: Boolean(activeShow),
-      userHasPaymentForShow: Boolean(paymentForShow),
-      userHasRecentPaymentToPayee: Boolean(recentPaymentsToPayee?.length),
+      paymentForShow,
+      recentPaymentsToPayee,
     });
 
   return (
@@ -171,12 +193,7 @@ const Watch = () => {
       <Paper elevation={3}>
         <Grid container className={classes.videoChatContainer}>
           <Grid item xs={12} sm={8} className={classes.videoContainer}>
-            {!shouldShowLiveVideo && activeShow && (
-              <ShowMarquee show={activeShow} payee={user} />
-            )}
-            {shouldShowLiveVideo && (
-              <LiveVideoArea show={activeShow} payee={user} />
-            )}
+            {renderVideoArea()}
           </Grid>
           <Grid item xs={false} sm={4} className={classes.chat}>
             <ChatBox userId={user.id} />

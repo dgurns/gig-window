@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import addMinutes from 'date-fns/addMinutes';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import PlayButton from '@material-ui/icons/PlayArrow';
 
 import useCurrentUser from 'hooks/useCurrentUser';
 import usePayments from 'hooks/usePayments';
-import User from 'services/User';
+import useFreePreview from 'hooks/useFreePreview';
+import UserService from 'services/User';
+import { Show, User } from 'types';
 
 import BuyTicketButton from './BuyTicketButton';
 import Countdown from './Countdown';
@@ -65,15 +66,8 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
 }));
 
 interface LiveVideoAreaProps {
-  show?: {
-    id: number;
-  };
-  payee?: {
-    id: number;
-    username: string;
-    awsMediaPackageOriginEndpointUrl?: string;
-    stripeAccountId?: string;
-  };
+  show?: Show;
+  payee?: User;
 }
 
 const LiveVideoArea = ({ show, payee }: LiveVideoAreaProps) => {
@@ -84,10 +78,18 @@ const LiveVideoArea = ({ show, payee }: LiveVideoAreaProps) => {
     showId: show?.id,
     payeeUserId: payee?.id,
   });
-  const hasAccessToLiveStream = User.hasAccessToLiveStream(
-    Boolean(paymentForShow),
-    Boolean(recentPaymentsToPayee?.length)
-  );
+  const {
+    freePreviewIsUsed,
+    freePreviewExpiryDate,
+    setFreePreviewExpiryDate,
+  } = useFreePreview({
+    userUrlSlug: payee?.urlSlug,
+  });
+  const hasAccessToLiveVideo = UserService.hasAccessToLiveVideo({
+    paymentForShow,
+    recentPaymentsToPayee,
+    freePreviewIsUsed,
+  });
 
   const [videoIsStarted, setVideoIsStarted] = useState(false);
 
@@ -107,36 +109,43 @@ const LiveVideoArea = ({ show, payee }: LiveVideoAreaProps) => {
           </Grid>
         </Grid>
       );
-    }
-
-    if (!payee || hasAccessToLiveStream) {
+    } else if (!payee || hasAccessToLiveVideo) {
       return null;
-    }
+    } else {
+      if (!freePreviewExpiryDate) {
+        setFreePreviewExpiryDate();
+      }
 
-    return (
-      <Grid
-        container
-        direction="column"
-        justify="flex-end"
-        alignItems="center"
-        className={classes.videoOverlay}
-      >
-        <Grid className={classes.paywallBackgroundGradient} />
-        <Grid className={classes.paywallContent}>
-          <Countdown
-            targetDate={addMinutes(new Date(), 3).toISOString()}
-            countdownSuffix="left in free preview"
-            postTargetLabel="That's the end of your free preview. Pay what you want to join the show!"
-          />
-          <BuyTicketButton
-            payee={payee}
-            show={show}
-            buttonText="Pay what you want"
-            className={classes.buyTicketButton}
-          />
+      console.log('expiry date', freePreviewExpiryDate);
+
+      return (
+        <Grid
+          container
+          direction="column"
+          justify="flex-end"
+          alignItems="center"
+          className={classes.videoOverlay}
+        >
+          <Grid className={classes.paywallBackgroundGradient} />
+          <Grid className={classes.paywallContent}>
+            {freePreviewExpiryDate && (
+              <Countdown
+                targetDate={freePreviewExpiryDate.toISOString()}
+                countdownSuffix="left in free preview"
+                postTargetLabel="That's the end of your free preview. Pay what you want to join the show!"
+                onTargetDateReached={() => window.location.reload()}
+              />
+            )}
+            <BuyTicketButton
+              payee={payee}
+              show={show}
+              buttonText="Pay what you want"
+              className={classes.buyTicketButton}
+            />
+          </Grid>
         </Grid>
-      </Grid>
-    );
+      );
+    }
   };
 
   const hlsUrl = payee

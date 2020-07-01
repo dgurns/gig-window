@@ -1,4 +1,4 @@
-import User from './User';
+import { PaymentForShow, RecentPaymentToPayee } from 'hooks/usePayments';
 
 interface ShouldShowTipButtonArgs {
   payee?: {
@@ -7,17 +7,20 @@ interface ShouldShowTipButtonArgs {
     isInPublicMode: boolean;
   };
   isActiveShow?: boolean;
-  userHasPaymentForShow?: boolean;
-  userHasRecentPaymentToPayee?: boolean;
+  paymentForShow?: PaymentForShow;
+  recentPaymentsToPayee?: RecentPaymentToPayee[];
+  freePreviewIsUsed?: boolean;
 }
 
 const shouldShowTipButton = ({
   payee,
   isActiveShow,
-  userHasPaymentForShow,
-  userHasRecentPaymentToPayee,
+  paymentForShow,
+  recentPaymentsToPayee,
 }: ShouldShowTipButtonArgs) => {
-  if (!payee || !payee.stripeAccountId) return false;
+  if (!payee || !payee.stripeAccountId) {
+    return false;
+  }
 
   const isStreamingLive = Boolean(
     payee.isPublishingStream && payee.isInPublicMode
@@ -26,15 +29,14 @@ const shouldShowTipButton = ({
     return true;
   }
 
-  if (isActiveShow && userHasPaymentForShow) {
+  if (isActiveShow && paymentForShow) {
     return true;
   }
 
-  const hasAccessToLiveStream = User.hasAccessToLiveStream(
-    userHasPaymentForShow,
-    userHasRecentPaymentToPayee
-  );
-  if (isStreamingLive && hasAccessToLiveStream) {
+  if (
+    isStreamingLive &&
+    (Boolean(paymentForShow) || Boolean(recentPaymentsToPayee?.length))
+  ) {
     return true;
   }
 

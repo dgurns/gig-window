@@ -13,13 +13,17 @@ interface CountdownProps {
   targetDate: string;
   countdownSuffix?: string;
   postTargetLabel?: string;
+  onTargetDateReached?: () => void;
 }
 
 const Countdown = ({
   targetDate,
   countdownSuffix,
   postTargetLabel,
+  onTargetDateReached,
 }: CountdownProps) => {
+  const isAfterTargetDate = new Date() > new Date(targetDate);
+
   const calculateTimeOffsets = useCallback(() => {
     const now = new Date();
     const reference = new Date(targetDate);
@@ -46,19 +50,30 @@ const Countdown = ({
   const [timeOffsets, setTimeOffsets] = useState(calculateTimeOffsets());
   const { days, hours, minutes, seconds } = timeOffsets;
 
-  useEffect(() => {
-    const timer = setInterval(
-      () => setTimeOffsets(calculateTimeOffsets()),
-      1000
-    );
-    return () => clearInterval(timer);
-  }, [calculateTimeOffsets]);
+  const [shouldTriggerCallback, setShouldTriggerCallback] = useState(false);
 
-  const isAfterTargetDate = new Date() > new Date(targetDate);
+  useEffect(() => {
+    if (isAfterTargetDate) return;
+
+    const timer = setInterval(() => {
+      setTimeOffsets(calculateTimeOffsets());
+      if (new Date() > new Date(targetDate)) {
+        setShouldTriggerCallback(true);
+        clearInterval(timer);
+      }
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [calculateTimeOffsets, targetDate, isAfterTargetDate]);
+
+  useEffect(() => {
+    if (shouldTriggerCallback && onTargetDateReached) {
+      onTargetDateReached();
+    }
+  }, [shouldTriggerCallback, onTargetDateReached]);
 
   return (
     <Typography color="secondary">
-      {isAfterTargetDate ? (
+      {isAfterTargetDate || shouldTriggerCallback ? (
         postTargetLabel
       ) : (
         <>

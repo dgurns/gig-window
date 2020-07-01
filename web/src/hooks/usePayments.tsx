@@ -11,11 +11,11 @@ export interface Payment {
   };
 }
 
-interface PaymentForShow {
+export interface PaymentForShow {
   id: number;
 }
 
-interface RecentPaymentToPayee {
+export interface RecentPaymentToPayee {
   id: number;
 }
 
