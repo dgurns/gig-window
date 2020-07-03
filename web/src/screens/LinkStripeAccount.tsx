@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { useMutation, gql } from '@apollo/client';
-import { Link as RouterLink } from 'react-router-dom';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Link from '@material-ui/core/Link';
@@ -98,9 +97,7 @@ const LinkStripeAccount = () => {
           whenever.
           <br />
           <br />
-          <Link component={RouterLink} to={`/${urlSlug}`}>
-            Go to profile
-          </Link>
+          <Link href={`/${urlSlug}`}>Go to profile</Link>
         </Typography>
       </>
     );

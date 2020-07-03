@@ -25,11 +25,11 @@ interface UsePaymentsArgs {
 }
 
 interface UsePaymentsReturnValue {
-  payments: Payment[] | undefined;
+  payments?: Payment[];
   paymentsQuery: QueryResult<Payment>;
-  paymentForShow: PaymentForShow | undefined;
+  paymentForShow?: PaymentForShow;
   paymentForShowQuery: QueryResult<PaymentForShow>;
-  recentPaymentsToPayee: RecentPaymentToPayee[] | undefined;
+  recentPaymentsToPayee?: RecentPaymentToPayee[];
   recentPaymentsToPayeeQuery: QueryResult<RecentPaymentToPayee>;
   refetchPayments: () => void;
 }

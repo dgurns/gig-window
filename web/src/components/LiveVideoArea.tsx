@@ -11,7 +11,7 @@ import { Show, User } from 'types';
 
 import BuyTicketButton from './BuyTicketButton';
 import Countdown from './Countdown';
-import VideoPlayer from './VideoPlayer';
+import HlsPlayer from './HlsPlayer';
 
 const useStyles = makeStyles(({ palette, spacing }) => ({
   container: {
@@ -149,7 +149,7 @@ const LiveVideoArea = ({ show, payee }: LiveVideoAreaProps) => {
     <Grid className={classes.container}>
       {renderVideoOverlay()}
       <Grid item container className={classes.videoPlayer}>
-        <VideoPlayer
+        <HlsPlayer
           hlsUrl={hlsUrl}
           shouldPlay={videoIsStarted}
           shouldHideControls={!videoIsStarted}

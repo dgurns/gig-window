@@ -1,8 +1,8 @@
 import { PaymentForShow, RecentPaymentToPayee } from 'hooks/usePayments';
 
 interface HasAccessToLiveVideoArgs {
-  paymentForShow?: PaymentForShow | undefined;
-  recentPaymentsToPayee?: RecentPaymentToPayee[] | undefined;
+  paymentForShow?: PaymentForShow;
+  recentPaymentsToPayee?: RecentPaymentToPayee[];
 }
 
 const hasAccessToLiveVideo = ({

@@ -56,7 +56,7 @@ const checkUserLiveVideoIsActive = async (user: User) => {
     return false;
   }
 
-  const INITIAL_STREAM_PROCESSING_TIME_IN_SECONDS = 10;
+  const INITIAL_STREAM_PROCESSING_TIME_IN_SECONDS = 8;
   const streamIsReadyThreshold = addSeconds(
     new Date(user.lastPublishedStreamStartTimestamp),
     INITIAL_STREAM_PROCESSING_TIME_IN_SECONDS

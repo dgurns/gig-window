@@ -40,12 +40,15 @@ interface ShowMarqueeProps {
 const ShowMarquee = ({ show, payee }: ShowMarqueeProps) => {
   const classes = useStyles();
 
-  const { paymentForShow, paymentForShowQuery } = usePayments({
+  const {
+    paymentForShow,
+    paymentForShowQuery: { error },
+  } = usePayments({
     showId: show.id,
   });
 
   const renderBuyTicketButton = () => {
-    if (paymentForShowQuery.error) {
+    if (error) {
       return (
         <Typography className={classes.message}>
           Error checking ticket status

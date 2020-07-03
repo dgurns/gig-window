@@ -24,8 +24,8 @@ const HowToBroadcast = () => {
         How to broadcast:
       </Typography>
       <Typography className={classes.howToItem}>
-        1. Pick a streaming software - anything that lets you stream to an RTMP
-        URL. Many people like <Link href="https://obsproject.com/">OBS</Link>{' '}
+        1. Pick a streaming app - anything that lets you stream to an RTMP URL.
+        Many people like <Link href="https://obsproject.com/">OBS</Link>{' '}
         (laptop/desktop) or{' '}
         <Link href="https://streamlabs.com/mobile-app">Streamlabs</Link>{' '}
         (iPad/iPhone/Android), which are free and open source. Both have plenty

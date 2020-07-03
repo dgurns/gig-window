@@ -202,7 +202,7 @@ const Dashboard = () => {
               alignItems="center"
               className={classes.videoContainer}
             >
-              {liveVideoIsActive ? (
+              {liveVideoIsActive && isPublishingStream ? (
                 <LiveVideoArea />
               ) : (
                 renderStreamPreviewMessage()
