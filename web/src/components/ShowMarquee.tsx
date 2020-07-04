@@ -42,7 +42,7 @@ const ShowMarquee = ({ show, payee }: ShowMarqueeProps) => {
 
   const {
     paymentForShow,
-    paymentForShowQuery: { error },
+    paymentForShowQuery: { loading, error },
   } = usePayments({
     showId: show.id,
   });
@@ -64,7 +64,7 @@ const ShowMarquee = ({ show, payee }: ShowMarqueeProps) => {
         </Typography>
       );
     } else {
-      return <BuyTicketButton payee={payee} show={show} />;
+      return <BuyTicketButton payee={payee} show={show} loading={loading} />;
     }
   };
 

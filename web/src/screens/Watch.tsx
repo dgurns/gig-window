@@ -106,23 +106,12 @@ const Watch = () => {
   const [liveVideoIsActive, liveVideoIsActiveQuery] = useLiveVideo({ user });
 
   const [, showsQuery, activeShow] = useShowsForUser(user?.id);
-  const {
-    paymentForShow,
-    paymentForShowQuery,
-    recentPaymentsToPayee,
-    recentPaymentsToPayeeQuery,
-  } = usePayments({
+  const { paymentForShow, recentPaymentsToPayee } = usePayments({
     showId: activeShow?.id,
     payeeUserId: user?.id,
   });
 
-  if (
-    userQuery.loading ||
-    liveVideoIsActiveQuery.loading ||
-    showsQuery.loading ||
-    paymentForShowQuery.loading ||
-    recentPaymentsToPayeeQuery.loading
-  ) {
+  if (userQuery.loading || liveVideoIsActiveQuery.loading) {
     return (
       <Container disableGutters maxWidth={false}>
         <Grid container direction="row" className={classes.userInfoContainer}>

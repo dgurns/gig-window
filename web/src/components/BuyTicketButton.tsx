@@ -1,5 +1,6 @@
 import React from 'react';
-import { Button } from '@material-ui/core';
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import useDialog from 'hooks/useDialog';
 
@@ -15,6 +16,7 @@ interface BuyTicketButtonProps {
   };
   buttonText?: string;
   className?: string;
+  loading?: boolean;
 }
 
 const BuyTicketButton = ({
@@ -22,6 +24,7 @@ const BuyTicketButton = ({
   show,
   buttonText,
   className,
+  loading = false,
 }: BuyTicketButtonProps) => {
   const [PaymentDialog, setPaymentDialogIsVisible] = useDialog();
 
@@ -29,15 +32,19 @@ const BuyTicketButton = ({
 
   return (
     <>
-      <Button
-        variant="contained"
-        size="large"
-        color="primary"
-        onClick={() => setPaymentDialogIsVisible()}
-        className={className}
-      >
-        {buttonText ?? 'Buy ticket'}
-      </Button>
+      {loading ? (
+        <CircularProgress color="secondary" size={30} />
+      ) : (
+        <Button
+          variant="contained"
+          size="large"
+          color="primary"
+          onClick={() => setPaymentDialogIsVisible()}
+          className={className}
+        >
+          {buttonText ?? 'Buy ticket'}
+        </Button>
+      )}
 
       <PaymentDialog>
         <PaymentForm payee={payee} show={show} />
