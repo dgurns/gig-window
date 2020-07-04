@@ -10,13 +10,22 @@ export interface Payment {
     username: string;
   };
 }
+interface PaymentsData {
+  getUserPayments: Payment[];
+}
 
 export interface PaymentForShow {
   id: number;
 }
+interface PaymentForShowData {
+  getUserPaymentForShow: PaymentForShow;
+}
 
 export interface RecentPaymentToPayee {
   id: number;
+}
+interface RecentPaymentsToPayeeData {
+  getUserPaymentsToPayee: RecentPaymentToPayee[];
 }
 
 interface UsePaymentsArgs {
@@ -26,11 +35,11 @@ interface UsePaymentsArgs {
 
 interface UsePaymentsReturnValue {
   payments?: Payment[];
-  paymentsQuery: QueryResult<Payment>;
+  paymentsQuery: QueryResult<PaymentsData>;
   paymentForShow?: PaymentForShow;
-  paymentForShowQuery: QueryResult<PaymentForShow>;
+  paymentForShowQuery: QueryResult<PaymentForShowData>;
   recentPaymentsToPayee?: RecentPaymentToPayee[];
-  recentPaymentsToPayeeQuery: QueryResult<RecentPaymentToPayee>;
+  recentPaymentsToPayeeQuery: QueryResult<RecentPaymentsToPayeeData>;
   refetchPayments: () => void;
 }
 
@@ -70,20 +79,26 @@ const usePayments = ({
 }: UsePaymentsArgs = {}): UsePaymentsReturnValue => {
   const [currentUser] = useCurrentUser();
 
-  const paymentsQuery = useQuery(GET_PAYMENTS, {
+  const paymentsQuery = useQuery<PaymentsData>(GET_PAYMENTS, {
     skip: !currentUser,
     fetchPolicy: 'cache-and-network',
   });
-  const paymentForShowQuery = useQuery(GET_PAYMENT_FOR_SHOW, {
-    variables: { showId },
-    skip: !showId || !currentUser,
-    fetchPolicy: 'cache-and-network',
-  });
-  const recentPaymentsToPayeeQuery = useQuery(GET_RECENT_PAYMENTS_TO_PAYEE, {
-    variables: { payeeUserId },
-    skip: !payeeUserId || !currentUser,
-    fetchPolicy: 'cache-and-network',
-  });
+  const paymentForShowQuery = useQuery<PaymentForShowData>(
+    GET_PAYMENT_FOR_SHOW,
+    {
+      variables: { showId },
+      skip: !showId || !currentUser,
+      fetchPolicy: 'cache-and-network',
+    }
+  );
+  const recentPaymentsToPayeeQuery = useQuery<RecentPaymentsToPayeeData>(
+    GET_RECENT_PAYMENTS_TO_PAYEE,
+    {
+      variables: { payeeUserId },
+      skip: !payeeUserId || !currentUser,
+      fetchPolicy: 'cache-and-network',
+    }
+  );
 
   const payments = paymentsQuery.data?.getUserPayments;
   const paymentForShow = paymentForShowQuery.data?.getUserPaymentForShow;
