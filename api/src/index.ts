@@ -8,11 +8,11 @@ import compression from 'compression';
 import cookieSession from 'cookie-session';
 import passport from 'passport';
 import { ApolloServer, PubSub } from 'apollo-server-express';
-import { createConnection as createDatabaseConnection } from 'typeorm';
 import { buildSchema } from 'type-graphql';
 import depthLimit from 'graphql-depth-limit';
 import { buildContext } from 'graphql-passport';
 
+import { connectToDatabase } from './connectToDatabase';
 import { initializePassport } from './initializePassport';
 import { restRouter } from './restRouter';
 import { authChecker } from './authChecker';
@@ -24,13 +24,14 @@ import { PaymentResolver } from 'resolvers/PaymentResolver';
 import { AdminResolver } from 'resolvers/AdminResolver';
 import { ShowResolver } from 'resolvers/ShowResolver';
 
-const { RTMP_ORIGIN, UI_ORIGIN, SERVER_PORT, COOKIE_SESSION_KEY } = process.env;
+const { RTMP_ORIGIN, UI_ORIGIN, COOKIE_SESSION_KEY } = process.env;
+const SERVER_PORT = 4000;
 
 export const pubSub = new PubSub();
 
 async function start() {
   try {
-    await createDatabaseConnection();
+    await connectToDatabase();
 
     initializePassport();
 

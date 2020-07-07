@@ -1,5 +1,5 @@
-# Build the app
-FROM node:alpine as build-app
+# Build the web app
+FROM node:alpine as build-web
 
 ARG REACT_APP_GRAPHQL_HTTP_URL
 ARG REACT_APP_GRAPHQL_WEBSOCKETS_URL
@@ -27,8 +27,10 @@ RUN REACT_APP_GRAPHQL_HTTP_URL=$REACT_APP_GRAPHQL_HTTP_URL \
   REACT_APP_STRIPE_CONNECT_CLIENT_ID=$REACT_APP_STRIPE_CONNECT_CLIENT_ID \
   yarn build
 
-# Serve the app via nginx
-FROM nginx
+# Serve the built app via nginx
+FROM nginx:alpine
 EXPOSE 3000
 COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
-COPY --from=build-app /app/build /usr/share/nginx/html
+COPY --from=build-web /app/build /usr/share/nginx/html
+
+CMD ["nginx", "-g", "daemon off;"]

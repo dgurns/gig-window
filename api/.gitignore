@@ -1,4 +1,4 @@
 .env
 node_modules
 dist
-db.sqlite3
+yarn-error.log*
