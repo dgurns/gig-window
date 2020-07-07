@@ -15,7 +15,7 @@ COPY package.json .
 COPY yarn.lock .
 COPY tsconfig.json .
 
-RUN yarn install --frozen-lockfile --network-timeout 100000
+RUN yarn install --frozen-lockfile --production --network-timeout 100000
 
 COPY src src/
 COPY public public/
