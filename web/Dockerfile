@@ -1,31 +1,17 @@
 # Build the web app
-FROM node:alpine as build-web
-
-ARG REACT_APP_GRAPHQL_HTTP_URL
-ARG REACT_APP_GRAPHQL_WEBSOCKETS_URL
-ARG REACT_APP_RTMP_URL
-ARG REACT_APP_STRIPE_PUBLISHABLE_KEY
-ARG REACT_APP_STRIPE_CONNECT_CLIENT_ID
-
-RUN apk add yarn
+FROM node:10.15-alpine as build-web
 
 WORKDIR /app
 
 COPY package.json .
 COPY yarn.lock .
+RUN yarn install --frozen-lockfile --network-timeout 100000
+
 COPY tsconfig.json .
-
-RUN yarn install --frozen-lockfile --production --network-timeout 100000
-
 COPY src src/
 COPY public public/
 
-RUN REACT_APP_GRAPHQL_HTTP_URL=$REACT_APP_GRAPHQL_HTTP_URL \
-  REACT_APP_GRAPHQL_WEBSOCKETS_URL=$REACT_APP_GRAPHQL_WEBSOCKETS_URL \
-  REACT_APP_RTMP_URL=$REACT_APP_RTMP_URL \
-  REACT_APP_STRIPE_PUBLISHABLE_KEY=$REACT_APP_STRIPE_PUBLISHABLE_KEY \
-  REACT_APP_STRIPE_CONNECT_CLIENT_ID=$REACT_APP_STRIPE_CONNECT_CLIENT_ID \
-  yarn build
+RUN yarn build
 
 # Serve the built app via nginx
 FROM nginx:alpine

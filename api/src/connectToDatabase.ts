@@ -9,12 +9,12 @@ export const connectToDatabase = async () => {
     password: process.env.DATABASE_PASSWORD,
     database: process.env.DATABASE_NAME,
     logging: false,
-    entities: ['./src/entities/*.ts'],
+    entities: [__dirname + '/entities/*'],
     synchronize: false,
     migrationsRun: true,
-    migrations: ['./src/migrations/*.ts'],
+    migrations: [__dirname + '/migrations/*'],
     cli: {
-      migrationsDir: './src/migrations',
+      migrationsDir: __dirname + '/migrations',
     },
   });
 };
