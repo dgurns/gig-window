@@ -5,6 +5,12 @@ import classnames from 'classnames';
 
 import useCurrentUser from 'hooks/useCurrentUser';
 
+const {
+  REACT_APP_RTMP_HOST,
+  REACT_APP_RTMP_PORT,
+  REACT_APP_RTMP_PATH,
+} = process.env;
+
 const useStyles = makeStyles((theme) => ({
   howToItem: {
     marginBottom: 11,
@@ -35,7 +41,7 @@ const HowToBroadcast = () => {
         2. Send your stream to this RTMP URL:
       </Typography>
       <TextField
-        value={process.env.REACT_APP_RTMP_URL}
+        value={`rtmp://${REACT_APP_RTMP_HOST}:${REACT_APP_RTMP_PORT}${REACT_APP_RTMP_PATH}`}
         variant="outlined"
         size="small"
         className={classnames([classes.howToItem, classes.rtmpField])}

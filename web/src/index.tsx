@@ -15,12 +15,24 @@ import theme from 'styles/theme';
 import * as serviceWorker from './serviceWorker';
 import App from 'App';
 
+const { NODE_ENV, REACT_APP_API_GRAPHQL_PATH } = process.env;
+const { host } = window.location;
+
+const graphqlHttpUri =
+  NODE_ENV === 'development'
+    ? `http://localhost:4000${REACT_APP_API_GRAPHQL_PATH}`
+    : REACT_APP_API_GRAPHQL_PATH;
+const graphqlWsUri =
+  NODE_ENV === 'development'
+    ? `ws://localhost:4000${REACT_APP_API_GRAPHQL_PATH}`
+    : `ws://${host}${REACT_APP_API_GRAPHQL_PATH}`;
+
 const httpLink = new HttpLink({
-  uri: process.env.REACT_APP_GRAPHQL_HTTP_URL,
+  uri: graphqlHttpUri,
   credentials: 'include',
 });
 const wsLink = new WebSocketLink({
-  uri: process.env.REACT_APP_GRAPHQL_WEBSOCKETS_URL || '',
+  uri: graphqlWsUri,
   options: {
     reconnect: true,
     timeout: 3000,

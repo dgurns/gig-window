@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: web
+  template:
+    metadata:
+      labels:
+        component: web
+    spec:
+      containers:
+        - name: web
+          image: dgurney/corona-window-web:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: REACT_APP_API_GRAPHQL_PATH
+              value: /api/graphql
+            - name: REACT_APP_RTMP_HOST
+              value: rtmp-cluster-ip-service
+            - name: REACT_APP_RTMP_PORT
+              value: '29644'
+            - name: REACT_APP_RTMP_PATH
+              value: /stream
+            - name: REACT_APP_STRIPE_PUBLISHABLE_KEY
+              value: pk_test_Tameal79Lta772Qi3TKW3sZW00FrRPE0ho
+            - name: REACT_APP_STRIPE_CONNECT_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: react-app-stripe-connect-client-id
+                  key: REACT_APP_STRIPE_CONNECT_CLIENT_ID
+      imagePullSecrets:
+        - name: dgurney-docker-hub-credentials

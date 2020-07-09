@@ -24,7 +24,7 @@ import { PaymentResolver } from 'resolvers/PaymentResolver';
 import { AdminResolver } from 'resolvers/AdminResolver';
 import { ShowResolver } from 'resolvers/ShowResolver';
 
-const { RTMP_ORIGIN, UI_ORIGIN, COOKIE_SESSION_KEY } = process.env;
+const { NODE_ENV, RTMP_ORIGIN, UI_ORIGIN, COOKIE_SESSION_KEY } = process.env;
 const SERVER_PORT = 4000;
 
 export const pubSub = new PubSub();
@@ -32,15 +32,14 @@ export const pubSub = new PubSub();
 async function start() {
   try {
     await connectToDatabase();
-
     initializePassport();
 
     const app = express();
-    const allowedOrigins = [
-      RTMP_ORIGIN,
-      UI_ORIGIN,
-      `http://localhost:${SERVER_PORT}`,
-    ];
+
+    const allowedOrigins = [RTMP_ORIGIN];
+    if (NODE_ENV === 'development') {
+      allowedOrigins.push(UI_ORIGIN, `http://localhost:${SERVER_PORT}`);
+    }
     app.use(
       cors({
         origin: function (origin, callback) {
