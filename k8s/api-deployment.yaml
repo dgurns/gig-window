@@ -18,6 +18,8 @@ spec:
           ports:
             - containerPort: 4000
           env:
+            - name: NODE_ENV
+              value: production
             - name: DATABASE_HOST
               value: corona-window-staging.ctgvfpoeqoab.us-east-1.rds.amazonaws.com
             - name: DATABASE_PORT
@@ -31,6 +33,8 @@ spec:
                   key: DATABASE_PASSWORD
             - name: DATABASE_NAME
               value: postgres
+            - name: UI_ORIGIN
+              value: 'http://localhost'
             - name: RTMP_ORIGIN
               value: rtmp://1.tcp.ngrok.io:29644
             - name: RTMP_PATH

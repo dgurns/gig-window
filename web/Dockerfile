@@ -14,9 +14,10 @@ COPY public public/
 RUN yarn build
 
 # Serve the built app via nginx
-FROM nginx:alpine
-EXPOSE 3000
-COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
-COPY --from=build-web /app/build /usr/share/nginx/html
+FROM beamaustralia/react-env:latest
 
-CMD ["nginx", "-g", "daemon off;"]
+WORKDIR /var/www
+
+COPY --from=build-web /app/build /var/www
+
+COPY .env* /var/www/

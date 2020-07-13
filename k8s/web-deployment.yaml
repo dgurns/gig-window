@@ -16,8 +16,10 @@ spec:
         - name: web
           image: dgurney/corona-window-web:latest
           ports:
-            - containerPort: 3000
+            - containerPort: 80
           env:
+            - name: NODE_ENV
+              value: production
             - name: REACT_APP_API_GRAPHQL_PATH
               value: '/api/graphql'
             - name: REACT_APP_RTMP_HOST

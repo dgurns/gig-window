@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
+import env from '@beam-australia/react-env';
 import { useMutation, gql } from '@apollo/client';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
@@ -51,10 +52,7 @@ const DashboardSubheader = () => {
 
   const buildStripeOauthUrl = () => {
     const url = new URL('https://connect.stripe.com/oauth/authorize');
-    url.searchParams.set(
-      'client_id',
-      process.env.REACT_APP_STRIPE_CONNECT_CLIENT_ID || ''
-    );
+    url.searchParams.set('client_id', env('STRIPE_CONNECT_CLIENT_ID'));
     url.searchParams.set('scope', 'read_write');
     url.searchParams.set('response_type', 'code');
     return url.toString();

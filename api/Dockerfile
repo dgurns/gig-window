@@ -20,7 +20,6 @@ FROM node:10.15-alpine
 COPY --from=compile-api /app/dist ./dist
 COPY --from=compile-api /app/node_modules ./node_modules
 
-ENV NODE_ENV=production
 ENV NODE_PATH=./dist
 
 EXPOSE 4000

@@ -36,9 +36,9 @@ async function start() {
 
     const app = express();
 
-    const allowedOrigins = [RTMP_ORIGIN];
+    const allowedOrigins = [UI_ORIGIN, RTMP_ORIGIN];
     if (NODE_ENV === 'development') {
-      allowedOrigins.push(UI_ORIGIN, `http://localhost:${SERVER_PORT}`);
+      allowedOrigins.push(`http://localhost:${SERVER_PORT}`);
     }
     app.use(
       cors({

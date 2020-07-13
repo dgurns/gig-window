@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "start": "yarn build:dev",
+    "start": "NODE_ENV=development yarn build:dev",
     "build:dev": "nodemon 'src/index.ts' --exec 'ts-node -r tsconfig-paths/register' index.ts -e ts,graphql",
     "build:dist": "tsc -p .",
     "migration:generate": "yarn typeorm migration:generate -n $NAME",

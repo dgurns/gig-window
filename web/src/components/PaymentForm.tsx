@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import env from '@beam-australia/react-env';
 import debounce from 'lodash/debounce';
 import { useQuery, gql } from '@apollo/client';
 import { Elements } from '@stripe/react-stripe-js';
@@ -14,9 +15,7 @@ import AuthForm from './AuthForm';
 import PayWithCard from './PayWithCard';
 import PayWithSavedCard from './PayWithSavedCard';
 
-const stripePromise = loadStripe(
-  process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || ''
-);
+const stripePromise = loadStripe(env('STRIPE_PUBLISHABLE_KEY'));
 
 const GET_SAVED_PAYMENT_METHOD = gql`
   query {

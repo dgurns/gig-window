@@ -1,15 +1,10 @@
 import React from 'react';
+import env from '@beam-australia/react-env';
 import { Grid, Link, Typography, TextField } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import classnames from 'classnames';
 
 import useCurrentUser from 'hooks/useCurrentUser';
-
-const {
-  REACT_APP_RTMP_HOST,
-  REACT_APP_RTMP_PORT,
-  REACT_APP_RTMP_PATH,
-} = process.env;
 
 const useStyles = makeStyles((theme) => ({
   howToItem: {
@@ -41,7 +36,9 @@ const HowToBroadcast = () => {
         2. Send your stream to this RTMP URL:
       </Typography>
       <TextField
-        value={`rtmp://${REACT_APP_RTMP_HOST}:${REACT_APP_RTMP_PORT}${REACT_APP_RTMP_PATH}`}
+        value={`rtmp://${env('RTMP_HOST')}:${env('RTMP_PORT')}${env(
+          'RTMP_PATH'
+        )}`}
         variant="outlined"
         size="small"
         className={classnames([classes.howToItem, classes.rtmpField])}
