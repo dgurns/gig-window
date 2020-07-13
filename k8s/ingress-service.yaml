@@ -23,7 +23,7 @@ spec:
             backend:
               serviceName: api-cluster-ip-service
               servicePort: 4000
-          # - path: /rtmp/?(.*)
-          #   backend:
-          #     serviceName: rtmp-cluster-ip-service
-          #     servicePort: 5000
+          - path: /rtmp/?(.*)
+            backend:
+              serviceName: rtmp-cluster-ip-service
+              servicePort: 1935

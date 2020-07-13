@@ -36,9 +36,9 @@ spec:
             - name: UI_ORIGIN
               value: 'http://localhost'
             - name: RTMP_ORIGIN
-              value: rtmp://1.tcp.ngrok.io:29644
+              value: rtmp://localhost
             - name: RTMP_PATH
-              value: /stream
+              value: /rtmp/stream
             - name: COOKIE_SESSION_KEY
               valueFrom:
                 secretKeyRef:

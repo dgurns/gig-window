@@ -36,9 +36,7 @@ const HowToBroadcast = () => {
         2. Send your stream to this RTMP URL:
       </Typography>
       <TextField
-        value={`rtmp://${env('RTMP_HOST')}:${env('RTMP_PORT')}${env(
-          'RTMP_PATH'
-        )}`}
+        value={env('RTMP_URL')}
         variant="outlined"
         size="small"
         className={classnames([classes.howToItem, classes.rtmpField])}

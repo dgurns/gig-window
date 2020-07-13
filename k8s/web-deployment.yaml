@@ -22,18 +22,11 @@ spec:
               value: production
             - name: REACT_APP_API_GRAPHQL_PATH
               value: '/api/graphql'
-            - name: REACT_APP_RTMP_HOST
-              value: rtmp-cluster-ip-service
-            - name: REACT_APP_RTMP_PORT
-              value: '29644'
-            - name: REACT_APP_RTMP_PATH
-              value: '/stream'
+            - name: REACT_APP_RTMP_URL
+              value: 'rtmp://localhost/rtmp/stream'
             - name: REACT_APP_STRIPE_PUBLISHABLE_KEY
               value: 'pk_test_Tameal79Lta772Qi3TKW3sZW00FrRPE0ho'
             - name: REACT_APP_STRIPE_CONNECT_CLIENT_ID
-              valueFrom:
-                secretKeyRef:
-                  name: react-app-stripe-connect-client-id
-                  key: REACT_APP_STRIPE_CONNECT_CLIENT_ID
+              value: 'ca_HAwnCVdo5IGax3Ix2nlnq2ZaGIHPkBXb'
       imagePullSecrets:
         - name: dgurney-docker-hub-credentials

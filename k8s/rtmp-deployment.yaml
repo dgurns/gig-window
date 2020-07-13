@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rtmp-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: rtmp
+  template:
+    metadata:
+      labels:
+        component: rtmp
+    spec:
+      containers:
+        - name: rtmp
+          image: dgurney/corona-window-rtmp:latest
+          ports:
+            - containerPort: 1935
+          env:
+            - name: HTTP_PORT
+              value: '80'
+            - name: RTMP_PORT
+              value: '1935'
+            - name: API_RTMP_EVENT_URL
+              value: http://localhost/api/rtmp-event
+      imagePullSecrets:
+        - name: dgurney-docker-hub-credentials
