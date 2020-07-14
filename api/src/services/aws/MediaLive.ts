@@ -17,6 +17,7 @@ const {
   AWS_ACCESS_KEY_ID,
   AWS_SECRET_ACCESS_KEY,
   RTMP_ORIGIN,
+  RTMP_PORT,
   RTMP_PATH,
 } = process.env;
 
@@ -46,7 +47,9 @@ const maybeCreateRtmpPullInputForUser = async (
   const inputParams = {
     Name: `${user.id}`,
     Type: 'RTMP_PULL',
-    Sources: [{ Url: `${RTMP_ORIGIN}${RTMP_PATH}/${user.streamKey}` }],
+    Sources: [
+      { Url: `${RTMP_ORIGIN}:${RTMP_PORT}${RTMP_PATH}/${user.streamKey}` },
+    ],
   };
   const input = await MediaLive.createInput(inputParams).promise();
   if (input.Input && input.Input.Id) {

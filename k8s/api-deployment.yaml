@@ -36,7 +36,9 @@ spec:
             - name: UI_ORIGIN
               value: 'http://localhost'
             - name: RTMP_ORIGIN
-              value: rtmp://192.168.64.3:1935
+              value: rtmp://192.168.64.3
+            - name: RTMP_PORT
+              value: 1935
             - name: RTMP_PATH
               value: /rtmp/stream
             - name: COOKIE_SESSION_KEY
