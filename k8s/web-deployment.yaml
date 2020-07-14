@@ -23,7 +23,7 @@ spec:
             - name: REACT_APP_API_GRAPHQL_PATH
               value: '/api/graphql'
             - name: REACT_APP_RTMP_URL
-              value: 'rtmp://localhost/rtmp/stream'
+              value: 'rtmp://192.168.64.3:1935/rtmp/stream'
             - name: REACT_APP_STRIPE_PUBLISHABLE_KEY
               value: 'pk_test_Tameal79Lta772Qi3TKW3sZW00FrRPE0ho'
             - name: REACT_APP_STRIPE_CONNECT_CLIENT_ID

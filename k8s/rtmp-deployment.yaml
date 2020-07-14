@@ -24,6 +24,6 @@ spec:
             - name: RTMP_PORT
               value: '1935'
             - name: API_RTMP_EVENT_URL
-              value: http://localhost/api/rtmp-event
+              value: http://192.168.64.3/api/rtmp-event
       imagePullSecrets:
         - name: dgurney-docker-hub-credentials
