@@ -17,6 +17,7 @@ spec:
           image: dgurney/corona-window-rtmp:latest
           ports:
             - containerPort: 1935
+              protocol: TCP
           env:
             - name: HTTP_PORT
               value: '80'
