@@ -20,26 +20,22 @@ import LiveVideoArea from 'components/LiveVideoArea';
 import ChatBox from 'components/ChatBox';
 import HowToBroadcast from 'components/HowToBroadcast';
 
-const useStyles = makeStyles((theme) => ({
-  pageContent: {
-    paddingTop: 35,
-    width: '100%',
-  },
+const useStyles = makeStyles(({ breakpoints, palette, spacing }) => ({
   artistInfoContainer: {
     alignItems: 'center',
-    padding: `${theme.spacing(4)}px ${theme.spacing(4)}px`,
-    [theme.breakpoints.down('xs')]: {
+    padding: `${spacing(4)}px ${spacing(4)}px`,
+    [breakpoints.down('xs')]: {
       alignItems: 'flex-start',
       flexDirection: 'column-reverse',
-      padding: `${theme.spacing(3)}px ${theme.spacing(3)}px`,
+      padding: `${spacing(3)}px ${spacing(3)}px`,
     },
   },
   artistImage: {
     height: 80,
-    marginRight: theme.spacing(2),
+    marginRight: spacing(2),
     width: 80 * Image.DEFAULT_IMAGE_ASPECT_RATIO,
-    [theme.breakpoints.down('xs')]: {
-      marginTop: theme.spacing(2),
+    [breakpoints.down('xs')]: {
+      marginTop: spacing(2),
     },
   },
   artistText: {
@@ -48,44 +44,44 @@ const useStyles = makeStyles((theme) => ({
   videoChatContainer: {
     flexDirection: 'row',
     height: 520,
-    [theme.breakpoints.down('xs')]: {
+    [breakpoints.down('xs')]: {
       flexDirection: 'column',
       height: 'auto',
     },
   },
   videoContainer: {
-    backgroundColor: theme.palette.common.black,
+    backgroundColor: palette.common.black,
     height: '100%',
-    [theme.breakpoints.down('xs')]: {
+    [breakpoints.down('xs')]: {
       minHeight: 230,
     },
   },
   streamPreviewMessage: {
-    color: theme.palette.common.white,
-    marginRight: theme.spacing(2),
+    color: palette.common.white,
+    marginRight: spacing(2),
     textAlign: 'center',
   },
   startingVideoInfrastructureProgress: {
-    marginTop: theme.spacing(2),
+    marginTop: spacing(2),
     width: 100,
   },
   chat: {
-    backgroundColor: theme.palette.common.white,
+    backgroundColor: palette.common.white,
     height: '100%',
-    [theme.breakpoints.down('xs')]: {
+    [breakpoints.down('xs')]: {
       height: 260,
     },
   },
   tools: {
-    marginTop: theme.spacing(2),
-    [theme.breakpoints.down('sm')]: {
-      padding: `0 ${theme.spacing(2)}px`,
+    marginTop: spacing(2),
+    [breakpoints.down('sm')]: {
+      padding: `0 ${spacing(2)}px`,
     },
   },
   howTo: {
-    padding: `${theme.spacing(4)}px ${theme.spacing(4)}px`,
-    [theme.breakpoints.down('xs')]: {
-      padding: `${theme.spacing(3)}px ${theme.spacing(3)}px`,
+    padding: `${spacing(4)}px ${spacing(4)}px ${spacing(12)}px`,
+    [breakpoints.down('xs')]: {
+      padding: `${spacing(3)}px ${spacing(3)}px`,
     },
   },
 }));
