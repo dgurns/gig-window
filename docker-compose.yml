@@ -1,0 +1,63 @@
+version: '3'
+
+services:
+  web:
+    image: dgurney/corona-window-web:latest
+    depends_on:
+      - api
+    ports:
+      - 80:80
+    environment:
+      - REACT_APP_API_HTTP_ORIGIN=http://api:4000
+      - REACT_APP_API_WEBSOCKET_ORIGIN=ws://api:4000
+      - REACT_APP_API_GRAPHQL_PATH=/graphql
+      - REACT_APP_RTMP_URL=rtmp://1.tcp.ngrok.io:29644/stream
+      - REACT_APP_STRIPE_PUBLISHABLE_KEY=pk_test_Tameal79Lta772Qi3TKW3sZW00FrRPE0ho
+      - REACT_APP_STRIPE_CONNECT_CLIENT_ID=ca_HAwnCVdo5IGax3Ix2nlnq2ZaGIHPkBXb
+
+  api:
+    image: dgurney/corona-window-api:latest
+    depends_on:
+      - db
+    ports:
+      - 4000:4000
+    environment:
+      - NODE_ENV=production
+      # - DATABASE_HOST=corona-window-staging.ctgvfpoeqoab.us-east-1.rds.amazonaws.com
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+      - DATABASE_USERNAME=postgres
+      # - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE_PASSWORD=password
+      - DATABASE_NAME=postgres
+      - RTMP_ORIGIN=rtmp://1.tcp.ngrok.io:29644
+      - RTMP_PATH=/stream
+      - UI_ORIGIN=http://localhost:3000
+      - COOKIE_SESSION_KEY=${COOKIE_SESSION_KEY}
+      - AWS_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_S3_BUCKET=corona-window-dev
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+
+  rtmp:
+    image: dgurney/corona-window-rtmp:latest
+    ports:
+      - 1935:1935
+      - 8080:80
+      - 8443:443
+    environment:
+      - HTTP_PORT=80
+      - RTMP_PORT=1935
+      - API_RTMP_EVENT_URL=api:4000/rtmp-event
+    volumes:
+      - ./certs:/opt/certs
+
+  db:
+    image: postgres:alpine
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data

@@ -16,14 +16,8 @@ import theme from 'styles/theme';
 import * as serviceWorker from './serviceWorker';
 import App from 'App';
 
-const graphqlHttpUri =
-  env('NODE_ENV') === 'development'
-    ? `http://localhost:4000${env('API_GRAPHQL_PATH')}`
-    : env('API_GRAPHQL_PATH');
-const graphqlWsUri =
-  env('NODE_ENV') === 'development'
-    ? `ws://localhost:4000${env('API_GRAPHQL_PATH')}`
-    : `ws://${window.location.host}${env('API_GRAPHQL_PATH')}`;
+const graphqlHttpUri = `${env('API_HTTP_ORIGIN')}${env('API_GRAPHQL_PATH')}`;
+const graphqlWsUri = `${env('API_WEBSOCKET_ORIGIN')}${env('API_GRAPHQL_PATH')}`;
 
 const httpLink = new HttpLink({
   uri: graphqlHttpUri,

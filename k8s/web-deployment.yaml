@@ -18,8 +18,10 @@ spec:
           ports:
             - containerPort: 80
           env:
-            - name: NODE_ENV
-              value: production
+            - name: REACT_APP_API_HTTP_ORIGIN
+              value: http://api-cluster-ip-service:4000
+            - name: REACT_APP_API_WEBSOCKET_ORIGIN
+              value: ws://api-cluster-ip-service:4000
             - name: REACT_APP_API_GRAPHQL_PATH
               value: '/api/graphql'
             - name: REACT_APP_RTMP_URL
