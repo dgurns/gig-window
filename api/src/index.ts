@@ -31,7 +31,7 @@ const {
   REDIS_HOST,
   REDIS_PORT,
   RTMP_ORIGIN,
-  UI_ORIGIN,
+  WEB_ORIGIN,
   COOKIE_SESSION_KEY,
 } = process.env;
 const SERVER_PORT = 4000;
@@ -53,7 +53,7 @@ async function start() {
 
     const app = express();
 
-    const allowedOrigins = [UI_ORIGIN, RTMP_ORIGIN];
+    const allowedOrigins = [WEB_ORIGIN, RTMP_ORIGIN];
     if (NODE_ENV === 'development') {
       allowedOrigins.push(`http://localhost:${SERVER_PORT}`);
     }
@@ -104,7 +104,7 @@ async function start() {
 
     server.applyMiddleware({
       app,
-      cors: { origin: UI_ORIGIN, credentials: true },
+      cors: { origin: WEB_ORIGIN, credentials: true },
     });
     const httpServer = http.createServer(app);
     server.installSubscriptionHandlers(httpServer);

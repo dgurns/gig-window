@@ -33,7 +33,7 @@ spec:
                   key: DATABASE_PASSWORD
             - name: DATABASE_NAME
               value: postgres
-            - name: UI_ORIGIN
+            - name: WEB_ORIGIN
               value: 'http://localhost'
             - name: RTMP_ORIGIN
               value: rtmp://192.168.64.3

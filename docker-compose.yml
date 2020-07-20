@@ -1,16 +1,23 @@
 version: '3'
 
 services:
+  nginx:
+    image: dgurney/corona-window-nginx:latest
+    depends_on:
+      - web
+      - api
+    restart: always
+    ports:
+      - 80:80
+
   web:
     image: dgurney/corona-window-web:latest
     depends_on:
       - api
     restart: always
-    ports:
-      - 80:80
     environment:
-      - REACT_APP_API_HTTP_ORIGIN=http://localhost:4000
-      - REACT_APP_API_WEBSOCKET_ORIGIN=ws://localhost:4000
+      - REACT_APP_API_HTTP_ORIGIN=http://localhost/api
+      - REACT_APP_API_WEBSOCKET_ORIGIN=ws://localhost/websocket
       - REACT_APP_API_GRAPHQL_PATH=/graphql
       - REACT_APP_RTMP_URL=rtmp://1.tcp.ngrok.io:29644/stream
       - REACT_APP_STRIPE_PUBLISHABLE_KEY=pk_test_Tameal79Lta772Qi3TKW3sZW00FrRPE0ho
@@ -22,8 +29,6 @@ services:
       - db
       - redis
     restart: always
-    ports:
-      - 4000:4000
     environment:
       - NODE_ENV=production
       # - DATABASE_HOST=corona-window-staging.ctgvfpoeqoab.us-east-1.rds.amazonaws.com
@@ -37,7 +42,7 @@ services:
       - REDIS_PORT=6379
       - RTMP_ORIGIN=rtmp://1.tcp.ngrok.io:29644
       - RTMP_PATH=/stream
-      - UI_ORIGIN=http://localhost
+      - WEB_ORIGIN=http://localhost
       - COOKIE_SESSION_KEY=${COOKIE_SESSION_KEY}
       - AWS_REGION=us-east-1
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
@@ -50,8 +55,6 @@ services:
     restart: always
     ports:
       - 1935:1935
-      - 8080:80
-      - 8443:443
     environment:
       - HTTP_PORT=80
       - RTMP_PORT=1935
@@ -66,8 +69,6 @@ services:
   db:
     image: postgres:alpine
     restart: always
-    ports:
-      - 5432:5432
     environment:
       - POSTGRES_PASSWORD=password
     volumes:
