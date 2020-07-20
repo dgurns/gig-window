@@ -1,10 +1,7 @@
 #!/bin/bash
 
-# Start db
-# Start web
-# Start api
-# Start rtmp
-# Make web, api, and rtmp publicly accessible via ngrok
+# Start the app locally
+# Expose RTMP server to the web
 
 # NOTE: You'll need to set up your own custom ngrok config
 # if you want to expose your local setup to the web:
@@ -14,9 +11,9 @@
 # Also if using ngrok don't forget to update your env 
 # variables to point to the ngrok domains!
 
+# If you only want to start certain services, you can run:
+# docker-compose up db redis
+
 concurrently \
-  "docker run -v `pwd`/postgres-data:/var/lib/postgresql/data -p 5432:5432 -e POSTGRES_PASSWORD=password postgres:alpine" \
-  "cd web && yarn start" \
-  "cd api && yarn start" \
-  "docker-compose -f rtmp/docker-compose.yml up --build" \
-  "ngrok start corona-window-web corona-window-api corona-window-rtmp"
+  "docker-compose up" \
+  "ngrok start corona-window-rtmp"
