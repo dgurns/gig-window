@@ -20,6 +20,7 @@ services:
     image: dgurney/corona-window-api:latest
     depends_on:
       - db
+      - redis
     restart: always
     ports:
       - 4000:4000
@@ -32,6 +33,8 @@ services:
       # - DATABASE_PASSWORD=${DATABASE_PASSWORD}
       - DATABASE_PASSWORD=password
       - DATABASE_NAME=postgres
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
       - RTMP_ORIGIN=rtmp://1.tcp.ngrok.io:29644
       - RTMP_PATH=/stream
       - UI_ORIGIN=http://localhost
@@ -55,6 +58,10 @@ services:
       - API_RTMP_EVENT_URL=http://host.docker.internal:4000/rtmp-event
     volumes:
       - ./certs:/opt/certs
+
+  redis:
+    image: redis:alpine
+    restart: always
 
   db:
     image: postgres:alpine

@@ -7,7 +7,9 @@ import cors from 'cors';
 import compression from 'compression';
 import cookieSession from 'cookie-session';
 import passport from 'passport';
-import { ApolloServer, PubSub } from 'apollo-server-express';
+import { ApolloServer } from 'apollo-server-express';
+import { RedisPubSub } from 'graphql-redis-subscriptions';
+import Redis from 'ioredis';
 import { buildSchema } from 'type-graphql';
 import depthLimit from 'graphql-depth-limit';
 import { buildContext } from 'graphql-passport';
@@ -24,10 +26,25 @@ import { PaymentResolver } from 'resolvers/PaymentResolver';
 import { AdminResolver } from 'resolvers/AdminResolver';
 import { ShowResolver } from 'resolvers/ShowResolver';
 
-const { NODE_ENV, RTMP_ORIGIN, UI_ORIGIN, COOKIE_SESSION_KEY } = process.env;
+const {
+  NODE_ENV,
+  REDIS_HOST,
+  REDIS_PORT,
+  RTMP_ORIGIN,
+  UI_ORIGIN,
+  COOKIE_SESSION_KEY,
+} = process.env;
 const SERVER_PORT = 4000;
 
-export const pubSub = new PubSub();
+const redisOptions = {
+  host: REDIS_HOST,
+  port: REDIS_PORT ? parseInt(REDIS_PORT) : undefined,
+  retryStrategy: () => 2000,
+};
+export const pubSub = new RedisPubSub({
+  publisher: new Redis(redisOptions),
+  subscriber: new Redis(redisOptions),
+});
 
 async function start() {
   try {

@@ -46,10 +46,8 @@ export class ChatEventResolver {
   @Subscription({
     topics: ['CHAT_CREATED', 'PAYMENT_CREATED'],
     filter: ({ payload, args }) => {
-      const isRelevantChat =
-        payload instanceof Chat && payload.parentUserId === args.parentUserId;
-      const isRelevantPayment =
-        payload instanceof Payment && payload.payeeUserId === args.parentUserId;
+      const isRelevantChat = payload.parentUserId === args.parentUserId;
+      const isRelevantPayment = payload.payeeUserId === args.parentUserId;
       if (isRelevantChat || isRelevantPayment) {
         return true;
       }
@@ -61,10 +59,12 @@ export class ChatEventResolver {
     @Args() { parentUserId }: NewChatEventArgs
   ): ChatEvent {
     const chatEvent = new ChatEvent();
-    if (payload instanceof Chat) {
-      chatEvent.chat = payload;
-    } else if (payload instanceof Payment) {
-      chatEvent.payment = payload;
+    const isChat = payload.hasOwnProperty('parentUserId');
+    const isPayment = payload.hasOwnProperty('payeeUserId');
+    if (isChat) {
+      chatEvent.chat = payload as Chat;
+    } else if (isPayment) {
+      chatEvent.payment = payload as Payment;
     }
     return chatEvent;
   }
