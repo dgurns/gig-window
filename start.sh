@@ -12,7 +12,10 @@
 # variables to point to the ngrok domains!
 
 # If you only want to start certain services, you can run:
-# docker-compose up db redis
+# docker-compose up redis rtmp
+
+# To run the db on its own:
+# docker run -p 5432:5432 -e POSTGRES_PASSWORD=password postgres:alpine
 
 concurrently \
   "docker-compose up" \
