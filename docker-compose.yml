@@ -50,6 +50,20 @@ services:
       - AWS_S3_BUCKET=corona-window-dev
       - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
 
+  db:
+    image: postgres:alpine
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:alpine
+    restart: always
+
   rtmp:
     image: dgurney/corona-window-rtmp:latest
     restart: always
@@ -61,17 +75,3 @@ services:
       - API_RTMP_EVENT_URL=http://api:4000/rtmp-event
     volumes:
       - ./certs:/opt/certs
-
-  redis:
-    image: redis:alpine
-    restart: always
-
-  db:
-    image: postgres:alpine
-    restart: always
-    ports:
-      - 5432:5432
-    environment:
-      - POSTGRES_PASSWORD=password
-    volumes:
-      - ./postgres-data:/var/lib/postgresql/data
