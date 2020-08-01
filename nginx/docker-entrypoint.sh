@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 set -eu
 
-envsubst '${DOMAIN}' < /etc/nginx/conf.d/app-with-ssl.conf.template > /etc/nginx/conf.d/app.conf
+envsubst '${DOMAIN}' < /etc/nginx/conf.d/default-with-ssl.conf.template > /etc/nginx/conf.d/default.conf
 
 exec "$@"
