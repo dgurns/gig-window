@@ -11,17 +11,9 @@ services:
       - 80:80
     command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
     volumes:
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
+      - /etc/letsencrypt:/etc/letsencrypt
     environment:
       - DOMAIN=staging.coronawindow.com
-
-  certbot:
-    image: certbot/certbot
-    command: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-    volumes:
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
 
   web:
     image: dgurney/corona-window-web:latest
