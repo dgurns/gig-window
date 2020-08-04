@@ -33,7 +33,7 @@ services:
     restart: always
     environment:
       - NODE_ENV=production
-      - DATABASE_HOST=localhost
+      - DATABASE_HOST=db
       - DATABASE_PORT=5432
       - DATABASE_USERNAME=postgres
       - DATABASE_PASSWORD=password
@@ -69,8 +69,6 @@ services:
   db:
     image: postgres:alpine
     restart: always
-    ports:
-      - 5432:5432
     environment:
       - POSTGRES_PASSWORD=password
     volumes:
