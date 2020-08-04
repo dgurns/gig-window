@@ -13,7 +13,7 @@ services:
       - ./nginx:/etc/nginx/conf.d
 
   web:
-    image: dgurney/corona-window-web:latest
+    build: ./web
     depends_on:
       - api
     restart: always
@@ -26,7 +26,7 @@ services:
       - REACT_APP_STRIPE_CONNECT_CLIENT_ID=ca_HAwnCVdo5IGax3Ix2nlnq2ZaGIHPkBXb
 
   api:
-    image: dgurney/corona-window-api:latest
+    build: ./api
     depends_on:
       - db
       - redis
@@ -55,7 +55,7 @@ services:
     restart: always
 
   rtmp:
-    image: dgurney/corona-window-rtmp:latest
+    build: ./rtmp
     restart: always
     ports:
       - 1935:1935
