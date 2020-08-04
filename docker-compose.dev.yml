@@ -28,14 +28,15 @@ services:
   api:
     image: dgurney/corona-window-api:latest
     depends_on:
+      - db
       - redis
     restart: always
     environment:
       - NODE_ENV=production
-      - DATABASE_HOST=corona-window-staging.ctgvfpoeqoab.us-east-1.rds.amazonaws.com
+      - DATABASE_HOST=localhost
       - DATABASE_PORT=5432
       - DATABASE_USERNAME=postgres
-      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE_PASSWORD=password
       - DATABASE_NAME=postgres
       - REDIS_HOST=redis
       - REDIS_PORT=6379
@@ -64,10 +65,13 @@ services:
       - API_RTMP_EVENT_URL=http://api:4000/rtmp-event
     volumes:
       - ./certs:/opt/certs
-  # db:
-  #   image: postgres:alpine
-  #   restart: always
-  #   environment:
-  #     - POSTGRES_PASSWORD=password
-  #   volumes:
-  #     - ./postgres-data:/var/lib/postgresql/data
+
+  db:
+    image: postgres:alpine
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
