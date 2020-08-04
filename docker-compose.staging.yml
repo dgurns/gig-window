@@ -24,7 +24,7 @@ services:
     environment:
       - NODE_ENV=production
       - REACT_APP_API_HTTP_ORIGIN=https://staging.coronawindow.com/api
-      - REACT_APP_API_WEBSOCKET_ORIGIN=ws://staging.coronawindow.com/websocket
+      - REACT_APP_API_WEBSOCKET_ORIGIN=wss://staging.coronawindow.com/websocket
       - REACT_APP_API_GRAPHQL_PATH=/graphql
       - REACT_APP_RTMP_URL=rtmp://staging.coronawindow.com:1935/stream
       - REACT_APP_STRIPE_PUBLISHABLE_KEY=pk_test_Tameal79Lta772Qi3TKW3sZW00FrRPE0ho
