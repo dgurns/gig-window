@@ -40,14 +40,22 @@ const HlsPlayer = ({
   }, [shouldPlay, playVideo]);
 
   useEffect(() => {
-    if (!hlsUrl || !hlsPlayerRef.current || !Hls.isSupported()) {
+    const hlsPlayer = hlsPlayerRef.current;
+    if (!hlsUrl || !hlsPlayer) {
       return;
     }
 
-    const hls = new Hls(playerConfig);
-    hls.loadSource(hlsUrl ?? '');
-    hls.attachMedia(hlsPlayerRef.current);
-    hls.on(Hls.Events.MANIFEST_PARSED, () => setManifestIsLoaded(true));
+    if (Hls.isSupported()) {
+      const hls = new Hls(playerConfig);
+      hls.loadSource(hlsUrl ?? '');
+      hls.attachMedia(hlsPlayer);
+      hls.on(Hls.Events.MANIFEST_PARSED, () => setManifestIsLoaded(true));
+    } else if (hlsPlayer.canPlayType('application/vnd.apple.mpegurl')) {
+      hlsPlayer.src = hlsUrl;
+      hlsPlayer.addEventListener('loadedmetadata', () =>
+        setManifestIsLoaded(true)
+      );
+    }
   }, [hlsUrl]);
 
   if (!hlsUrl) {
