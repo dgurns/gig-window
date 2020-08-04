@@ -22,6 +22,7 @@ services:
       - api
     restart: always
     environment:
+      - NODE_ENV=production
       - REACT_APP_API_HTTP_ORIGIN=https://staging.coronawindow.com/api
       - REACT_APP_API_WEBSOCKET_ORIGIN=ws://staging.coronawindow.com/websocket
       - REACT_APP_API_GRAPHQL_PATH=/graphql
