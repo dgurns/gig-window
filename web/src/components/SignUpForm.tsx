@@ -68,6 +68,7 @@ const SignUpForm = (props: SignUpFormProps) => {
           onChange={({ target: { value } }) => setEmail(value)}
           variant="outlined"
           label="Email"
+          type="email"
           className={classes.formField}
         />
         <TextField
@@ -75,6 +76,7 @@ const SignUpForm = (props: SignUpFormProps) => {
           onChange={({ target: { value } }) => setUsername(value)}
           variant="outlined"
           label="Username (or artist/venue name)"
+          autoCapitalize="off"
           className={classes.formField}
         />
         <TextField

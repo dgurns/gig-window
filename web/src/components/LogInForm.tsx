@@ -62,6 +62,7 @@ const LogInForm = (props: LogInFormProps) => {
           onChange={({ target: { value } }) => setEmail(value)}
           variant="outlined"
           label="Email"
+          type="email"
           className={classes.formField}
         />
         <TextField
