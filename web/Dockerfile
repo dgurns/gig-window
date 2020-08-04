@@ -1,6 +1,8 @@
 # Build the web app
 FROM node:10.15-alpine as build-web
 
+ENV NODE_ENV=production
+
 WORKDIR /app
 
 COPY package.json .
