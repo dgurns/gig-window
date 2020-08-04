@@ -94,7 +94,8 @@ const PaymentForm = (props: PaymentFormProps) => {
     if (value === '' || value === '0') {
       return setPaymentAmount('');
     } else if (typeof parseInt(value) === 'number') {
-      return setPaymentAmount(`${parseInt(value)}`);
+      const absolutePaymentAmount = Math.abs(parseInt(value));
+      return setPaymentAmount(absolutePaymentAmount.toString());
     }
   }, 400);
 
