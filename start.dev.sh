@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Start the app locally
+# Run the app locally
 # Expose RTMP server to the web
 
 # NOTE: You'll need to set up your own custom ngrok config
@@ -12,11 +12,11 @@
 # variables to point to the ngrok domains!
 
 # If you only want to start certain services, you can run:
-# docker-compose up redis rtmp
+# docker-compose -f docker-compose.dev.yml up redis rtmp
 
 # To run the db on its own:
 # docker run -p 5432:5432 -e POSTGRES_PASSWORD=password postgres:alpine
 
 concurrently \
-  "docker-compose up" \
+  "docker-compose -f docker-compose.dev.yml up" \
   "ngrok start corona-window-rtmp"
