@@ -44,7 +44,7 @@ services:
       - DATABASE_NAME=postgres
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-      - RTMP_ORIGIN=rtmp://1.tcp.ngrok.io:29644
+      - RTMP_ORIGIN=rtmp://staging.coronawindow.com:1935
       - RTMP_PATH=/stream
       - WEB_ORIGIN=https://staging.coronawindow.com
       - COOKIE_SESSION_KEY=${COOKIE_SESSION_KEY}
