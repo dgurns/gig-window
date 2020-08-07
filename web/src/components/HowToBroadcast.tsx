@@ -1,5 +1,4 @@
 import React from 'react';
-import env from '@beam-australia/react-env';
 import { Grid, Link, Typography, TextField } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import classnames from 'classnames';
@@ -36,7 +35,7 @@ const HowToBroadcast = () => {
         2. Send your stream to this RTMP URL:
       </Typography>
       <TextField
-        value={env('RTMP_URL')}
+        value={process.env.REACT_APP_RTMP_URL}
         variant="outlined"
         size="small"
         className={classnames([classes.howToItem, classes.rtmpField])}

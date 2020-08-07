@@ -1,7 +1,12 @@
 #!/bin/bash
 
-# Run the app locally
-# Expose RTMP server to the web
+# This script starts the full local dev environment, with
+# web and api automatically reloading on file saves
+
+# Run db, redis, and rtmp locally via docker-compose
+# Expose rtmp to the web
+# Run api locally
+# Run web locally
 
 # NOTE: You'll need to set up your own custom ngrok config
 # if you want to expose your local setup to the web:
@@ -19,4 +24,6 @@
 
 concurrently \
   "docker-compose -f docker-compose.dev.yml up" \
-  "ngrok start corona-window-rtmp"
+  "ngrok start corona-window-rtmp" \
+  "cd api && yarn start" \
+  "cd web && yarn start" \

@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import env from '@beam-australia/react-env';
 import {
   ApolloClient,
   HttpLink,
@@ -16,15 +15,18 @@ import theme from 'styles/theme';
 import * as serviceWorker from './serviceWorker';
 import App from 'App';
 
-const graphqlHttpUri = `${env('API_HTTP_ORIGIN')}${env('API_GRAPHQL_PATH')}`;
-const graphqlWsUri = `${env('API_WEBSOCKET_ORIGIN')}${env('API_GRAPHQL_PATH')}`;
+const {
+  REACT_APP_API_HTTP_ORIGIN,
+  REACT_APP_API_WEBSOCKET_ORIGIN,
+  REACT_APP_API_GRAPHQL_PATH,
+} = process.env;
 
 const httpLink = new HttpLink({
-  uri: graphqlHttpUri,
+  uri: `${REACT_APP_API_HTTP_ORIGIN}${REACT_APP_API_GRAPHQL_PATH}`,
   credentials: 'include',
 });
 const wsLink = new WebSocketLink({
-  uri: graphqlWsUri,
+  uri: `${REACT_APP_API_WEBSOCKET_ORIGIN}${REACT_APP_API_GRAPHQL_PATH}`,
   options: {
     reconnect: true,
     timeout: 3000,

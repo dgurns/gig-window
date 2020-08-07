@@ -1,6 +1,6 @@
 FROM nginx:alpine
 
-COPY default-with-ssl.conf.template /etc/nginx/conf.d/default-with-ssl.conf.template
+COPY default.conf.template /etc/nginx/conf.d/default.conf.template
 COPY docker-entrypoint.sh /
 
 RUN chmod +x /docker-entrypoint.sh

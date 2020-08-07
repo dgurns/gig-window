@@ -4,7 +4,6 @@ services:
   nginx:
     image: dgurney/corona-window-nginx:latest
     depends_on:
-      - web
       - api
     restart: always
     ports:
@@ -14,21 +13,7 @@ services:
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
     environment:
-      - DOMAIN=staging.coronawindow.com
-
-  web:
-    image: dgurney/corona-window-web:latest
-    depends_on:
-      - api
-    restart: always
-    environment:
-      - NODE_ENV=production
-      - REACT_APP_API_HTTP_ORIGIN=https://staging.coronawindow.com/api
-      - REACT_APP_API_WEBSOCKET_ORIGIN=wss://staging.coronawindow.com/websocket
-      - REACT_APP_API_GRAPHQL_PATH=/graphql
-      - REACT_APP_RTMP_URL=rtmp://staging.coronawindow.com:1935/stream
-      - REACT_APP_STRIPE_PUBLISHABLE_KEY=pk_test_Tameal79Lta772Qi3TKW3sZW00FrRPE0ho
-      - REACT_APP_STRIPE_CONNECT_CLIENT_ID=ca_HAwnCVdo5IGax3Ix2nlnq2ZaGIHPkBXb
+      - DOMAIN=api-staging.coronawindow.com
 
   api:
     image: dgurney/corona-window-api:latest
