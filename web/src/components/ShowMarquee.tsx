@@ -4,6 +4,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
 import usePayments from 'hooks/usePayments';
+import { User, Show } from 'types';
 
 import Countdown from './Countdown';
 import BuyTicketButton from './BuyTicketButton';
@@ -26,15 +27,8 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
 }));
 
 interface ShowMarqueeProps {
-  show: {
-    id: number;
-    showtime: string;
-  };
-  payee: {
-    id: number;
-    username: string;
-    stripeAccountId?: string;
-  };
+  show: Show;
+  payee: User;
 }
 
 const ShowMarquee = ({ show, payee }: ShowMarqueeProps) => {

@@ -47,7 +47,7 @@ const Paywall = ({ show, payee }: PaywallProps) => {
         direction="column"
         className={classes.buyTicketWrapper}
       >
-        {payee.stripeAccountId && <BuyTicketButton payee={payee} show={show} />}
+        <BuyTicketButton payee={payee} show={show} />
       </Grid>
     </Grid>
   );

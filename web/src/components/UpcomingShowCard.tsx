@@ -28,11 +28,11 @@ const useStyles = makeStyles(({ spacing }) => ({
   },
   image: {
     height: 72,
-    marginRight: 10,
     minWidth: 109,
   },
   textContent: {
     height: 72,
+    marginLeft: spacing(1),
     overflow: 'hidden',
   },
 }));
@@ -51,10 +51,12 @@ const UpcomingShowCard = ({ show }: UpcomingShowCardProps) => {
       </Typography>
       <Link to={show.user.urlSlug} className={classes.cardLink}>
         <Card className={classes.card} elevation={3}>
-          <CardMedia
-            image={show.user.profileImageUrl}
-            className={classes.image}
-          />
+          {show.user.profileImageUrl && (
+            <CardMedia
+              image={show.user.profileImageUrl}
+              className={classes.image}
+            />
+          )}
           <Grid className={classes.textContent}>
             <Typography variant="body1">{show.title}</Typography>
             <Typography variant="body1" color="textSecondary">

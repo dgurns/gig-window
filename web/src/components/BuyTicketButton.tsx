@@ -3,17 +3,13 @@ import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import useDialog from 'hooks/useDialog';
+import { User, Show } from 'types';
 
 import PaymentForm from 'components/PaymentForm';
 
 interface BuyTicketButtonProps {
-  payee: {
-    id: number;
-    username: string;
-  };
-  show?: {
-    id: number;
-  };
+  payee: User;
+  show?: Show;
   buttonText?: string;
   className?: string;
   loading?: boolean;
@@ -28,7 +24,7 @@ const BuyTicketButton = ({
 }: BuyTicketButtonProps) => {
   const [PaymentDialog, setPaymentDialogIsVisible] = useDialog();
 
-  if (!payee.id || !payee.username) return null;
+  if (!payee.id || !payee.username || !payee.stripeAccountId) return null;
 
   return (
     <>
