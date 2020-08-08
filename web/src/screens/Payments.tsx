@@ -130,7 +130,9 @@ const Payments = () => {
             <Link href="https://dashboard.stripe.com">your Stripe account</Link>
             . From there you can view accounting and customer details. <br />
             If any users want refunds, they should request them from their own
-            Payments page on Corona Window.
+            Payments page on Corona Window. (Don't grant refunds via Stripe, as
+            that won't refund the full amount, whereas the user's Payments page
+            will.)
           </Typography>
         </Grid>
         <Grid className={classes.section}>
