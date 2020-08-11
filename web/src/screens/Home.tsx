@@ -10,7 +10,6 @@ import useUsersStreamingLive from 'hooks/useUsersStreamingLive';
 import useShows from 'hooks/useShows';
 import Show from 'services/Show';
 
-import Subheader from 'components/Subheader';
 import LiveNowCard from 'components/LiveNowCard';
 import UpcomingShowCard from 'components/UpcomingShowCard';
 
@@ -89,16 +88,14 @@ const Home = () => {
     </>
   );
 
-  const dataLoading = usersStreamingLiveQuery.loading && showsQuery.loading;
+  const dataLoading = usersStreamingLiveQuery.loading || showsQuery.loading;
   const dataError = usersStreamingLiveQuery.error || showsQuery.error;
-  const noData = !usersStreamingLive && !shows;
+  const noData = !usersStreamingLive?.length && !shows?.length;
 
   const renderContent = () => {
-    if (dataLoading) {
-      return <Typography color="secondary">Loading...</Typography>;
-    } else if (dataError) {
+    if (dataError) {
       return <Typography color="secondary">Error loading shows</Typography>;
-    } else if (noData) {
+    } else if (!dataLoading && noData) {
       return (
         <Typography color="secondary">No live or upcoming shows</Typography>
       );
@@ -113,14 +110,9 @@ const Home = () => {
   };
 
   return (
-    <>
-      <Subheader>
-        <Typography variant="body1">Today</Typography>
-      </Subheader>
-      <Container maxWidth="md" disableGutters className={classes.pageContent}>
-        {renderContent()}
-      </Container>
-    </>
+    <Container maxWidth="md" disableGutters className={classes.pageContent}>
+      {renderContent()}
+    </Container>
   );
 };
 

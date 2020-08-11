@@ -127,7 +127,9 @@ const Payments = () => {
           </Typography>
           <Typography color="secondary">
             All incoming payments go directly to{' '}
-            <Link href="https://dashboard.stripe.com">your Stripe account</Link>
+            <Link href="https://dashboard.stripe.com" target="_blank">
+              your Stripe account
+            </Link>
             . From there you can view accounting and customer details. <br />
             If any users want refunds, they should request them from their own
             Payments page on Corona Window. (Don't grant refunds via Stripe, as
