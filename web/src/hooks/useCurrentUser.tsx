@@ -9,6 +9,7 @@ const GET_CURRENT_USER = gql`
       email
       username
       urlSlug
+      isAllowedToStream
       streamKey
       isPublishingStream
       isInPublicMode

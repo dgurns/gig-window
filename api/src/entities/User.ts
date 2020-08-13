@@ -32,6 +32,10 @@ export class User extends BaseEntity {
   @Column()
   hashedPassword: string;
 
+  @Field((type) => Boolean)
+  @Column({ default: false })
+  isAllowedToStream: boolean;
+
   @Field((type) => String)
   @Column()
   streamKey: string;

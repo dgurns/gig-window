@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
 
+import useCurrentUser from 'hooks/useCurrentUser';
 import usePayments from 'hooks/usePayments';
 import DateTime from 'services/DateTime';
 
@@ -44,6 +45,7 @@ const useStyles = makeStyles(({ spacing }) => ({
 
 const Payments = () => {
   const classes = useStyles();
+  const [currentUser] = useCurrentUser();
 
   const { payments = [], paymentsQuery, refetchPayments } = usePayments();
 
@@ -85,6 +87,9 @@ const Payments = () => {
         </Typography>
       );
     }
+    if (!payments.length) {
+      return <Typography color="secondary">No payments yet</Typography>;
+    }
     return payments.map(
       (
         { id, createdAt, amountInCents, isRefunded, payeeUser: { username } },
@@ -121,22 +126,24 @@ const Payments = () => {
     <>
       <NavSubheader title="Payments" />
       <Container maxWidth="md" disableGutters className={classes.pageContent}>
-        <Grid className={classes.section}>
-          <Typography variant="h6" className={classes.sectionHeading}>
-            Payments to you
-          </Typography>
-          <Typography color="secondary">
-            All incoming payments go directly to{' '}
-            <Link href="https://dashboard.stripe.com" target="_blank">
-              your Stripe account
-            </Link>
-            . From there you can view accounting and customer details. <br />
-            If any users want refunds, they should request them from their own
-            Payments page on Corona Window. (Don't grant refunds via Stripe, as
-            that won't refund the full amount, whereas the user's Payments page
-            will.)
-          </Typography>
-        </Grid>
+        {currentUser?.isAllowedToStream && (
+          <Grid className={classes.section}>
+            <Typography variant="h6" className={classes.sectionHeading}>
+              Payments to you
+            </Typography>
+            <Typography color="secondary">
+              All incoming payments go directly to{' '}
+              <Link href="https://dashboard.stripe.com" target="_blank">
+                your Stripe account
+              </Link>
+              . From there you can view accounting and customer details. <br />
+              If any users want refunds, they should request them from their own
+              Payments page on Corona Window. (Don't grant refunds via Stripe,
+              as that won't refund the full amount, whereas the user's Payments
+              page will.)
+            </Typography>
+          </Grid>
+        )}
         <Grid className={classes.section}>
           <Typography variant="h6" className={classes.sectionHeading}>
             Your payments to others

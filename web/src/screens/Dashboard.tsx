@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   Paper,
+  Button,
   Grid,
   Container,
   Typography,
@@ -56,6 +57,12 @@ const useStyles = makeStyles(({ breakpoints, palette, spacing }) => ({
       minHeight: 230,
     },
   },
+  requestAccessMessage: {
+    color: palette.common.white,
+  },
+  requestAccessButton: {
+    marginTop: spacing(2),
+  },
   streamPreviewMessage: {
     color: palette.common.white,
     marginRight: spacing(2),
@@ -94,6 +101,7 @@ const Dashboard = () => {
     id,
     username,
     profileImageUrl,
+    isAllowedToStream,
     isPublishingStream,
     awsMediaLiveChannelId,
     liveVideoInfrastructureError,
@@ -114,12 +122,26 @@ const Dashboard = () => {
     );
   }
 
+  const renderActiveShowText = () => {
+    if (showsQuery.loading) {
+      return <CircularProgress size={15} color="secondary" />;
+    } else if (showsQuery.error) {
+      return 'Error fetching shows';
+    } else if (activeShow) {
+      return `${DateTime.formatUserReadableShowtime(activeShow.showtime)}: ${
+        activeShow.title
+      }`;
+    } else {
+      return 'No shows scheduled';
+    }
+  };
+
   const renderStreamPreviewMessage = () => {
     if (liveVideoIsActiveQuery.loading) {
       return null;
     } else if (isPublishingStream && liveVideoInfrastructureError) {
       return (
-        <Typography variant="body1" className={classes.streamPreviewMessage}>
+        <Typography className={classes.streamPreviewMessage}>
           Error starting live video infrastructure. Please restart your
           broadcast on your encoder.
         </Typography>
@@ -127,7 +149,7 @@ const Dashboard = () => {
     } else {
       return (
         <>
-          <Typography variant="body1" className={classes.streamPreviewMessage}>
+          <Typography className={classes.streamPreviewMessage}>
             {!isPublishingStream && 'No stream detected'}
             {isPublishingStream && 'Stream detected!'}
             <br />
@@ -150,17 +172,30 @@ const Dashboard = () => {
     }
   };
 
-  const renderActiveShowText = () => {
-    if (showsQuery.loading) {
-      return <CircularProgress size={15} color="secondary" />;
-    } else if (showsQuery.error) {
-      return 'Error fetching shows';
-    } else if (activeShow) {
-      return `${DateTime.formatUserReadableShowtime(activeShow.showtime)}: ${
-        activeShow.title
-      }`;
+  const renderVideoArea = () => {
+    if (!isAllowedToStream) {
+      return (
+        <>
+          <Typography className={classes.requestAccessMessage}>
+            Would you like to stream?
+          </Typography>
+          <Button
+            color="primary"
+            variant="contained"
+            size="medium"
+            className={classes.requestAccessButton}
+            onClick={() =>
+              window.open(process.env.REACT_APP_REQUEST_ACCESS_FORM_URL)
+            }
+          >
+            Request access
+          </Button>
+        </>
+      );
+    } else if (liveVideoIsActive && isPublishingStream) {
+      return <LiveVideoArea />;
     } else {
-      return 'No shows scheduled';
+      return renderStreamPreviewMessage();
     }
   };
 
@@ -179,14 +214,16 @@ const Dashboard = () => {
           )}
           <Grid item className={classes.artistText}>
             <Typography variant="h6">{username}</Typography>
-            <Typography color="textSecondary">
-              {renderActiveShowText()}
-            </Typography>
+            {isAllowedToStream && (
+              <Typography color="textSecondary">
+                {renderActiveShowText()}
+              </Typography>
+            )}
           </Grid>
         </Grid>
 
         <Paper elevation={3}>
-          <DashboardModeSwitcher />
+          {isAllowedToStream && <DashboardModeSwitcher />}
           <Grid container className={classes.videoChatContainer}>
             <Grid
               item
@@ -198,11 +235,7 @@ const Dashboard = () => {
               alignItems="center"
               className={classes.videoContainer}
             >
-              {liveVideoIsActive && isPublishingStream ? (
-                <LiveVideoArea />
-              ) : (
-                renderStreamPreviewMessage()
-              )}
+              {renderVideoArea()}
             </Grid>
             <Grid item container xs={false} sm={4} className={classes.chat}>
               <ChatBox userId={id} />
@@ -210,16 +243,18 @@ const Dashboard = () => {
           </Grid>
         </Paper>
 
-        <Grid
-          container
-          item
-          direction="column"
-          xs={12}
-          sm={8}
-          className={classes.howTo}
-        >
-          <HowToBroadcast />
-        </Grid>
+        {isAllowedToStream && (
+          <Grid
+            container
+            item
+            direction="column"
+            xs={12}
+            sm={8}
+            className={classes.howTo}
+          >
+            <HowToBroadcast />
+          </Grid>
+        )}
       </Container>
     </>
   );

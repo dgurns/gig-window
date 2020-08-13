@@ -36,8 +36,9 @@ const useStyles = makeStyles((theme) => ({
 
 const DashboardSubheader = () => {
   const classes = useStyles();
-  const [currentUser, currentUserQuery] = useCurrentUser();
   const { pathname } = useLocation();
+  const [currentUser, currentUserQuery] = useCurrentUser();
+  const { isAllowedToStream, stripeAccountId } = currentUser ?? {};
 
   const [logOut, { data }] = useMutation(LOG_OUT, {
     errorPolicy: 'all',
@@ -61,7 +62,7 @@ const DashboardSubheader = () => {
   };
 
   const shouldShowLinkStripeAccountMessage =
-    !currentUser?.stripeAccountId && !currentUserQuery.loading;
+    !stripeAccountId && !currentUserQuery.loading;
 
   return (
     <Subheader>
@@ -85,13 +86,15 @@ const DashboardSubheader = () => {
           >
             Edit profile
           </Link>
-          <Link
-            to={`${pathname}/edit-shows`}
-            component={RouterLink}
-            className={classes.subheaderLink}
-          >
-            Edit shows
-          </Link>
+          {isAllowedToStream && (
+            <Link
+              to={`${pathname}/edit-shows`}
+              component={RouterLink}
+              className={classes.subheaderLink}
+            >
+              Edit shows
+            </Link>
+          )}
           <Link
             to={`${pathname}/payments`}
             component={RouterLink}
@@ -101,7 +104,7 @@ const DashboardSubheader = () => {
           </Link>
           <TextButton
             onClick={() => logOut()}
-            className={classes.subheaderLink}
+            classes={{ root: classes.subheaderLink }}
           >
             Log out
           </TextButton>

@@ -4,6 +4,7 @@ export interface User {
   username: string;
   urlSlug: string;
   hashedPassword: string;
+  isAllowedToStream: boolean;
   streamKey: string;
   isPublishingStream: boolean;
   isInPublicMode: boolean;

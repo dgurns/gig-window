@@ -28,6 +28,7 @@ const useStyles = makeStyles(({ spacing }) => ({
   },
   image: {
     height: 72,
+    marginRight: spacing(1),
     minWidth: 109,
   },
   textContent: {
