@@ -175,7 +175,7 @@ const EditProfile = () => {
         {stripeConnectAccountId && (
           <Grid className={classes.profileSection}>
             <Typography variant="h6">
-              Linked Stripe account for receiving payments
+              Linked Stripe account for accepting payments
             </Typography>
             <Typography>ID: {stripeConnectAccountId}</Typography>
             <TextButton

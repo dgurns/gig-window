@@ -65,7 +65,7 @@ const DashboardSubheader = () => {
   }, [data]);
 
   const shouldShowLinkStripeAccountMessage =
-    !stripeConnectAccountId && !currentUserQuery.loading;
+    isAllowedToStream && !stripeConnectAccountId && !currentUserQuery.loading;
 
   return (
     <>

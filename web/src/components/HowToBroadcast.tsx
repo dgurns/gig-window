@@ -41,9 +41,9 @@ const HowToBroadcast = () => {
         <Typography className={classes.item}>
           <em>OBS quickstart:</em>
           <br />
-          - Download software
+          - Download OBS
           <br />
-          - Click "Settings" in bottom right and go to the "Stream" tab
+          - In OBS, click "Settings" in bottom right and go to the "Stream" tab
           <br />
           - Choose "Service: Custom...", copy/paste the RTMP URL from below into
           the "Server" field, and copy/paste the Stream Key
