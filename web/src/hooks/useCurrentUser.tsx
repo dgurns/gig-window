@@ -20,7 +20,7 @@ const GET_CURRENT_USER = gql`
       awsMediaPackageOriginEndpointUrl
       profileImageUrl
       stripeCustomerId
-      stripeAccountId
+      stripeConnectAccountId
     }
   }
 `;
@@ -32,6 +32,7 @@ const USER_EVENT_SUBSCRIPTION = gql`
       email
       username
       urlSlug
+      isAllowedToStream
       streamKey
       isPublishingStream
       isInPublicMode
@@ -42,7 +43,7 @@ const USER_EVENT_SUBSCRIPTION = gql`
       awsMediaPackageOriginEndpointUrl
       profileImageUrl
       stripeCustomerId
-      stripeAccountId
+      stripeConnectAccountId
     }
   }
 `;

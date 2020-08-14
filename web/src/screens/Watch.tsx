@@ -188,9 +188,11 @@ const Watch = () => {
         )}
         <Grid item className={classes.userText}>
           <Typography variant="h6">{user.username}</Typography>
-          <Typography variant="body1" color="textSecondary">
-            {renderActiveShowDescription()}
-          </Typography>
+          {user?.isAllowedToStream && (
+            <Typography variant="body1" color="textSecondary">
+              {renderActiveShowDescription()}
+            </Typography>
+          )}
         </Grid>
       </Grid>
       <Paper elevation={3}>

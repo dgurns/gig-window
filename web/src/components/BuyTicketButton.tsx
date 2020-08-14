@@ -24,7 +24,8 @@ const BuyTicketButton = ({
 }: BuyTicketButtonProps) => {
   const [PaymentDialog, setPaymentDialogIsVisible] = useDialog();
 
-  if (!payee.id || !payee.username || !payee.stripeAccountId) return null;
+  if (!payee.id || !payee.username || !payee.stripeConnectAccountId)
+    return null;
 
   return (
     <>

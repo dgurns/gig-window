@@ -69,7 +69,7 @@ const EditShows = () => {
 
   const getShowsQuery = useQuery(GET_SHOWS, {
     variables: { userId: currentUser?.id },
-    skip: !currentUser,
+    skip: !currentUser || !currentUser?.stripeConnectAccountId,
   });
   const shows = getShowsQuery.data?.getShowsForUser || [];
   const [deleteShow, deleteShowMutation] = useMutation(DELETE_SHOW, {
@@ -141,18 +141,29 @@ const EditShows = () => {
     <>
       <NavSubheader title="Edit shows" />
       <Container maxWidth="md" disableGutters className={classes.pageContent}>
-        <Grid className={classes.section}>
-          <Typography variant="h6" className={classes.sectionHeading}>
-            Create a show
-          </Typography>
-          <CreateShowForm onSuccess={getShowsQuery.refetch} />
-        </Grid>
-        <Grid className={classes.section}>
-          <Typography variant="h6" className={classes.sectionHeading}>
-            Your upcoming shows
-          </Typography>
-          {renderShows()}
-        </Grid>
+        {currentUser?.stripeConnectAccountId ? (
+          <>
+            <Grid className={classes.section}>
+              <Typography variant="h6" className={classes.sectionHeading}>
+                Create a show
+              </Typography>
+              <CreateShowForm onSuccess={getShowsQuery.refetch} />
+            </Grid>
+            <Grid className={classes.section}>
+              <Typography variant="h6" className={classes.sectionHeading}>
+                Your upcoming shows
+              </Typography>
+              {renderShows()}
+            </Grid>
+          </>
+        ) : (
+          <Grid className={classes.section}>
+            <Typography color="secondary">
+              You need to link a Stripe account before you can create or edit
+              shows.
+            </Typography>
+          </Grid>
+        )}
       </Container>
 
       <EditShowDialog>

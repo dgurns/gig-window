@@ -131,17 +131,25 @@ const Payments = () => {
             <Typography variant="h6" className={classes.sectionHeading}>
               Payments to you
             </Typography>
-            <Typography color="secondary">
-              All incoming payments go directly to{' '}
-              <Link href="https://dashboard.stripe.com" target="_blank">
-                your Stripe account
-              </Link>
-              . From there you can view accounting and customer details. <br />
-              If any users want refunds, they should request them from their own
-              Payments page on Corona Window. (Don't grant refunds via Stripe,
-              as that won't refund the full amount, whereas the user's Payments
-              page will.)
-            </Typography>
+            {currentUser?.stripeConnectAccountId ? (
+              <Typography color="secondary">
+                All incoming payments go directly to{' '}
+                <Link href="https://dashboard.stripe.com" target="_blank">
+                  your Stripe account
+                </Link>
+                . From there you can view accounting and customer details.{' '}
+                <br />
+                If any users want refunds, they should request them from their
+                own Payments page on Corona Window. (Don't grant refunds via
+                Stripe, as that won't refund the full amount, whereas the user's
+                Payments page will.)
+              </Typography>
+            ) : (
+              <Typography color="secondary">
+                You need to link a Stripe account before you can accept
+                payments.
+              </Typography>
+            )}
           </Grid>
         )}
         <Grid className={classes.section}>

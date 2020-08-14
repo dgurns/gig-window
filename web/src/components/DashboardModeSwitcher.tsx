@@ -44,7 +44,15 @@ const DashboardModeSwitcher = () => {
   const [setPublicMode, { loading }] = useMutation(SET_PUBLIC_MODE);
 
   const onTogglePublicMode = () => {
-    setPublicMode({ variables: { publicMode: !Boolean(isInPublicMode) } });
+    if (!currentUser?.stripeConnectAccountId) {
+      return window.alert(
+        'You need to link a Stripe account before you can switch to public mode.'
+      );
+    } else {
+      return setPublicMode({
+        variables: { publicMode: !Boolean(isInPublicMode) },
+      });
+    }
   };
 
   return (

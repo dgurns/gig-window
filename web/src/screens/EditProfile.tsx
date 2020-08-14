@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useMutation, gql } from '@apollo/client';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
@@ -14,6 +15,14 @@ import EditEmailForm from 'components/EditEmailForm';
 import EditUsernameForm from 'components/EditUsernameForm';
 import EditUrlSlugForm from 'components/EditUrlSlugForm';
 import EditPasswordForm from 'components/EditPasswordForm';
+
+const UNLINK_STRIPE_CONNECT_ACCOUNT = gql`
+  mutation UnlinkStripeConnectAccount {
+    unlinkStripeConnectAccount {
+      id
+    }
+  }
+`;
 
 enum EditableField {
   ProfileImage = 'profileImage',
@@ -42,7 +51,25 @@ const useStyles = makeStyles(({ spacing }) => ({
 
 const EditProfile = () => {
   const classes = useStyles();
-  const [currentUser, currentUserQuery] = useCurrentUser();
+  const [currentUser, { refetch: refetchCurrentUser }] = useCurrentUser();
+
+  const [unlinkStripeConnectAccount, { loading, data, error }] = useMutation(
+    UNLINK_STRIPE_CONNECT_ACCOUNT,
+    {
+      errorPolicy: 'all',
+    }
+  );
+
+  useEffect(() => {
+    if (data?.unlinkStripeConnectAccount.id) {
+      window.alert(
+        'Successfully unlinked Stripe account. You can always re-link it again in the future.'
+      );
+      refetchCurrentUser();
+    } else if (error) {
+      window.alert('Error unlinking Stripe account. Please try again');
+    }
+  }, [data, error, refetchCurrentUser]);
 
   const [EditDialog, showEditDialog] = useDialog();
   const [activeField, setActiveField] = useState<EditableField | null>();
@@ -58,12 +85,22 @@ const EditProfile = () => {
     email,
     username,
     urlSlug,
-    stripeAccountId,
+    stripeConnectAccountId,
   } = currentUser;
 
   const onEditSuccess = () => {
-    currentUserQuery.refetch();
+    refetchCurrentUser();
     setActiveField(null);
+  };
+
+  const onUnlinkStripeConnectAccount = () => {
+    if (
+      window.confirm(
+        "Are you absolutely sure you want to unlink your Stripe account? You won't be able to play public shows or accept payments until you re-link it."
+      )
+    ) {
+      unlinkStripeConnectAccount();
+    }
   };
 
   const renderEditForm = () => {
@@ -135,11 +172,18 @@ const EditProfile = () => {
             Change
           </TextButton>
         </Grid>
-        {stripeAccountId && (
+        {stripeConnectAccountId && (
           <Grid className={classes.profileSection}>
-            <Typography variant="h6">Linked Stripe account</Typography>
-            <Typography>ID: {stripeAccountId}</Typography>
-            <TextButton>Unlink</TextButton>
+            <Typography variant="h6">
+              Linked Stripe account for receiving payments
+            </Typography>
+            <Typography>ID: {stripeConnectAccountId}</Typography>
+            <TextButton
+              disabled={loading}
+              onClick={onUnlinkStripeConnectAccount}
+            >
+              Unlink
+            </TextButton>
           </Grid>
         )}
       </Container>

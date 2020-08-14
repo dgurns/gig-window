@@ -275,14 +275,24 @@ export class UserResolver {
     const oauthResponse = await StripeConnect.validateOauthAuthorizationCode(
       authorizationCode
     );
-    const stripeAccountId = oauthResponse.stripe_user_id;
-    if (stripeAccountId) {
-      user.stripeAccountId = stripeAccountId;
+    const stripeConnectAccountId = oauthResponse.stripe_user_id;
+    if (stripeConnectAccountId) {
+      user.stripeConnectAccountId = stripeConnectAccountId;
       await user.save();
       return user;
     } else {
       throw new Error('Error linking Stripe account. Please try again.');
     }
+  }
+
+  @Mutation(() => User)
+  async unlinkStripeConnectAccount(@Ctx() ctx: CustomContext) {
+    const user = ctx.getUser();
+    if (!user) throw new Error('User is not logged in');
+
+    user.stripeConnectAccountId = '';
+    await user.save();
+    return user;
   }
 
   @Mutation(() => User)

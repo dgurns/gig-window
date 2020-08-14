@@ -171,7 +171,7 @@ export class PaymentResolver {
 
     const refund = await StripeConnect.refundPaymentIntentAsPayee({
       paymentIntentId: payment.stripePaymentIntentId,
-      stripeAccountId: payeeUser.stripeAccountId,
+      stripeConnectAccountId: payeeUser.stripeConnectAccountId,
     });
 
     if (refund?.status === 'succeeded' || refund?.status === 'pending') {

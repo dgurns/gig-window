@@ -83,7 +83,7 @@ const ShowMarquee = ({ show, payee }: ShowMarqueeProps) => {
         direction="column"
         className={classes.buyTicketWrapper}
       >
-        {payee.stripeAccountId && renderBuyTicketButton()}
+        {payee.stripeConnectAccountId && renderBuyTicketButton()}
       </Grid>
     </Grid>
   );

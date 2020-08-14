@@ -17,7 +17,7 @@ const validateOauthAuthorizationCode = (authorizationCode: string) => {
 const clonePaymentMethodAsPayee = (args: {
   customerId: string;
   paymentMethodId: string;
-  stripeAccountId: string;
+  stripeConnectAccountId: string;
 }): Promise<StripeLib.PaymentMethod> => {
   return stripe.paymentMethods.create(
     {
@@ -25,7 +25,7 @@ const clonePaymentMethodAsPayee = (args: {
       payment_method: args.paymentMethodId,
     },
     {
-      stripeAccount: args.stripeAccountId,
+      stripeAccount: args.stripeConnectAccountId,
     }
   );
 };
@@ -39,7 +39,7 @@ const createPaymentIntentAsPayee = async (args: {
 
   if (!user.stripeCustomerId) {
     throw new Error('User does not have Stripe customer ID');
-  } else if (!payee.stripeAccountId) {
+  } else if (!payee.stripeConnectAccountId) {
     throw new Error('Payee does not have Stripe account ID');
   }
 
@@ -52,7 +52,7 @@ const createPaymentIntentAsPayee = async (args: {
   const clonedPaymentMethod = await clonePaymentMethodAsPayee({
     customerId: user.stripeCustomerId,
     paymentMethodId: paymentMethodToClone?.id ?? '',
-    stripeAccountId: payee.stripeAccountId,
+    stripeConnectAccountId: payee.stripeConnectAccountId,
   });
 
   const paymentIntent = await stripe.paymentIntents.create(
@@ -75,7 +75,7 @@ const createPaymentIntentAsPayee = async (args: {
       },
     },
     {
-      stripeAccount: payee.stripeAccountId,
+      stripeAccount: payee.stripeConnectAccountId,
     }
   );
 
@@ -84,7 +84,7 @@ const createPaymentIntentAsPayee = async (args: {
 
 const refundPaymentIntentAsPayee = (args: {
   paymentIntentId: string;
-  stripeAccountId: string;
+  stripeConnectAccountId: string;
 }): Promise<StripeLib.Refund> => {
   return stripe.refunds.create(
     {
@@ -93,7 +93,7 @@ const refundPaymentIntentAsPayee = (args: {
       refund_application_fee: true,
     },
     {
-      stripeAccount: args.stripeAccountId,
+      stripeAccount: args.stripeConnectAccountId,
     }
   );
 };

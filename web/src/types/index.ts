@@ -21,7 +21,7 @@ export interface User {
   awsMediaPackageOriginEndpointUrl: string;
   profileImageUrl: string;
   stripeCustomerId: string;
-  stripeAccountId: string;
+  stripeConnectAccountId: string;
   createdAt: string;
   updatedAt: string;
 }

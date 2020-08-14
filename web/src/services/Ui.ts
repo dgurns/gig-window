@@ -2,7 +2,7 @@ import { PaymentForShow, RecentPaymentToPayee } from 'hooks/usePayments';
 
 interface ShouldShowTipButtonArgs {
   payee?: {
-    stripeAccountId?: string;
+    stripeConnectAccountId?: string;
     isPublishingStream: boolean;
     isInPublicMode: boolean;
   };
@@ -18,7 +18,7 @@ const shouldShowTipButton = ({
   paymentForShow,
   recentPaymentsToPayee,
 }: ShouldShowTipButtonArgs) => {
-  if (!payee || !payee.stripeAccountId) {
+  if (!payee || !payee.stripeConnectAccountId) {
     return false;
   }
 

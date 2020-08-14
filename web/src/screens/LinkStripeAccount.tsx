@@ -12,7 +12,7 @@ const COMPLETE_STRIPE_CONNECT_OAUTH_FLOW = gql`
     completeStripeConnectOauthFlow(
       authorizationCode: $stripeAuthorizationCode
     ) {
-      stripeAccountId
+      stripeConnectAccountId
       urlSlug
     }
   }
@@ -38,7 +38,7 @@ const LinkStripeAccount = () => {
       errorPolicy: 'all',
     }
   );
-  const { stripeAccountId, urlSlug } =
+  const { stripeConnectAccountId, urlSlug } =
     data?.completeStripeConnectOauthFlow || {};
 
   useEffect(() => {
@@ -67,7 +67,7 @@ const LinkStripeAccount = () => {
           No authorization code provided
         </Typography>
       );
-    } else if (error || !stripeAccountId) {
+    } else if (error || !stripeConnectAccountId) {
       return (
         <>
           <Typography variant="h6" className={classes.title}>
@@ -84,7 +84,7 @@ const LinkStripeAccount = () => {
           Stripe account linked successfully!
         </Typography>
         <Typography>
-          Now all incoming payments will go directly to your Stripe account.
+          Now all incoming payments will go to your bank account via Stripe.
           Stripe takes 2.9% + $0.30 of each payment. From there, 80% goes to you
           and the platform takes 20% to cover video and operating costs.
           <br />

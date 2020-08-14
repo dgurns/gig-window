@@ -15,11 +15,12 @@ const GET_USER = gql`
       username
       urlSlug
       profileImageUrl
+      isAllowedToStream
       isPublishingStream
       lastPublishedStreamEndTimestamp
       isInPublicMode
       awsMediaPackageOriginEndpointUrl
-      stripeAccountId
+      stripeConnectAccountId
     }
   }
 `;
@@ -31,11 +32,12 @@ const USER_EVENT_SUBSCRIPTION = gql`
       username
       urlSlug
       profileImageUrl
+      isAllowedToStream
       isPublishingStream
       lastPublishedStreamEndTimestamp
       isInPublicMode
       awsMediaPackageOriginEndpointUrl
-      stripeAccountId
+      stripeConnectAccountId
     }
   }
 `;
