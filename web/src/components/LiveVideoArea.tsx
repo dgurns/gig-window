@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import PlayButton from '@material-ui/icons/PlayArrow';
@@ -88,6 +88,17 @@ const LiveVideoArea = ({ show, payee }: LiveVideoAreaProps) => {
 
   const [videoIsStarted, setVideoIsStarted] = useState(false);
 
+  useEffect(() => {
+    if (payee && !hasAccessToLiveVideo && !freePreviewExpiryDate) {
+      setFreePreviewExpiryDate();
+    }
+  }, [
+    payee,
+    hasAccessToLiveVideo,
+    freePreviewExpiryDate,
+    setFreePreviewExpiryDate,
+  ]);
+
   const renderVideoOverlay = () => {
     if (!videoIsStarted) {
       return (
@@ -107,10 +118,6 @@ const LiveVideoArea = ({ show, payee }: LiveVideoAreaProps) => {
     } else if (!payee || hasAccessToLiveVideo) {
       return null;
     } else {
-      if (!freePreviewExpiryDate) {
-        setFreePreviewExpiryDate();
-      }
-
       return (
         <Grid
           container
@@ -146,7 +153,7 @@ const LiveVideoArea = ({ show, payee }: LiveVideoAreaProps) => {
     : currentUser?.awsMediaPackageOriginEndpointUrl;
 
   return (
-    <Grid className={classes.container} key={`${freePreviewExpiryDate}`}>
+    <Grid className={classes.container}>
       {renderVideoOverlay()}
       <Grid item container className={classes.videoPlayer}>
         <HlsPlayer
