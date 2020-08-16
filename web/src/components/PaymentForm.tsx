@@ -75,6 +75,7 @@ const PaymentForm = (props: PaymentFormProps) => {
   const [paymentAmount, setPaymentAmount] = useState(prefilledPaymentAmount);
 
   const savedPaymentMethodQuery = useQuery(GET_SAVED_PAYMENT_METHOD, {
+    fetchPolicy: 'no-cache',
     skip: !currentUser,
   });
   const savedPaymentMethod =
@@ -85,7 +86,7 @@ const PaymentForm = (props: PaymentFormProps) => {
   };
 
   const onPaymentSuccess = async () => {
-    await Promise.all([savedPaymentMethodQuery.refetch(), refetchPayments()]);
+    await refetchPayments();
     if (onSuccess) {
       onSuccess();
     }

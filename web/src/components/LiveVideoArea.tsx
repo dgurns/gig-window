@@ -146,7 +146,7 @@ const LiveVideoArea = ({ show, payee }: LiveVideoAreaProps) => {
     : currentUser?.awsMediaPackageOriginEndpointUrl;
 
   return (
-    <Grid className={classes.container}>
+    <Grid className={classes.container} key={`${freePreviewExpiryDate}`}>
       {renderVideoOverlay()}
       <Grid item container className={classes.videoPlayer}>
         <HlsPlayer

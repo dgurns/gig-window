@@ -192,7 +192,7 @@ const Dashboard = () => {
           </Button>
         </>
       );
-    } else if (liveVideoIsActive && isPublishingStream) {
+    } else if (isPublishingStream && liveVideoIsActive) {
       return <LiveVideoArea />;
     } else {
       return renderStreamPreviewMessage();
