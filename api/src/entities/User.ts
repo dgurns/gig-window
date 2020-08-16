@@ -72,6 +72,10 @@ export class User extends BaseEntity {
   @Column({ nullable: true, default: null })
   awsMediaLiveChannelId: string;
 
+  @Field({ nullable: true })
+  @Column({ type: 'timestamptz', nullable: true, default: null })
+  awsMediaLiveChannelEnteredRunningStateTimestamp?: Date;
+
   @Field((type) => String, { nullable: true })
   @Column({ nullable: true, default: null })
   awsMediaPackageChannelId: string;

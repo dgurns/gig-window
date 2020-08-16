@@ -55,10 +55,21 @@ const checkUserLiveVideoIsActive = async (user: User) => {
   if (describeChannelResponse.State !== 'RUNNING') {
     return false;
   }
+  // Now that channel is confirmed to be 'RUNNING', save
+  // the timestamp to user entity if it's not already there
+  if (!user.awsMediaLiveChannelEnteredRunningStateTimestamp) {
+    user.awsMediaLiveChannelEnteredRunningStateTimestamp = new Date();
+    await user.save();
+  }
 
   const INITIAL_STREAM_PROCESSING_TIME_IN_SECONDS = 10;
+  const timestampToCompareForStreamReadiness =
+    user.awsMediaLiveChannelEnteredRunningStateTimestamp >
+    user.lastPublishedStreamStartTimestamp
+      ? user.awsMediaLiveChannelEnteredRunningStateTimestamp
+      : user.lastPublishedStreamStartTimestamp;
   const streamIsReadyThreshold = addSeconds(
-    new Date(user.lastPublishedStreamStartTimestamp),
+    new Date(timestampToCompareForStreamReadiness),
     INITIAL_STREAM_PROCESSING_TIME_IN_SECONDS
   );
   if (new Date() > streamIsReadyThreshold) {
@@ -74,6 +85,7 @@ const deleteStaleResources = async (): Promise<number> => {
     await AwsMediaLive.stopChannel(user.awsMediaLiveChannelId);
     await AwsMediaLive.deleteChannel(user.awsMediaLiveChannelId);
     user.awsMediaLiveChannelId = '';
+    user.awsMediaLiveChannelEnteredRunningStateTimestamp = undefined;
     await user.save();
   });
 

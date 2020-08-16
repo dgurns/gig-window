@@ -13,6 +13,7 @@ export interface User {
   liveVideoInfrastructureError: string;
   awsMediaLiveInputId: string;
   awsMediaLiveChannelId: string;
+  awsMediaLiveChannelEnteredRunningStateTimestamp?: string;
   awsMediaPackageChannelId: string;
   awsMediaPackageChannelIngestUrl: string;
   awsMediaPackageChannelIngestUsername: string;
