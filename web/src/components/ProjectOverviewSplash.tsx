@@ -176,8 +176,8 @@ const ProjectOverviewSplash = () => {
             <Link href="https://github.com/dgurns/gig-window" target="_blank">
               Github
             </Link>
-            <br />- If you’re a coder or you’re a musician who wants to become
-            one, submit a pull request or open a bug report on{' '}
+            <br />- If you’re a coder or a musician who wants to become one,
+            submit a pull request or bug report on{' '}
             <Link href="https://github.com/dgurns/gig-window" target="_blank">
               Github
             </Link>
