@@ -6,16 +6,19 @@ import Grid from '@material-ui/core/Grid';
 
 import { makeStyles } from '@material-ui/core/styles';
 
+import useCurrentUser from 'hooks/useCurrentUser';
 import useUsersStreamingLive from 'hooks/useUsersStreamingLive';
 import useShows from 'hooks/useShows';
 import Show from 'services/Show';
 
+import ProjectOverviewSplash from 'components/ProjectOverviewSplash';
 import LiveNowCard from 'components/LiveNowCard';
 import UpcomingShowCard from 'components/UpcomingShowCard';
 
 const useStyles = makeStyles(({ spacing }) => ({
   pageContent: {
     padding: spacing(2),
+    paddingBottom: spacing(10),
     paddingTop: spacing(4),
     width: '100%',
   },
@@ -36,6 +39,7 @@ const useStyles = makeStyles(({ spacing }) => ({
 const Home = () => {
   const classes = useStyles();
 
+  const [currentUser, currentUserQuery] = useCurrentUser();
   const [usersStreamingLive, usersStreamingLiveQuery] = useUsersStreamingLive({
     fetchPolicy: 'cache-and-network',
   });
@@ -109,8 +113,11 @@ const Home = () => {
     }
   };
 
+  const shouldShowSplash = !currentUser && !currentUserQuery.loading;
+
   return (
     <Container maxWidth="md" disableGutters className={classes.pageContent}>
+      {shouldShowSplash && <ProjectOverviewSplash />}
       {renderContent()}
     </Container>
   );

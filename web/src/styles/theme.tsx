@@ -117,6 +117,10 @@ export default createMuiTheme({
       root: {
         fontSize: '1rem',
       },
+      h1: {
+        fontFamily: "'Oswald', sans-serif",
+        fontSize: '3rem',
+      },
     },
   },
 });
