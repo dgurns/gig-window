@@ -140,8 +140,8 @@ const Payments = () => {
                 . From there you can view accounting and customer details.{' '}
                 <br />
                 If any users want refunds, they should request them from their
-                own Payments page on Corona Window. (Don't grant refunds via
-                Stripe, as that won't refund the full amount, whereas the user's
+                own Payments page on GigWindow. (Don't grant refunds via Stripe,
+                as that won't refund the full amount, whereas the user's
                 Payments page will.)
               </Typography>
             ) : (

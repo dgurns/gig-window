@@ -72,7 +72,7 @@ const Header = () => {
           component={RouterLink}
           className={classnames(classes.logo, classes.userLink)}
         >
-          <Typography>Corona Window</Typography>
+          <Typography>GigWindow</Typography>
         </Link>
         <Grid item>
           {userIsLoggedOut && (
