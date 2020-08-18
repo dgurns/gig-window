@@ -22,6 +22,9 @@ import ChatBox from 'components/ChatBox';
 import HowToBroadcast from 'components/HowToBroadcast';
 
 const useStyles = makeStyles(({ breakpoints, palette, spacing }) => ({
+  container: {
+    paddingBottom: spacing(4),
+  },
   artistInfoContainer: {
     alignItems: 'center',
     padding: `${spacing(4)}px ${spacing(4)}px`,
@@ -114,7 +117,7 @@ const Dashboard = () => {
 
   if (!currentUser) {
     return (
-      <Container disableGutters maxWidth={false}>
+      <Container disableGutters maxWidth={false} className={classes.container}>
         <Grid container direction="row" className={classes.artistInfoContainer}>
           <Typography color="secondary">Loading...</Typography>
         </Grid>
@@ -203,7 +206,7 @@ const Dashboard = () => {
     <>
       <DashboardSubheader />
 
-      <Container disableGutters maxWidth={false}>
+      <Container disableGutters maxWidth={false} className={classes.container}>
         <Grid container direction="row" className={classes.artistInfoContainer}>
           {profileImageUrl && (
             <img

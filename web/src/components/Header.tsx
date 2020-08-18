@@ -30,6 +30,13 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
   userLink: {
     color: palette.common.white,
   },
+  githubLogoWrapper: {
+    height: 26,
+    marginLeft: spacing(2),
+  },
+  githubLogo: {
+    width: 26,
+  },
   userIcon: {
     marginLeft: spacing(1),
   },
@@ -73,14 +80,14 @@ const Header = () => {
       >
         <Link to="/" component={RouterLink} className={classes.logoLinkWrapper}>
           <img
-            src="images/GigWindowLogo-Light-120.png"
+            src="/images/GigWindowLogo-Light-120.png"
             alt="GigWindow Logo"
             className={classes.logo}
           />
         </Link>
         <Grid item>
           {userIsLoggedOut && (
-            <>
+            <Grid container direction="row" alignItems="center">
               <TextButton
                 className={classes.button}
                 onClick={() => showAuthDialog(false)}
@@ -93,7 +100,18 @@ const Header = () => {
               >
                 Sign up
               </TextButton>
-            </>
+              <Link
+                href="https://github.com/dgurns/gig-window"
+                target="_blank"
+                className={classes.githubLogoWrapper}
+              >
+                <img
+                  src="/images/GitHub-Mark-Light-120px-plus.png"
+                  alt="GitHub logo"
+                  className={classes.githubLogo}
+                />
+              </Link>
+            </Grid>
           )}
           {currentUser && (
             <Link

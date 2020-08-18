@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import useCurrentUser from 'hooks/useCurrentUser';
 
 import Header from 'components/Header';
+import Footer from 'components/Footer';
 import Home from 'screens/Home';
 import Watch from 'screens/Watch';
 import Dashboard from 'screens/Dashboard';
@@ -58,6 +59,8 @@ function App() {
           <Watch />
         </Route>
       </Switch>
+
+      <Footer />
     </Router>
   );
 }

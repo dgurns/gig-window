@@ -5,16 +5,17 @@ import useDialog from 'hooks/useDialog';
 
 import { Grid, Typography, Button, Card, Link } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { grey } from '@material-ui/core/colors';
 
 import AuthForm from 'components/AuthForm';
 
 const useStyles = makeStyles(({ palette, spacing, breakpoints }) => ({
   container: {
-    paddingBottom: spacing(5),
+    paddingBottom: spacing(4),
     paddingTop: spacing(3),
     textAlign: 'center',
-    [breakpoints.down('sm')]: {
-      paddingBottom: spacing(4),
+    [breakpoints.up('sm')]: {
+      paddingBottom: spacing(5),
     },
   },
   subheading: {
@@ -53,14 +54,14 @@ const useStyles = makeStyles(({ palette, spacing, breakpoints }) => ({
     marginBottom: spacing(3),
   },
   divider: {
-    borderBottom: `1px solid ${palette.secondary.main}`,
+    borderBottom: `1px solid ${grey[400]}`,
     height: 1,
     width: '100%',
     [breakpoints.up('sm')]: {
       width: '95%',
     },
     [breakpoints.up('md')]: {
-      width: '75%',
+      width: '45%',
     },
   },
 }));
