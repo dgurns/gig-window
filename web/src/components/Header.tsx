@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import classnames from 'classnames';
 import { Grid, Link, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
@@ -14,10 +13,15 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
   container: {
     backgroundColor: palette.common.black,
     height: 58,
-    padding: `0 ${spacing(1)}px`,
+    padding: '0 12px',
+  },
+  logoLinkWrapper: {
+    height: 33,
+    marginLeft: 3,
+    marginTop: 1,
   },
   logo: {
-    marginLeft: 6,
+    height: 33,
   },
   button: {
     color: palette.common.white,
@@ -67,12 +71,12 @@ const Header = () => {
         alignItems="center"
         justify="space-between"
       >
-        <Link
-          to="/"
-          component={RouterLink}
-          className={classnames(classes.logo, classes.userLink)}
-        >
-          <Typography>GigWindow</Typography>
+        <Link to="/" component={RouterLink} className={classes.logoLinkWrapper}>
+          <img
+            src="images/GigWindowLogo-Light-120.png"
+            alt="GigWindow Logo"
+            className={classes.logo}
+          />
         </Link>
         <Grid item>
           {userIsLoggedOut && (
