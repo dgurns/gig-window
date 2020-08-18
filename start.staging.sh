@@ -11,9 +11,9 @@
 # The staging web app is served separately via Vercel
 # but points to this backend.
 
-docker pull dgurney/corona-window-nginx:latest
-docker pull dgurney/corona-window-api:latest
-docker pull dgurney/corona-window-rtmp:latest
+docker pull dgurney/gig-window-nginx:latest
+docker pull dgurney/gig-window-api:latest
+docker pull dgurney/gig-window-rtmp:latest
 
 docker-compose -f docker-compose.staging.yml up --build -d
 

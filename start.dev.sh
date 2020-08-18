@@ -24,6 +24,6 @@
 
 concurrently \
   "docker-compose -f docker-compose.dev.yml up" \
-  "ngrok start corona-window-rtmp" \
+  "ngrok start gig-window-rtmp" \
   "cd api && yarn start" \
   "cd web && yarn start" \

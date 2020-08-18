@@ -1,1 +1,1 @@
-# corona-window
+# GigWindow
