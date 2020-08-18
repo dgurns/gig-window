@@ -36,10 +36,10 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
   userImage: {
     backgroundPosition: 'center',
     backgroundSize: 'cover',
-    borderRadius: 20,
-    height: 40,
+    borderRadius: 18,
+    height: 36,
     marginLeft: spacing(1),
-    width: 40,
+    width: 36,
   },
 }));
 
