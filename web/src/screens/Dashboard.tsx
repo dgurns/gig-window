@@ -162,7 +162,7 @@ const Dashboard = () => {
             {isPublishingStream &&
               !liveVideoIsActive &&
               !awsMediaLiveChannelId &&
-              '(takes a minute or two at first)'}
+              '(takes a minute or two from a cold start)'}
           </Typography>
           {isPublishingStream && (
             <CircularProgress
