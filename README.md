@@ -23,8 +23,8 @@ I want to run this as a sustainable project for the community, and to do that I 
 
 - If you’re a musician, play shows!
 - If you’re a fan, watch shows and support the artists
-- If you’d like to help others, solve people’s support questions here on Github
-- If you’re a coder or a musician who wants to become one, submit a pull request or bug report here on Github. One of my goals is to help musicians upskill and I pledge to spend extra time helping musicians who want to learn how to code.
+- If you’d like to help others, solve people’s support questions in the [Discussions]() tab
+- If you’re a coder or a musician who wants to become one, submit a [pull request]() or [bug report]() here on Github. One of my goals is to help musicians upskill and I pledge to spend extra time helping musicians who want to learn how to code.
 
 Thank you!  
 _Dan Gurney, creator_
