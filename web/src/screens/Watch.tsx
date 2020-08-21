@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import {
   Paper,
@@ -111,6 +111,45 @@ const Watch = () => {
     payeeUserId: user?.id,
   });
 
+  const activeShowDescription = useMemo(() => {
+    if (showsQuery.loading) {
+      return <CircularProgress size={15} color="secondary" />;
+    } else if (showsQuery.error) {
+      return 'Error fetching shows';
+    } else if (activeShow) {
+      return `${DateTime.formatUserReadableShowtime(activeShow.showtime)}: ${
+        activeShow.title
+      }`;
+    } else {
+      return 'No shows scheduled';
+    }
+  }, [showsQuery, activeShow]);
+
+  const videoArea = useMemo(() => {
+    if (!user) return null;
+
+    const shouldShowLiveVideo = user?.isInPublicMode && liveVideoIsActive;
+    const hasAccessToLiveVideo = User.hasAccessToLiveVideo({
+      paymentForShow,
+      recentPaymentsToPayee,
+    });
+
+    if (shouldShowLiveVideo && freePreviewIsUsed && !hasAccessToLiveVideo) {
+      return <Paywall show={activeShow} payee={user} />;
+    } else if (shouldShowLiveVideo) {
+      return <LiveVideoArea show={activeShow} payee={user} />;
+    } else if (activeShow) {
+      return <ShowMarquee show={activeShow} payee={user} />;
+    }
+  }, [
+    user,
+    liveVideoIsActive,
+    freePreviewIsUsed,
+    paymentForShow,
+    recentPaymentsToPayee,
+    activeShow,
+  ]);
+
   if (userQuery.loading || liveVideoIsActiveQuery.loading) {
     return (
       <Container disableGutters maxWidth={false}>
@@ -132,36 +171,6 @@ const Watch = () => {
       </Container>
     );
   }
-
-  const renderActiveShowDescription = () => {
-    if (showsQuery.loading) {
-      return <CircularProgress size={15} color="secondary" />;
-    } else if (showsQuery.error) {
-      return 'Error fetching shows';
-    } else if (activeShow) {
-      return `${DateTime.formatUserReadableShowtime(activeShow.showtime)}: ${
-        activeShow.title
-      }`;
-    } else {
-      return 'No shows scheduled';
-    }
-  };
-
-  const renderVideoArea = () => {
-    const shouldShowLiveVideo = user?.isInPublicMode && liveVideoIsActive;
-    const hasAccessToLiveVideo = User.hasAccessToLiveVideo({
-      paymentForShow,
-      recentPaymentsToPayee,
-    });
-
-    if (shouldShowLiveVideo && freePreviewIsUsed && !hasAccessToLiveVideo) {
-      return <Paywall show={activeShow} payee={user} />;
-    } else if (shouldShowLiveVideo) {
-      return <LiveVideoArea show={activeShow} payee={user} />;
-    } else if (activeShow) {
-      return <ShowMarquee show={activeShow} payee={user} />;
-    }
-  };
 
   const shouldShowTipButton =
     !showsQuery.loading &&
@@ -190,7 +199,7 @@ const Watch = () => {
           <Typography variant="h6">{user.username}</Typography>
           {user?.isAllowedToStream && (
             <Typography variant="body1" color="textSecondary">
-              {renderActiveShowDescription()}
+              {activeShowDescription}
             </Typography>
           )}
         </Grid>
@@ -198,7 +207,7 @@ const Watch = () => {
       <Paper elevation={3}>
         <Grid container className={classes.videoChatContainer}>
           <Grid item xs={12} sm={8} className={classes.videoContainer}>
-            {renderVideoArea()}
+            {videoArea}
           </Grid>
           <Grid item xs={false} sm={4} className={classes.chat}>
             <ChatBox userId={user.id} />

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import classnames from 'classnames';
 import { useMutation, gql } from '@apollo/client';
 import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
@@ -129,41 +129,53 @@ const PayWithCard = (props: PayWithCardProps) => {
     }
   }, [payment.data, payment.error, onSuccess]);
 
-  const onSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    if (!stripe || !elements) return;
+  const onSubmit = useCallback(
+    async (event: React.FormEvent) => {
+      event.preventDefault();
+      if (!stripe || !elements) return;
 
-    const card = elements.getElement(CardElement);
-    if (!card) return;
+      const card = elements.getElement(CardElement);
+      if (!card) return;
 
-    setPaymentIsSubmitting(true);
-    setPaymentError('');
+      setPaymentIsSubmitting(true);
+      setPaymentError('');
 
-    const result = await stripe.confirmCardSetup(setupIntentClientSecret, {
-      payment_method: {
-        card,
-      },
-    });
+      const result = await stripe.confirmCardSetup(setupIntentClientSecret, {
+        payment_method: {
+          card,
+        },
+      });
 
-    if (result.error) {
-      setPaymentError(
-        result.error.message ||
-          'Error confirming payment. Please check your card details'
-      );
-      setPaymentIsSubmitting(false);
-    } else {
-      if (result.setupIntent?.status === 'succeeded') {
-        createPayment({
-          variables: {
-            amountInCents: paymentAmountInCents,
-            payeeUserId,
-            showId,
-            shouldDetachPaymentMethodAfter: !shouldSaveCard,
-          },
-        });
+      if (result.error) {
+        setPaymentError(
+          result.error.message ||
+            'Error confirming payment. Please check your card details'
+        );
+        setPaymentIsSubmitting(false);
+      } else {
+        if (result.setupIntent?.status === 'succeeded') {
+          createPayment({
+            variables: {
+              amountInCents: paymentAmountInCents,
+              payeeUserId,
+              showId,
+              shouldDetachPaymentMethodAfter: !shouldSaveCard,
+            },
+          });
+        }
       }
-    }
-  };
+    },
+    [
+      stripe,
+      elements,
+      createPayment,
+      payeeUserId,
+      paymentAmountInCents,
+      setupIntentClientSecret,
+      shouldSaveCard,
+      showId,
+    ]
+  );
 
   if (setupIntent.error) {
     return (

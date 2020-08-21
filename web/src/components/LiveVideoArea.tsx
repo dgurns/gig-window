@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import PlayButton from '@material-ui/icons/PlayArrow';
@@ -99,7 +99,7 @@ const LiveVideoArea = ({ show, payee }: LiveVideoAreaProps) => {
     setFreePreviewExpiryDate,
   ]);
 
-  const renderVideoOverlay = () => {
+  const videoOverlay = useMemo(() => {
     if (!videoIsStarted) {
       return (
         <Grid container className={classes.videoOverlay}>
@@ -146,7 +146,14 @@ const LiveVideoArea = ({ show, payee }: LiveVideoAreaProps) => {
         </Grid>
       );
     }
-  };
+  }, [
+    classes,
+    videoIsStarted,
+    payee,
+    show,
+    hasAccessToLiveVideo,
+    freePreviewExpiryDate,
+  ]);
 
   const hlsUrl = payee
     ? payee.awsMediaPackageOriginEndpointUrl
@@ -154,7 +161,7 @@ const LiveVideoArea = ({ show, payee }: LiveVideoAreaProps) => {
 
   return (
     <Grid className={classes.container}>
-      {renderVideoOverlay()}
+      {videoOverlay}
       <Grid item container className={classes.videoPlayer}>
         <HlsPlayer
           hlsUrl={hlsUrl}

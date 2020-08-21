@@ -21,16 +21,15 @@ const HlsPlayer = ({
   const [manifestIsLoaded, setManifestIsLoaded] = useState(false);
 
   const playVideo = useCallback(() => {
-    const hlsPlayer = hlsPlayerRef.current;
-    if (!hlsPlayer || !manifestIsLoaded) {
+    if (!hlsPlayerRef.current || !manifestIsLoaded) {
       return;
     }
 
-    const { buffered } = hlsPlayer;
+    const { buffered } = hlsPlayerRef.current;
     if (buffered.length !== 0) {
-      hlsPlayer.currentTime = buffered.end(buffered.length - 1);
+      hlsPlayerRef.current.currentTime = buffered.end(buffered.length - 1);
     }
-    hlsPlayer.play();
+    hlsPlayerRef.current.play();
   }, [hlsPlayerRef, manifestIsLoaded]);
 
   useEffect(() => {
@@ -40,19 +39,20 @@ const HlsPlayer = ({
   }, [shouldPlay, playVideo]);
 
   useEffect(() => {
-    const hlsPlayer = hlsPlayerRef.current;
-    if (!hlsUrl || !hlsPlayer) {
+    if (!hlsUrl || !hlsPlayerRef.current) {
       return;
     }
 
     if (Hls.isSupported()) {
       const hls = new Hls(playerConfig);
       hls.loadSource(hlsUrl ?? '');
-      hls.attachMedia(hlsPlayer);
+      hls.attachMedia(hlsPlayerRef.current);
       hls.on(Hls.Events.MANIFEST_PARSED, () => setManifestIsLoaded(true));
-    } else if (hlsPlayer.canPlayType('application/vnd.apple.mpegurl')) {
-      hlsPlayer.src = hlsUrl;
-      hlsPlayer.addEventListener('loadedmetadata', () =>
+    } else if (
+      hlsPlayerRef.current.canPlayType('application/vnd.apple.mpegurl')
+    ) {
+      hlsPlayerRef.current.src = hlsUrl;
+      hlsPlayerRef.current.addEventListener('loadedmetadata', () =>
         setManifestIsLoaded(true)
       );
     }

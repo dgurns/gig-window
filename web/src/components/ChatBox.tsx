@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Grid, TextField } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -49,35 +49,38 @@ const ChatBox = (props: ChatBoxProps) => {
     }
   }, [chatEvents.length, chatsRef]);
 
-  const onInputMessageChanged = (
-    event: React.ChangeEvent<HTMLTextAreaElement>
-  ) => setInputMessage(event.target.value);
+  const onInputMessageChanged = useCallback(
+    (event: React.ChangeEvent<HTMLTextAreaElement>) =>
+      setInputMessage(event.target.value),
+    []
+  );
 
-  const onKeyPressed = async (
-    event: React.KeyboardEvent<HTMLTextAreaElement>
-  ) => {
-    if (event.key === 'Enter') {
-      event.preventDefault();
+  const onKeyPressed = useCallback(
+    async (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
 
-      if (!currentUser) {
-        return window.alert('You need to log in or sign up to chat');
-      } else if (!inputMessage) {
-        return window.alert('No message entered');
+        if (!currentUser) {
+          return window.alert('You need to log in or sign up to chat');
+        } else if (!inputMessage) {
+          return window.alert('No message entered');
+        }
+
+        sendChat(inputMessage);
+        setInputMessage('');
       }
+    },
+    [currentUser, inputMessage, sendChat]
+  );
 
-      sendChat(inputMessage);
-      setInputMessage('');
-    }
-  };
-
-  const renderChatEvent = (chatEvent: ChatEvent, index: number) => {
+  const renderChatEvent = useCallback((chatEvent: ChatEvent, index: number) => {
     const { chat, payment } = chatEvent;
     if (chat) {
       return <ChatMessage chat={chat} key={index} />;
     } else if (payment) {
       return <TipMessage payment={payment} key={index} />;
     }
-  };
+  }, []);
 
   return (
     <Grid container className={classes.container}>

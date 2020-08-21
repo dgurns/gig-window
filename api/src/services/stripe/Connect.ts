@@ -14,7 +14,7 @@ const validateOauthAuthorizationCode = (authorizationCode: string) => {
   });
 };
 
-const clonePaymentMethodAsPayee = (args: {
+const clonePaymentMethodAsPayee = async (args: {
   customerId: string;
   paymentMethodId: string;
   stripeConnectAccountId: string;

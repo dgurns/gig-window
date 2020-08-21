@@ -60,43 +60,63 @@ const Home = () => {
     [usersStreamingLive, shows]
   );
 
-  const renderLiveNow = () => (
-    <Grid item xs={12} className={classes.usersStreamingLive}>
-      <Typography variant="h6" className={classes.sectionHeading}>
-        Live now
-      </Typography>
-      <Grid container item xs={12} spacing={2}>
-        {liveNowData.map(({ user, show }, index) => {
-          return (
-            <Grid item xs={12} sm={6} className={classes.showCard} key={index}>
-              <LiveNowCard user={user} show={show} />
-            </Grid>
-          );
-        })}
-      </Grid>
-    </Grid>
+  const liveShows = useMemo(
+    () =>
+      liveNowData.length > 0 && (
+        <Grid item xs={12} className={classes.usersStreamingLive}>
+          <Typography variant="h6" className={classes.sectionHeading}>
+            Live now
+          </Typography>
+          <Grid container item xs={12} spacing={2}>
+            {liveNowData.map(({ user, show }, index) => {
+              return (
+                <Grid
+                  item
+                  xs={12}
+                  sm={6}
+                  className={classes.showCard}
+                  key={index}
+                >
+                  <LiveNowCard user={user} show={show} />
+                </Grid>
+              );
+            })}
+          </Grid>
+        </Grid>
+      ),
+    [liveNowData, classes]
   );
 
-  const renderUpcomingShows = () => (
-    <>
-      <Typography variant="h6" className={classes.sectionHeading}>
-        Upcoming shows
-      </Typography>
-      <Grid item container xs={12} spacing={2}>
-        {upcomingShowData.map((show, index) => (
-          <Grid item xs={12} sm={6} className={classes.showCard} key={index}>
-            <UpcomingShowCard show={show} />
+  const upcomingShows = useMemo(
+    () =>
+      upcomingShowData.length > 0 && (
+        <>
+          <Typography variant="h6" className={classes.sectionHeading}>
+            Upcoming shows
+          </Typography>
+          <Grid item container xs={12} spacing={2}>
+            {upcomingShowData.map((show, index) => (
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                className={classes.showCard}
+                key={index}
+              >
+                <UpcomingShowCard show={show} />
+              </Grid>
+            ))}
           </Grid>
-        ))}
-      </Grid>
-    </>
+        </>
+      ),
+    [upcomingShowData, classes]
   );
 
   const dataLoading = usersStreamingLiveQuery.loading || showsQuery.loading;
   const dataError = usersStreamingLiveQuery.error || showsQuery.error;
   const noData = !usersStreamingLive?.length && !shows?.length;
 
-  const renderContent = () => {
+  const liveAndUpcomingShows = useMemo(() => {
     if (dataError) {
       return <Typography color="secondary">Error loading shows</Typography>;
     } else if (!dataLoading && noData) {
@@ -106,19 +126,19 @@ const Home = () => {
     } else {
       return (
         <>
-          {liveNowData.length > 0 && renderLiveNow()}
-          {upcomingShowData.length > 0 && renderUpcomingShows()}
+          {liveShows}
+          {upcomingShows}
         </>
       );
     }
-  };
+  }, [dataError, dataLoading, noData, liveShows, upcomingShows]);
 
   const shouldShowSplash = !currentUser && !currentUserQuery.loading;
 
   return (
     <Container maxWidth="md" disableGutters className={classes.pageContent}>
       {shouldShowSplash && <ProjectOverviewSplash />}
-      {renderContent()}
+      {liveAndUpcomingShows}
     </Container>
   );
 };

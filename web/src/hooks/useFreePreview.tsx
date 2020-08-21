@@ -30,7 +30,7 @@ const useFreePreview = ({
   const existingCookie = Cookies.getJSON('freePreview');
   const existingExpiryDate = existingCookie[userUrlSlug];
 
-  const FREE_PREVIEW_LENGTH_MINUTES = 3;
+  const FREE_PREVIEW_LENGTH_MINUTES = 5;
   const setFreePreviewExpiryDate = () => {
     if (existingExpiryDate) {
       return;

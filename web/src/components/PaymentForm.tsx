@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import debounce from 'lodash/debounce';
 import { useQuery, gql } from '@apollo/client';
 import { Elements } from '@stripe/react-stripe-js';
@@ -67,7 +67,10 @@ const PaymentForm = (props: PaymentFormProps) => {
   const { payee, show, prefilledPaymentAmount, onSuccess } = props;
   const classes = useStyles();
 
-  const [currentUser, currentUserQuery] = useCurrentUser();
+  const [
+    currentUser,
+    { loading: currentUserLoading, refetch: refetchCurrentUser },
+  ] = useCurrentUser();
   const { refetchPayments } = usePayments({
     showId: show?.id,
     payeeUserId: payee.id,
@@ -81,16 +84,16 @@ const PaymentForm = (props: PaymentFormProps) => {
   const savedPaymentMethod =
     savedPaymentMethodQuery.data?.getLatestPaymentMethodForUser;
 
-  const onAuthSuccess = () => {
-    currentUserQuery.refetch();
-  };
+  const onAuthSuccess = useCallback(() => {
+    refetchCurrentUser();
+  }, [refetchCurrentUser]);
 
-  const onPaymentSuccess = async () => {
+  const onPaymentSuccess = useCallback(async () => {
     await refetchPayments();
     if (onSuccess) {
       onSuccess();
     }
-  };
+  }, [refetchPayments, onSuccess]);
 
   const onChangePaymentAmount = debounce((value: string) => {
     if (value === '' || value === '0') {
@@ -102,7 +105,7 @@ const PaymentForm = (props: PaymentFormProps) => {
   }, 400);
 
   const renderAuthOrPaymentForm = () => {
-    if (currentUserQuery.loading || savedPaymentMethodQuery.loading) {
+    if (currentUserLoading || savedPaymentMethodQuery.loading) {
       return <CircularProgress color="secondary" className={classes.loading} />;
     } else if (!currentUser) {
       return (

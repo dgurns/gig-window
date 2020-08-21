@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 import useCurrentUser from 'hooks/useCurrentUser';
 
+import { makeStyles } from '@material-ui/core/styles';
+
 import Header from 'components/Header';
 import Footer from 'components/Footer';
 import Home from 'screens/Home';
@@ -13,7 +15,15 @@ import EditShows from 'screens/EditShows';
 import Payments from 'screens/Payments';
 import LinkStripeAccount from 'screens/LinkStripeAccount';
 
+const useStyles = makeStyles(() => ({
+  content: {
+    minHeight: 800,
+  },
+}));
+
 function App() {
+  const classes = useStyles();
+
   const [currentUser] = useCurrentUser();
 
   useEffect(() => {
@@ -29,36 +39,39 @@ function App() {
   return (
     <Router>
       <Header />
-      <Switch>
-        <Route exact path="/">
-          <Home />
-        </Route>
 
-        <Route exact path="/oauth/stripe-connect">
-          <LinkStripeAccount />
-        </Route>
+      <div className={classes.content}>
+        <Switch>
+          <Route exact path="/">
+            <Home />
+          </Route>
 
-        <Route path={`/${currentUserUrlSlug}`}>
-          <Switch>
-            <Route exact path="/:currentUserUrlSlug/edit-profile">
-              <EditProfile />
-            </Route>
-            <Route exact path="/:currentUserUrlSlug/edit-shows">
-              <EditShows />
-            </Route>
-            <Route exact path="/:currentUserUrlSlug/payments">
-              <Payments />
-            </Route>
-            <Route>
-              <Dashboard />
-            </Route>
-          </Switch>
-        </Route>
+          <Route exact path="/oauth/stripe-connect">
+            <LinkStripeAccount />
+          </Route>
 
-        <Route path="/:userUrlSlug">
-          <Watch />
-        </Route>
-      </Switch>
+          <Route path={`/${currentUserUrlSlug}`}>
+            <Switch>
+              <Route exact path="/:currentUserUrlSlug/edit-profile">
+                <EditProfile />
+              </Route>
+              <Route exact path="/:currentUserUrlSlug/edit-shows">
+                <EditShows />
+              </Route>
+              <Route exact path="/:currentUserUrlSlug/payments">
+                <Payments />
+              </Route>
+              <Route>
+                <Dashboard />
+              </Route>
+            </Switch>
+          </Route>
+
+          <Route path="/:userUrlSlug">
+            <Watch />
+          </Route>
+        </Switch>
+      </div>
 
       <Footer />
     </Router>

@@ -16,6 +16,7 @@ import { buildContext } from 'graphql-passport';
 
 import { connectToDatabase } from './connectToDatabase';
 import { initializePassport } from './initializePassport';
+import { initializeScheduledTasks } from './initializeScheduledTasks';
 import { restRouter } from './restRouter';
 import { authChecker } from './authChecker';
 import { User } from 'entities/User';
@@ -108,6 +109,8 @@ async function start() {
     });
     const httpServer = http.createServer(app);
     server.installSubscriptionHandlers(httpServer);
+
+    initializeScheduledTasks();
 
     httpServer.listen({ port: SERVER_PORT }, () => {
       console.log(`🚀 api ready on port ${SERVER_PORT}`);

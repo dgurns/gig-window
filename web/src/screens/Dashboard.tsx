@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   Paper,
   Button,
@@ -115,17 +115,7 @@ const Dashboard = () => {
   });
   const [, showsQuery, activeShow] = useShowsForUser(currentUser?.id);
 
-  if (!currentUser) {
-    return (
-      <Container disableGutters maxWidth={false} className={classes.container}>
-        <Grid container direction="row" className={classes.artistInfoContainer}>
-          <Typography color="secondary">Loading...</Typography>
-        </Grid>
-      </Container>
-    );
-  }
-
-  const renderActiveShowText = () => {
+  const activeShowText = useMemo(() => {
     if (showsQuery.loading) {
       return <CircularProgress size={15} color="secondary" />;
     } else if (showsQuery.error) {
@@ -137,9 +127,9 @@ const Dashboard = () => {
     } else {
       return 'No shows scheduled';
     }
-  };
+  }, [showsQuery, activeShow]);
 
-  const renderStreamPreviewMessage = () => {
+  const streamPreviewMessage = useMemo(() => {
     if (liveVideoIsActiveQuery.loading) {
       return null;
     } else if (isPublishingStream && liveVideoInfrastructureError) {
@@ -173,9 +163,16 @@ const Dashboard = () => {
         </>
       );
     }
-  };
+  }, [
+    liveVideoIsActiveQuery,
+    isPublishingStream,
+    awsMediaLiveChannelId,
+    liveVideoIsActive,
+    liveVideoInfrastructureError,
+    classes,
+  ]);
 
-  const renderVideoArea = () => {
+  const videoArea = useMemo(() => {
     if (!isAllowedToStream) {
       return (
         <>
@@ -198,9 +195,25 @@ const Dashboard = () => {
     } else if (isPublishingStream && liveVideoIsActive) {
       return <LiveVideoArea />;
     } else {
-      return renderStreamPreviewMessage();
+      return streamPreviewMessage;
     }
-  };
+  }, [
+    isAllowedToStream,
+    isPublishingStream,
+    liveVideoIsActive,
+    streamPreviewMessage,
+    classes,
+  ]);
+
+  if (!currentUser) {
+    return (
+      <Container disableGutters maxWidth={false} className={classes.container}>
+        <Grid container direction="row" className={classes.artistInfoContainer}>
+          <Typography color="secondary">Loading...</Typography>
+        </Grid>
+      </Container>
+    );
+  }
 
   return (
     <>
@@ -218,9 +231,7 @@ const Dashboard = () => {
           <Grid item className={classes.artistText}>
             <Typography variant="h6">{username}</Typography>
             {isAllowedToStream && (
-              <Typography color="textSecondary">
-                {renderActiveShowText()}
-              </Typography>
+              <Typography color="textSecondary">{activeShowText}</Typography>
             )}
           </Grid>
         </Grid>
@@ -238,7 +249,7 @@ const Dashboard = () => {
               alignItems="center"
               className={classes.videoContainer}
             >
-              {renderVideoArea()}
+              {videoArea}
             </Grid>
             <Grid item container xs={false} sm={4} className={classes.chat}>
               <ChatBox userId={id} />
