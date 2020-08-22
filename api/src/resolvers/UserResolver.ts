@@ -1,5 +1,4 @@
 import bcrypt from 'bcrypt';
-import { v4 as uuidv4 } from 'uuid';
 import {
   Resolver,
   Query,
@@ -16,16 +15,15 @@ import { getManager } from 'typeorm';
 import { User } from 'entities/User';
 import {
   GetUserInput,
-  CheckUserLiveVideoIsActiveArgs,
   NewUserEventArgs,
   SignUpInput,
   LogInInput,
 } from 'resolvers/types/UserResolver';
 import { CustomContext } from 'authChecker';
-import LiveVideoInfrastructure from 'services/LiveVideoInfrastructure';
 import Stripe from 'services/stripe/Stripe';
 import StripeConnect from 'services/stripe/Connect';
 import AwsS3 from 'services/aws/S3';
+import Mux from 'services/Mux';
 import UserService from 'services/User';
 
 @Resolver()
@@ -66,23 +64,6 @@ export class UserResolver {
     return usersStreamingLive;
   }
 
-  @Query(() => Boolean)
-  async checkUserLiveVideoIsActive(
-    @Args() { userId, userUrlSlug }: CheckUserLiveVideoIsActiveArgs
-  ) {
-    let user;
-    if (userId) {
-      user = await User.findOne({ where: { id: userId } });
-    } else if (userUrlSlug) {
-      user = await User.findOne({ where: { urlSlug: userUrlSlug } });
-    }
-    if (!user) {
-      throw new Error('Could not find user');
-    }
-
-    return await LiveVideoInfrastructure.checkUserLiveVideoIsActive(user);
-  }
-
   @Mutation(() => User)
   async signUp(@Arg('data') data: SignUpInput, @Ctx() ctx: CustomContext) {
     const { email, username, password } = data;
@@ -116,18 +97,19 @@ export class UserResolver {
     }
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
-    const streamKey = uuidv4().replace(/-/g, '');
 
     const user = User.create({
       email: data.email,
       username: data.username,
       hashedPassword,
       urlSlug,
-      streamKey,
     });
     await user.save();
 
-    Stripe.maybeCreateStripeCustomerForUser(user);
+    await Promise.all([
+      Mux.createLiveStreamForUser(user),
+      Stripe.maybeCreateStripeCustomerForUser(user),
+    ]);
 
     await ctx.login(user);
     return user;
@@ -313,7 +295,7 @@ export class UserResolver {
   }
 
   @Subscription({
-    topics: ['PUBLIC_MODE_UPDATED', 'IS_PUBLISHING_STREAM_UPDATED'],
+    topics: ['PUBLIC_MODE_UPDATED', 'MUX_LIVE_STREAM_STATUS_UPDATED'],
     filter: ({ payload, args }) => {
       if (payload.id === args.userId || payload.urlSlug === args.userUrlSlug) {
         return true;

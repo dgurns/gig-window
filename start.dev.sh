@@ -4,6 +4,7 @@
 # web and api automatically reloading on file saves
 
 # Run db and redis locally via docker-compose
+# Expose api via ngrok so it can receive webhooks from Mux
 # Run api locally
 # Run web locally
 
@@ -15,5 +16,6 @@
 
 concurrently \
   "docker-compose -f docker-compose.dev.yml up" \
+  "nginx start gig-window-api" \
   "cd api && yarn start" \
   "cd web && yarn start"

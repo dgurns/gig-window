@@ -36,69 +36,35 @@ export class User extends BaseEntity {
   @Column({ default: false })
   isAllowedToStream: boolean;
 
-  @Field((type) => String)
-  @Column()
-  streamKey: string;
-
-  // Video infrastructure
-
-  @Field((type) => Boolean)
-  @Column({ default: false })
-  isPublishingStream: boolean;
-
   @Field((type) => Boolean)
   @Column({ default: false })
   isInPublicMode: boolean;
 
-  @Field({ nullable: true })
-  @Column({ type: 'timestamptz', nullable: true, default: null })
-  lastPublishedStreamStartTimestamp: Date;
-
-  @Field({ nullable: true })
-  @Column({ type: 'timestamptz', nullable: true, default: null })
-  lastPublishedStreamEndTimestamp: Date;
+  // Mux
 
   @Field((type) => String, { nullable: true })
   @Column({ nullable: true, default: null })
-  liveVideoInfrastructureError: string;
-
-  // AWS Media Services
+  muxLiveStreamId?: string;
 
   @Field((type) => String, { nullable: true })
   @Column({ nullable: true, default: null })
-  awsMediaLiveInputId: string;
+  muxStreamKey?: string;
 
   @Field((type) => String, { nullable: true })
   @Column({ nullable: true, default: null })
-  awsMediaLiveChannelId: string;
-
-  @Field({ nullable: true })
-  @Column({ type: 'timestamptz', nullable: true, default: null })
-  awsMediaLiveChannelEnteredRunningStateTimestamp?: Date;
+  muxPlaybackId?: string;
 
   @Field((type) => String, { nullable: true })
   @Column({ nullable: true, default: null })
-  awsMediaPackageChannelId: string;
-
-  @Field((type) => String, { nullable: true })
-  @Column({ nullable: true, default: null })
-  awsMediaPackageChannelIngestUrl: string;
-
-  @Field((type) => String, { nullable: true })
-  @Column({ nullable: true, default: null })
-  awsMediaPackageChannelIngestUsername: string;
-
-  @Field((type) => String, { nullable: true })
-  @Column({ nullable: true, default: null })
-  awsMediaPackageChannelIngestPasswordParam: string;
-
-  @Field((type) => String, { nullable: true })
-  @Column({ nullable: true, default: null })
-  awsMediaPackageOriginEndpointId: string;
-
-  @Field((type) => String, { nullable: true })
-  @Column({ nullable: true, default: null })
-  awsMediaPackageOriginEndpointUrl: string;
+  muxLiveStreamStatus?:
+    | 'created'
+    | 'connected'
+    | 'recording'
+    | 'active'
+    | 'disconnected'
+    | 'idle'
+    | 'updated'
+    | 'deleted';
 
   // AWS S3
 
