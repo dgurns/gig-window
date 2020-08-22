@@ -29,10 +29,12 @@ services:
       - DATABASE_NAME=postgres
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-      - RTMP_ORIGIN=rtmp://api-staging.gigwindow.com:1935
-      - RTMP_PATH=/stream
       - WEB_ORIGIN=https://staging.gigwindow.com
       - COOKIE_SESSION_KEY=${COOKIE_SESSION_KEY}
+      - MUX_TOKEN_ID=${MUX_TOKEN_ID}
+      - MUX_TOKEN_SECRET=${MUX_TOKEN_SECRET}
+      - MUX_USE_TEST_LIVE_STREAMS=true
+      - MUX_WEBHOOK_SECRET=${MUX_WEBHOOK_SECRET}
       - AWS_REGION=us-east-1
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
@@ -42,15 +44,3 @@ services:
   redis:
     image: redis:alpine
     restart: always
-
-  rtmp:
-    image: dgurney/gig-window-rtmp:latest
-    restart: always
-    ports:
-      - 1935:1935
-    environment:
-      - HTTP_PORT=80
-      - RTMP_PORT=1935
-      - API_RTMP_EVENT_URL=http://api:4000/rtmp-event
-    volumes:
-      - ./certs:/opt/certs

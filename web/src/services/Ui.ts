@@ -1,11 +1,8 @@
 import { PaymentForShow, RecentPaymentToPayee } from 'hooks/usePayments';
+import { User } from 'types';
 
 interface ShouldShowTipButtonArgs {
-  payee?: {
-    stripeConnectAccountId?: string;
-    isPublishingStream: boolean;
-    isInPublicMode: boolean;
-  };
+  payee?: User;
   isActiveShow?: boolean;
   paymentForShow?: PaymentForShow;
   recentPaymentsToPayee?: RecentPaymentToPayee[];
@@ -23,7 +20,7 @@ const shouldShowTipButton = ({
   }
 
   const isStreamingLive = Boolean(
-    payee.isPublishingStream && payee.isInPublicMode
+    payee.muxLiveStreamStatus === 'active' && payee.isInPublicMode
   );
   if (!isActiveShow && !isStreamingLive) {
     return true;

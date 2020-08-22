@@ -5,21 +5,19 @@ export interface User {
   urlSlug: string;
   hashedPassword: string;
   isAllowedToStream: boolean;
-  streamKey: string;
-  isPublishingStream: boolean;
   isInPublicMode: boolean;
-  lastPublishedStreamStartTimestamp: string;
-  lastPublishedStreamEndTimestamp: string;
-  liveVideoInfrastructureError: string;
-  awsMediaLiveInputId: string;
-  awsMediaLiveChannelId: string;
-  awsMediaLiveChannelEnteredRunningStateTimestamp?: string;
-  awsMediaPackageChannelId: string;
-  awsMediaPackageChannelIngestUrl: string;
-  awsMediaPackageChannelIngestUsername: string;
-  awsMediaPackageChannelIngestPasswordParam: string;
-  awsMediaPackageOriginEndpointId: string;
-  awsMediaPackageOriginEndpointUrl: string;
+  muxLiveStreamId?: string;
+  muxStreamKey?: string;
+  muxPlaybackId?: string;
+  muxLiveStreamStatus?:
+    | 'created'
+    | 'connected'
+    | 'recording'
+    | 'active'
+    | 'disconnected'
+    | 'idle'
+    | 'updated'
+    | 'deleted';
   profileImageUrl: string;
   stripeCustomerId: string;
   stripeConnectAccountId: string;

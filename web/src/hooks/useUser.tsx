@@ -16,10 +16,9 @@ const GET_USER = gql`
       urlSlug
       profileImageUrl
       isAllowedToStream
-      isPublishingStream
-      lastPublishedStreamEndTimestamp
       isInPublicMode
-      awsMediaPackageOriginEndpointUrl
+      muxPlaybackId
+      muxLiveStreamStatus
       stripeConnectAccountId
     }
   }
@@ -33,10 +32,9 @@ const USER_EVENT_SUBSCRIPTION = gql`
       urlSlug
       profileImageUrl
       isAllowedToStream
-      isPublishingStream
-      lastPublishedStreamEndTimestamp
       isInPublicMode
-      awsMediaPackageOriginEndpointUrl
+      muxPlaybackId
+      muxLiveStreamStatus
       stripeConnectAccountId
     }
   }

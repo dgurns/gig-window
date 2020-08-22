@@ -15,6 +15,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@mux/mux-node": "^3.0.2",
     "apollo-server-express": "^2.11.0",
     "aws-sdk": "^2.659.0",
     "bcrypt": "^4.0.1",

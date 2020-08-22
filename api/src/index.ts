@@ -16,7 +16,6 @@ import { buildContext } from 'graphql-passport';
 
 import { connectToDatabase } from './connectToDatabase';
 import { initializePassport } from './initializePassport';
-import { initializeScheduledTasks } from './initializeScheduledTasks';
 import { restRouter } from './restRouter';
 import { authChecker } from './authChecker';
 import { User } from 'entities/User';
@@ -24,14 +23,12 @@ import { UserResolver } from 'resolvers/UserResolver';
 import { ChatResolver } from 'resolvers/ChatResolver';
 import { ChatEventResolver } from 'resolvers/ChatEventResolver';
 import { PaymentResolver } from 'resolvers/PaymentResolver';
-import { AdminResolver } from 'resolvers/AdminResolver';
 import { ShowResolver } from 'resolvers/ShowResolver';
 
 const {
   NODE_ENV,
   REDIS_HOST,
   REDIS_PORT,
-  RTMP_ORIGIN,
   WEB_ORIGIN,
   COOKIE_SESSION_KEY,
 } = process.env;
@@ -54,7 +51,7 @@ async function start() {
 
     const app = express();
 
-    const allowedOrigins = [WEB_ORIGIN, RTMP_ORIGIN];
+    const allowedOrigins = [WEB_ORIGIN];
     if (NODE_ENV === 'development') {
       allowedOrigins.push(`http://localhost:${SERVER_PORT}`);
     }
@@ -71,6 +68,7 @@ async function start() {
         optionsSuccessStatus: 200,
       })
     );
+    app.use(express.json());
     app.use(compression());
     app.use(
       cookieSession({
@@ -90,7 +88,6 @@ async function start() {
         ChatEventResolver,
         PaymentResolver,
         ShowResolver,
-        AdminResolver,
       ],
       pubSub,
       authChecker,
@@ -109,8 +106,6 @@ async function start() {
     });
     const httpServer = http.createServer(app);
     server.installSubscriptionHandlers(httpServer);
-
-    initializeScheduledTasks();
 
     httpServer.listen({ port: SERVER_PORT }, () => {
       console.log(`🚀 api ready on port ${SERVER_PORT}`);

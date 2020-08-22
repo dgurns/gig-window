@@ -155,9 +155,10 @@ const LiveVideoArea = ({ show, payee }: LiveVideoAreaProps) => {
     freePreviewExpiryDate,
   ]);
 
-  const hlsUrl = payee
-    ? payee.awsMediaPackageOriginEndpointUrl
-    : currentUser?.awsMediaPackageOriginEndpointUrl;
+  const muxPlaybackId = payee
+    ? payee.muxPlaybackId
+    : currentUser?.muxPlaybackId;
+  const hlsUrl = `https://stream.mux.com/${muxPlaybackId}.m3u8`;
 
   return (
     <Grid className={classes.container}>

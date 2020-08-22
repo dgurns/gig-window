@@ -9,15 +9,6 @@ export class GetUserInput {
   urlSlug?: string;
 }
 
-@ArgsType()
-export class CheckUserLiveVideoIsActiveArgs {
-  @Field((type) => Int, { nullable: true })
-  userId?: number;
-
-  @Field((type) => String, { nullable: true })
-  userUrlSlug?: string;
-}
-
 @InputType()
 export class SignUpInput {
   @Field()
