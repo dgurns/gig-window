@@ -77,7 +77,7 @@ const HowToBroadcast = () => {
           ...with this stream key (keep it secret!):
         </Typography>
         <TextField
-          value={currentUser?.streamKey || ''}
+          value={currentUser?.muxStreamKey || ''}
           variant="outlined"
           size="small"
           className={classnames([classes.item, classes.rtmpField])}

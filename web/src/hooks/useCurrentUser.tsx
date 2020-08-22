@@ -10,14 +10,10 @@ const GET_CURRENT_USER = gql`
       username
       urlSlug
       isAllowedToStream
-      streamKey
-      isPublishingStream
       isInPublicMode
-      liveVideoInfrastructureError
-      awsMediaLiveInputId
-      awsMediaLiveChannelId
-      awsMediaPackageChannelId
-      awsMediaPackageOriginEndpointUrl
+      muxStreamKey
+      muxPlaybackId
+      muxLiveStreamStatus
       profileImageUrl
       stripeCustomerId
       stripeConnectAccountId
@@ -33,14 +29,10 @@ const USER_EVENT_SUBSCRIPTION = gql`
       username
       urlSlug
       isAllowedToStream
-      streamKey
-      isPublishingStream
       isInPublicMode
-      liveVideoInfrastructureError
-      awsMediaLiveInputId
-      awsMediaLiveChannelId
-      awsMediaPackageChannelId
-      awsMediaPackageOriginEndpointUrl
+      muxStreamKey
+      muxPlaybackId
+      muxLiveStreamStatus
       profileImageUrl
       stripeCustomerId
       stripeConnectAccountId

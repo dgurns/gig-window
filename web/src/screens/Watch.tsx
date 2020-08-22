@@ -12,7 +12,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import useUser from 'hooks/useUser';
 import useShowsForUser from 'hooks/useShowsForUser';
 import useFreePreview from 'hooks/useFreePreview';
-import useLiveVideo from 'hooks/useLiveVideo';
 import usePayments from 'hooks/usePayments';
 import DateTime from 'services/DateTime';
 import Ui from 'services/Ui';
@@ -103,7 +102,6 @@ const Watch = () => {
   const { freePreviewIsUsed } = useFreePreview({
     userUrlSlug: urlSlug,
   });
-  const [liveVideoIsActive, liveVideoIsActiveQuery] = useLiveVideo({ user });
 
   const [, showsQuery, activeShow] = useShowsForUser(user?.id);
   const { paymentForShow, recentPaymentsToPayee } = usePayments({
@@ -128,7 +126,8 @@ const Watch = () => {
   const videoArea = useMemo(() => {
     if (!user) return null;
 
-    const shouldShowLiveVideo = user?.isInPublicMode && liveVideoIsActive;
+    const shouldShowLiveVideo =
+      user.isInPublicMode && user.muxLiveStreamStatus === 'active';
     const hasAccessToLiveVideo = User.hasAccessToLiveVideo({
       paymentForShow,
       recentPaymentsToPayee,
@@ -143,14 +142,13 @@ const Watch = () => {
     }
   }, [
     user,
-    liveVideoIsActive,
     freePreviewIsUsed,
     paymentForShow,
     recentPaymentsToPayee,
     activeShow,
   ]);
 
-  if (userQuery.loading || liveVideoIsActiveQuery.loading) {
+  if (userQuery.loading) {
     return (
       <Container disableGutters maxWidth={false}>
         <Grid container direction="row" className={classes.userInfoContainer}>

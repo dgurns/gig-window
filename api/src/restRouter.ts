@@ -5,6 +5,8 @@ import { pubSub } from './';
 const restRouter = Router();
 
 restRouter.post('/mux-webhook-event', async (req: Request, res: Response) => {
+  console.log('got a webhook - request:', req);
+
   const webhookTriggerType = req.body.object.type;
   if (webhookTriggerType !== 'live') {
     return res.status(200).end();

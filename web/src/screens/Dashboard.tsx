@@ -11,7 +11,6 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import useCurrentUser from 'hooks/useCurrentUser';
 import useShowsForUser from 'hooks/useShowsForUser';
-import useLiveVideo from 'hooks/useLiveVideo';
 import DateTime from 'services/DateTime';
 import Image from 'services/Image';
 
@@ -105,14 +104,9 @@ const Dashboard = () => {
     username,
     profileImageUrl,
     isAllowedToStream,
-    isPublishingStream,
-    awsMediaLiveChannelId,
-    liveVideoInfrastructureError,
+    muxLiveStreamStatus,
   } = currentUser ?? {};
 
-  const [liveVideoIsActive, liveVideoIsActiveQuery] = useLiveVideo({
-    user: currentUser,
-  });
   const [, showsQuery, activeShow] = useShowsForUser(currentUser?.id);
 
   const activeShowText = useMemo(() => {
@@ -130,47 +124,29 @@ const Dashboard = () => {
   }, [showsQuery, activeShow]);
 
   const streamPreviewMessage = useMemo(() => {
-    if (liveVideoIsActiveQuery.loading) {
-      return null;
-    } else if (isPublishingStream && liveVideoInfrastructureError) {
-      return (
-        <Typography className={classes.streamPreviewMessage}>
-          Error starting live video infrastructure. Please restart your
-          broadcast on your encoder.
-        </Typography>
-      );
-    } else {
-      return (
-        <>
-          <Typography className={classes.streamPreviewMessage}>
-            {!isPublishingStream && 'No stream detected'}
-            {isPublishingStream && 'Stream detected!'}
-            <br />
-            {isPublishingStream &&
-              !liveVideoIsActive &&
-              'Activating video infrastructure... '}
-            {isPublishingStream &&
-              !liveVideoIsActive &&
-              !awsMediaLiveChannelId &&
-              '(takes a minute or two from a cold start)'}
-          </Typography>
-          {isPublishingStream && (
-            <CircularProgress
-              color="secondary"
-              className={classes.startingVideoInfrastructureProgress}
-            />
-          )}
-        </>
-      );
+    let message;
+    switch (muxLiveStreamStatus) {
+      case 'connected':
+        message = 'Encoder connected. Start streaming when ready.';
+      case 'recording':
+        message = 'Receiving stream and preparing for playback...';
+      default:
+        message = 'No stream detected';
     }
-  }, [
-    liveVideoIsActiveQuery,
-    isPublishingStream,
-    awsMediaLiveChannelId,
-    liveVideoIsActive,
-    liveVideoInfrastructureError,
-    classes,
-  ]);
+    return (
+      <>
+        <Typography className={classes.streamPreviewMessage}>
+          {message}
+        </Typography>
+        {muxLiveStreamStatus === 'recording' && (
+          <CircularProgress
+            color="secondary"
+            className={classes.startingVideoInfrastructureProgress}
+          />
+        )}
+      </>
+    );
+  }, [muxLiveStreamStatus, classes]);
 
   const videoArea = useMemo(() => {
     if (!isAllowedToStream) {
@@ -192,18 +168,12 @@ const Dashboard = () => {
           </Button>
         </>
       );
-    } else if (isPublishingStream && liveVideoIsActive) {
+    } else if (muxLiveStreamStatus === 'active') {
       return <LiveVideoArea />;
     } else {
       return streamPreviewMessage;
     }
-  }, [
-    isAllowedToStream,
-    isPublishingStream,
-    liveVideoIsActive,
-    streamPreviewMessage,
-    classes,
-  ]);
+  }, [isAllowedToStream, muxLiveStreamStatus, streamPreviewMessage, classes]);
 
   if (!currentUser) {
     return (
