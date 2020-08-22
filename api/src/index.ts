@@ -29,7 +29,6 @@ const {
   NODE_ENV,
   REDIS_HOST,
   REDIS_PORT,
-  RTMP_ORIGIN,
   WEB_ORIGIN,
   COOKIE_SESSION_KEY,
 } = process.env;
@@ -52,7 +51,7 @@ async function start() {
 
     const app = express();
 
-    const allowedOrigins = [WEB_ORIGIN, RTMP_ORIGIN];
+    const allowedOrigins = [WEB_ORIGIN];
     if (NODE_ENV === 'development') {
       allowedOrigins.push(`http://localhost:${SERVER_PORT}`);
     }
