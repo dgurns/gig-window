@@ -127,9 +127,11 @@ const Dashboard = () => {
     let message;
     switch (muxLiveStreamStatus) {
       case 'connected':
-        message = 'Encoder connected. Start streaming when ready.';
+        message = 'Encoder connected';
+        break;
       case 'recording':
         message = 'Receiving stream and preparing for playback...';
+        break;
       default:
         message = 'No stream detected';
     }

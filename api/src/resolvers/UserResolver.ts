@@ -122,10 +122,15 @@ export class UserResolver {
       password: data.password,
     });
 
-    if (user) {
-      await ctx.login(user);
-      return user;
+    if (!user) {
+      throw new Error('Could not log in, please double-check and try again.');
     }
+
+    if (!user.muxLiveStreamId) {
+      await Mux.createLiveStreamForUser(user);
+    }
+    await ctx.login(user);
+    return user;
   }
 
   @Mutation(() => Boolean)

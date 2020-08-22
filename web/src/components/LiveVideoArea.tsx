@@ -155,10 +155,10 @@ const LiveVideoArea = ({ show, payee }: LiveVideoAreaProps) => {
     freePreviewExpiryDate,
   ]);
 
-  const muxLiveStreamId = payee
-    ? payee.muxLiveStreamId
-    : currentUser?.muxLiveStreamId;
-  const hlsUrl = `https://stream.mux.com/${muxLiveStreamId}.m3u8`;
+  const muxPlaybackId = payee
+    ? payee.muxPlaybackId
+    : currentUser?.muxPlaybackId;
+  const hlsUrl = `https://stream.mux.com/${muxPlaybackId}.m3u8`;
 
   return (
     <Grid className={classes.container}>
