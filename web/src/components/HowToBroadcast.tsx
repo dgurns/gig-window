@@ -39,6 +39,18 @@ const HowToBroadcast = () => {
           plenty of help resources and guides for getting started.
         </Typography>
         <Typography className={classes.item}>
+          <em>Streamlabs quickstart:</em>
+          <br />
+          - Download app
+          <br />
+          - On login screen tap "Other Platforms"
+          <br />
+          - Copy/paste RTMP URL and stream key from below
+          <br />
+          - Ignore the part about selecting widgets, just click "Next"
+          <br />- Press the red button to start streaming
+        </Typography>
+        <Typography className={classes.item}>
           <em>OBS quickstart:</em>
           <br />
           - Download OBS
@@ -49,18 +61,6 @@ const HowToBroadcast = () => {
           the "Server" field, and copy/paste the Stream Key
           <br />- Click "Apply", then "OK" and close the window
           <br />- Click "Start Streaming"
-        </Typography>
-        <Typography className={classes.item}>
-          <em>Streamlabs quickstart:</em>
-          <br />
-          - Download app
-          <br />
-          - On login screen tap "Other Platforms"
-          <br />
-          - Copy/paste RTMP URL and stream key from below
-          <br />
-          - Tap "Save" and close Settings screen
-          <br />- Press the red button to start streaming
         </Typography>
       </Grid>
       <Grid className={classes.section}>
