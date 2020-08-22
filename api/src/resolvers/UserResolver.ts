@@ -58,7 +58,7 @@ export class UserResolver {
     const usersStreamingLive = await User.find({
       where: {
         isInPublicMode: true,
-        isPublishingStream: true,
+        muxLiveStreamStatus: 'active',
       },
     });
     return usersStreamingLive;
