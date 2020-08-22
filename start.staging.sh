@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # This script pulls updated Docker images and then
-# starts the full backend (nginx, api, redis, and 
-# rtmp), providing it with staging env variables. 
+# starts the full backend (nginx, api, and redis), 
+# providing it with staging env variables. 
 # It also removes any outdated Docker images.
 
 # This script is meant to be run on the server where 
@@ -13,7 +13,6 @@
 
 docker pull dgurney/gig-window-nginx:latest
 docker pull dgurney/gig-window-api:latest
-docker pull dgurney/gig-window-rtmp:latest
 
 docker-compose -f docker-compose.staging.yml up --build -d
 
