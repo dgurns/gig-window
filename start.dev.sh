@@ -16,6 +16,6 @@
 
 concurrently \
   "docker-compose -f docker-compose.dev.yml up" \
-  "nginx start gig-window-api" \
+  "ngrok start gig-window-api" \
   "cd api && yarn start" \
   "cd web && yarn start"

@@ -13,10 +13,11 @@ import BuyTicketButton from './BuyTicketButton';
 import Countdown from './Countdown';
 import HlsPlayer from './HlsPlayer';
 
-const useStyles = makeStyles(({ palette, spacing }) => ({
+const useStyles = makeStyles(({ palette, spacing, breakpoints }) => ({
   container: {
     backgroundColor: palette.common.black,
     height: '100%',
+    overflowX: 'hidden',
     position: 'relative',
     width: '100%',
   },
@@ -43,17 +44,27 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
   },
   paywallBackgroundGradient: {
     background:
-      'linear-gradient(0deg, rgba(0,0,0,1) 20%, rgba(255,255,255,0) 74%)',
+      'linear-gradient(0deg, rgba(0,0,0,0.8) 43%, rgba(255,255,255,0) 74%)',
     bottom: 0,
     left: 0,
     position: 'absolute',
     right: 0,
     top: 0,
+    [breakpoints.up('sm')]: {
+      background:
+        'linear-gradient(0deg, rgba(0,0,0,0.8) 32%, rgba(255,255,255,0) 74%)',
+    },
   },
   paywallContent: {
-    marginBottom: spacing(7),
+    marginBottom: spacing(3),
     textAlign: 'center',
     zIndex: 30,
+    [breakpoints.up('sm')]: {
+      marginBottom: spacing(5),
+    },
+  },
+  freePreviewCountdown: {
+    color: palette.common.white,
   },
   buyTicketButton: {
     marginTop: spacing(2),
@@ -134,6 +145,7 @@ const LiveVideoArea = ({ show, payee }: LiveVideoAreaProps) => {
                 countdownSuffix="left in free preview"
                 postTargetLabel="That's the end of your free preview. Pay what you want to join the show!"
                 onTargetDateReached={() => window.location.reload()}
+                className={classes.freePreviewCountdown}
               />
             )}
             <BuyTicketButton

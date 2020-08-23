@@ -41,13 +41,13 @@ const StreamPreviewMessage = () => {
   useEffect(() => {
     // When Mux streams are in test mode, they will become disabled after
     // 5 minutes, so we regenerate live stream config for this user
-    if (muxLiveStreamStatus === 'disabled' && !loading) {
+    if (muxLiveStreamStatus === 'disabled') {
       window.alert(
         'In test environments there is a 5 minute limit for "test mode" streams. Regenerating your live stream config - please paste the new stream key into your encoder'
       );
       regenerateLiveStreamConfig();
     }
-  }, [muxLiveStreamStatus, loading, regenerateLiveStreamConfig]);
+  }, [muxLiveStreamStatus, regenerateLiveStreamConfig]);
 
   let message;
   switch (muxLiveStreamStatus) {
@@ -81,4 +81,4 @@ const StreamPreviewMessage = () => {
   );
 };
 
-export default React.memo(StreamPreviewMessage);
+export default StreamPreviewMessage;

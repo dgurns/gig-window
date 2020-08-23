@@ -14,6 +14,7 @@ interface CountdownProps {
   countdownSuffix?: string;
   postTargetLabel?: string;
   onTargetDateReached?: () => void;
+  className?: string;
 }
 
 const Countdown = ({
@@ -21,6 +22,7 @@ const Countdown = ({
   countdownSuffix,
   postTargetLabel,
   onTargetDateReached,
+  className,
 }: CountdownProps) => {
   const isAfterTargetDate = new Date() > new Date(targetDate);
 
@@ -72,7 +74,7 @@ const Countdown = ({
   }, [shouldTriggerCallback, onTargetDateReached]);
 
   return (
-    <Typography color="secondary">
+    <Typography className={className}>
       {isAfterTargetDate || shouldTriggerCallback ? (
         postTargetLabel
       ) : (
