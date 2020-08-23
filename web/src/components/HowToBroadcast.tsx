@@ -5,6 +5,8 @@ import classnames from 'classnames';
 
 import useCurrentUser from 'hooks/useCurrentUser';
 
+import CopyToClipboardButton from 'components/CopyToClipboardButton';
+
 const useStyles = makeStyles(({ spacing }) => ({
   title: {
     marginBottom: spacing(2),
@@ -16,7 +18,13 @@ const useStyles = makeStyles(({ spacing }) => ({
     marginBottom: spacing(2),
   },
   rtmpField: {
-    maxWidth: 350,
+    maxWidth: 370,
+    position: 'relative',
+  },
+  copyButton: {
+    position: 'absolute',
+    right: 6,
+    top: 7,
   },
 }));
 
@@ -72,6 +80,14 @@ const HowToBroadcast = () => {
           variant="outlined"
           size="small"
           className={classnames([classes.item, classes.rtmpField])}
+          InputProps={{
+            endAdornment: (
+              <CopyToClipboardButton
+                textToCopy={process.env.REACT_APP_RTMP_URL}
+                className={classes.copyButton}
+              />
+            ),
+          }}
         />
         <Typography className={classes.item}>
           ...with this stream key (keep it secret!):
@@ -81,6 +97,14 @@ const HowToBroadcast = () => {
           variant="outlined"
           size="small"
           className={classnames([classes.item, classes.rtmpField])}
+          InputProps={{
+            endAdornment: (
+              <CopyToClipboardButton
+                textToCopy={currentUser?.muxStreamKey}
+                className={classes.copyButton}
+              />
+            ),
+          }}
         />
       </Grid>
       <Grid className={classes.section}>
