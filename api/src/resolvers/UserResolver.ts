@@ -139,6 +139,15 @@ export class UserResolver {
     return true;
   }
 
+  @Mutation(() => User)
+  async regenerateLiveStreamConfigForUser(@Ctx() ctx: CustomContext) {
+    const user = ctx.getUser();
+    if (!user) throw new Error('User is not logged in');
+
+    await Mux.createLiveStreamForUser(user);
+    return user;
+  }
+
   @Mutation(() => String)
   async generatePresignedImageUploadUrl(@Ctx() ctx: CustomContext) {
     const user = ctx.getUser();

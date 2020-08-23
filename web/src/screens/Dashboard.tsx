@@ -17,6 +17,7 @@ import Image from 'services/Image';
 import DashboardSubheader from 'components/DashboardSubheader';
 import DashboardModeSwitcher from 'components/DashboardModeSwitcher';
 import LiveVideoArea from 'components/LiveVideoArea';
+import StreamPreviewMessage from 'components/StreamPreviewMessage';
 import ChatBox from 'components/ChatBox';
 import HowToBroadcast from 'components/HowToBroadcast';
 
@@ -64,15 +65,6 @@ const useStyles = makeStyles(({ breakpoints, palette, spacing }) => ({
   },
   requestAccessButton: {
     marginTop: spacing(2),
-  },
-  streamPreviewMessage: {
-    color: palette.common.white,
-    marginRight: spacing(2),
-    textAlign: 'center',
-  },
-  startingVideoInfrastructureProgress: {
-    marginTop: spacing(2),
-    width: 100,
   },
   chat: {
     backgroundColor: palette.common.white,
@@ -123,33 +115,6 @@ const Dashboard = () => {
     }
   }, [showsQuery, activeShow]);
 
-  const streamPreviewMessage = useMemo(() => {
-    let message;
-    switch (muxLiveStreamStatus) {
-      case 'connected':
-        message = 'Encoder connected';
-        break;
-      case 'recording':
-        message = 'Receiving stream and preparing for playback...';
-        break;
-      default:
-        message = 'No stream detected';
-    }
-    return (
-      <>
-        <Typography className={classes.streamPreviewMessage}>
-          {message}
-        </Typography>
-        {muxLiveStreamStatus === 'recording' && (
-          <CircularProgress
-            color="secondary"
-            className={classes.startingVideoInfrastructureProgress}
-          />
-        )}
-      </>
-    );
-  }, [muxLiveStreamStatus, classes]);
-
   const videoArea = useMemo(() => {
     if (!isAllowedToStream) {
       return (
@@ -173,9 +138,9 @@ const Dashboard = () => {
     } else if (muxLiveStreamStatus === 'active') {
       return <LiveVideoArea />;
     } else {
-      return streamPreviewMessage;
+      return <StreamPreviewMessage />;
     }
-  }, [isAllowedToStream, muxLiveStreamStatus, streamPreviewMessage, classes]);
+  }, [isAllowedToStream, muxLiveStreamStatus, classes]);
 
   if (!currentUser) {
     return (

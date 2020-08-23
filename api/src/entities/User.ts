@@ -64,6 +64,7 @@ export class User extends BaseEntity {
     | 'disconnected'
     | 'idle'
     | 'updated'
+    | 'disabled'
     | 'deleted';
 
   // AWS S3

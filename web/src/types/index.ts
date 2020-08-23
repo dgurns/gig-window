@@ -17,6 +17,7 @@ export interface User {
     | 'disconnected'
     | 'idle'
     | 'updated'
+    | 'disabled'
     | 'deleted';
   profileImageUrl: string;
   stripeCustomerId: string;
