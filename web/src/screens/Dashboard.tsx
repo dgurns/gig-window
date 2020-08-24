@@ -101,17 +101,23 @@ const Dashboard = () => {
 
   const [, showsQuery, activeShow] = useShowsForUser(currentUser?.id);
 
-  const activeShowText = useMemo(() => {
+  const activeShowDescription = useMemo(() => {
     if (showsQuery.loading) {
-      return <CircularProgress size={15} color="secondary" />;
+      return <CircularProgress size={19} color="secondary" />;
     } else if (showsQuery.error) {
-      return 'Error fetching shows';
+      return (
+        <Typography color="textSecondary">Error fetching shows</Typography>
+      );
     } else if (activeShow) {
-      return `${DateTime.formatUserReadableShowtime(activeShow.showtime)}: ${
-        activeShow.title
-      }`;
+      return (
+        <Typography color="textSecondary">
+          {`${DateTime.formatUserReadableShowtime(activeShow.showtime)}: ${
+            activeShow.title
+          }`}
+        </Typography>
+      );
     } else {
-      return 'No shows scheduled';
+      return <Typography color="textSecondary">No shows scheduled</Typography>;
     }
   }, [showsQuery, activeShow]);
 
@@ -138,7 +144,7 @@ const Dashboard = () => {
     } else if (muxLiveStreamStatus === 'active') {
       return <LiveVideoArea />;
     } else {
-      return <StreamPreviewMessage />;
+      return <StreamPreviewMessage muxLiveStreamStatus={muxLiveStreamStatus} />;
     }
   }, [isAllowedToStream, muxLiveStreamStatus, classes]);
 
@@ -167,9 +173,7 @@ const Dashboard = () => {
           )}
           <Grid item className={classes.artistText}>
             <Typography variant="h6">{username}</Typography>
-            {isAllowedToStream && (
-              <Typography color="textSecondary">{activeShowText}</Typography>
-            )}
+            {isAllowedToStream && activeShowDescription}
           </Grid>
         </Grid>
 
@@ -211,4 +215,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default React.memo(Dashboard);

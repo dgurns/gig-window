@@ -24,11 +24,6 @@ const HlsPlayer = ({
     if (!hlsPlayerRef.current || !manifestIsLoaded) {
       return;
     }
-
-    const { buffered } = hlsPlayerRef.current;
-    if (buffered.length !== 0) {
-      hlsPlayerRef.current.currentTime = buffered.end(buffered.length - 1);
-    }
     hlsPlayerRef.current.play();
   }, [hlsPlayerRef, manifestIsLoaded]);
 
@@ -69,6 +64,7 @@ const HlsPlayer = ({
       height="100%"
       onPlay={playVideo}
       controls={!shouldHideControls}
+      playsInline
     />
   );
 };

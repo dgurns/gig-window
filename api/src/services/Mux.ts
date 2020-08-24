@@ -20,6 +20,11 @@ const createLiveStreamForUser = async (user: User) => {
   return liveStream.id;
 };
 
+const deleteAsset = (assetId: string) => {
+  return MuxVideo.Assets.del(assetId);
+};
+
 export default {
   createLiveStreamForUser,
+  deleteAsset,
 };

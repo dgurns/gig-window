@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { Grid, Link, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
@@ -52,6 +52,13 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
 
 const Header = () => {
   const classes = useStyles();
+
+  const { pathname } = useLocation();
+  useEffect(() => {
+    if (window.scrollY > 0) {
+      window.scrollTo(0, 0);
+    }
+  }, [pathname]);
 
   const [currentUser, currentUserQuery] = useCurrentUser();
   const userIsLoggedOut = !currentUser && !currentUserQuery.loading;
@@ -148,4 +155,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default React.memo(Header);

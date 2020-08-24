@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useMutation, gql } from '@apollo/client';
 import { Typography, CircularProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-import useCurrentUser from 'hooks/useCurrentUser';
+import TextButton from 'components/TextButton';
 
 const REGENERATE_LIVE_STREAM_CONFIG_FOR_USER = gql`
   mutation RegenerateLiveStreamConfigForUser {
@@ -16,38 +16,31 @@ const REGENERATE_LIVE_STREAM_CONFIG_FOR_USER = gql`
 const useStyles = makeStyles(({ palette, spacing }) => ({
   streamPreviewMessage: {
     color: palette.common.white,
-    marginRight: spacing(2),
+    padding: `0 ${spacing(4)}px`,
     textAlign: 'center',
   },
   loadingIndicator: {
     marginTop: spacing(2),
     width: 100,
   },
+  regenerateConfigButton: {
+    marginTop: spacing(2),
+  },
 }));
 
-const StreamPreviewMessage = () => {
+interface Props {
+  muxLiveStreamStatus?: string;
+}
+
+const StreamPreviewMessage = ({ muxLiveStreamStatus }: Props) => {
   const classes = useStyles();
 
-  const [currentUser] = useCurrentUser({ subscribe: true });
-  const { muxLiveStreamStatus } = currentUser ?? {};
-
-  const [regenerateLiveStreamConfig, { loading }] = useMutation(
+  const [regenerateLiveStreamConfig, { loading, data }] = useMutation(
     REGENERATE_LIVE_STREAM_CONFIG_FOR_USER,
     {
       errorPolicy: 'all',
     }
   );
-
-  useEffect(() => {
-    // When Mux streams are in test mode, they will become disabled after
-    // 5 minutes, so we regenerate live stream config for this user
-    if (muxLiveStreamStatus === 'disabled') {
-      window.alert(
-        'In test environments there is a 5 minute limit for "test mode" streams. Regenerating your live stream config - please paste the new stream key into your encoder'
-      );
-      regenerateLiveStreamConfig();
-    }
-  }, [muxLiveStreamStatus, regenerateLiveStreamConfig]);
 
   let message;
   switch (muxLiveStreamStatus) {
@@ -61,24 +54,40 @@ const StreamPreviewMessage = () => {
       message = 'Encoder disconnected';
       break;
     case 'disabled':
-      message = loading ? 'Regenerating live stream config...' : '';
+      message =
+        loading || data
+          ? 'Regenerating live stream config...'
+          : 'In test environments, streams are disabled after 5 minutes. To continue, regenerate the config and then paste the new stream key into your encoder';
       break;
     default:
       message = 'No stream detected';
   }
+
+  const shouldShowLoadingIndicator = muxLiveStreamStatus === 'recording';
+  const shouldShowRegenerateButton =
+    muxLiveStreamStatus === 'disabled' && !loading && !data;
+
   return (
     <>
       <Typography className={classes.streamPreviewMessage}>
         {message}
       </Typography>
-      {muxLiveStreamStatus === 'recording' && (
+      {shouldShowLoadingIndicator && (
         <CircularProgress
           color="secondary"
           className={classes.loadingIndicator}
         />
       )}
+      {shouldShowRegenerateButton && (
+        <TextButton
+          onClick={() => regenerateLiveStreamConfig()}
+          className={classes.regenerateConfigButton}
+        >
+          Regenerate live stream config
+        </TextButton>
+      )}
     </>
   );
 };
 
-export default StreamPreviewMessage;
+export default React.memo(StreamPreviewMessage);

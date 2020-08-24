@@ -146,4 +146,4 @@ const DashboardSubheader = () => {
   );
 };
 
-export default DashboardSubheader;
+export default React.memo(DashboardSubheader);

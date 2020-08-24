@@ -111,15 +111,21 @@ const Watch = () => {
 
   const activeShowDescription = useMemo(() => {
     if (showsQuery.loading) {
-      return <CircularProgress size={15} color="secondary" />;
+      return <CircularProgress size={19} color="secondary" />;
     } else if (showsQuery.error) {
-      return 'Error fetching shows';
+      return (
+        <Typography color="textSecondary">Error fetching shows</Typography>
+      );
     } else if (activeShow) {
-      return `${DateTime.formatUserReadableShowtime(activeShow.showtime)}: ${
-        activeShow.title
-      }`;
+      return (
+        <Typography color="textSecondary">
+          {`${DateTime.formatUserReadableShowtime(activeShow.showtime)}: ${
+            activeShow.title
+          }`}
+        </Typography>
+      );
     } else {
-      return 'No shows scheduled';
+      return <Typography color="textSecondary">No shows scheduled</Typography>;
     }
   }, [showsQuery, activeShow]);
 
@@ -195,11 +201,7 @@ const Watch = () => {
         )}
         <Grid item className={classes.userText}>
           <Typography variant="h6">{user.username}</Typography>
-          {user?.isAllowedToStream && (
-            <Typography variant="body1" color="textSecondary">
-              {activeShowDescription}
-            </Typography>
-          )}
+          {user?.isAllowedToStream && activeShowDescription}
         </Grid>
       </Grid>
       <Paper elevation={3}>
@@ -226,4 +228,4 @@ const Watch = () => {
   );
 };
 
-export default Watch;
+export default React.memo(Watch);

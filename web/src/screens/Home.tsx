@@ -15,7 +15,7 @@ import ProjectOverviewSplash from 'components/ProjectOverviewSplash';
 import LiveNowCard from 'components/LiveNowCard';
 import UpcomingShowCard from 'components/UpcomingShowCard';
 
-const useStyles = makeStyles(({ spacing }) => ({
+const useStyles = makeStyles(({ spacing, palette }) => ({
   pageContent: {
     padding: spacing(2),
     paddingBottom: spacing(10),
@@ -30,6 +30,14 @@ const useStyles = makeStyles(({ spacing }) => ({
   },
   usersStreamingLive: {
     marginBottom: spacing(4),
+  },
+  liveCircle: {
+    backgroundColor: palette.error.main,
+    borderRadius: 7,
+    height: 13,
+    marginRight: spacing(1),
+    marginTop: 1,
+    width: 13,
   },
   showCard: {
     marginBottom: spacing(1),
@@ -64,9 +72,18 @@ const Home = () => {
     () =>
       liveNowData.length > 0 && (
         <Grid item xs={12} className={classes.usersStreamingLive}>
-          <Typography variant="h6" className={classes.sectionHeading}>
-            Live now
-          </Typography>
+          <Grid
+            item
+            container
+            direction="row"
+            alignItems="center"
+            className={classes.sectionHeading}
+          >
+            <div className={classes.liveCircle} />
+            <Typography variant="h6" color="error">
+              Live now
+            </Typography>
+          </Grid>
           <Grid container item xs={12} spacing={2}>
             {liveNowData.map(({ user, show }, index) => {
               return (

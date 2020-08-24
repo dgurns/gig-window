@@ -7,16 +7,6 @@ import { grey } from '@material-ui/core/colors';
 import { User, Show } from 'types';
 
 const useStyles = makeStyles(({ palette, spacing }) => ({
-  liveLabel: {
-    marginBottom: 6,
-  },
-  liveCircle: {
-    backgroundColor: palette.error.main,
-    borderRadius: 6,
-    height: 11,
-    marginRight: 5,
-    width: 11,
-  },
   cardLink: {
     textDecoration: 'none',
   },
@@ -53,15 +43,6 @@ const LiveNowCard = ({ user, show }: LiveNowCardProps) => {
 
   return (
     <>
-      <Grid
-        container
-        direction="row"
-        alignItems="center"
-        className={classes.liveLabel}
-      >
-        <div className={classes.liveCircle} />
-        <Typography color="error">Live</Typography>
-      </Grid>
       <Link to={user.urlSlug} className={classes.cardLink}>
         <Card className={classes.card} elevation={3}>
           <CardMedia image={user.profileImageUrl} className={classes.image} />
