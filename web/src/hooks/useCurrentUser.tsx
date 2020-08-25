@@ -6,6 +6,7 @@ const GET_CURRENT_USER = gql`
   {
     getCurrentUser {
       id
+      permissions
       email
       username
       urlSlug
@@ -25,6 +26,7 @@ const USER_EVENT_SUBSCRIPTION = gql`
   subscription NewUserEvent($userId: Int) {
     newUserEvent(userId: $userId) {
       id
+      permissions
       email
       username
       urlSlug

@@ -62,7 +62,7 @@ const HowToBroadcast = () => {
           plenty of help resources and guides for getting started.
         </Typography>
         <Typography className={classes.quickstartContainer}>
-          <em>Streamlabs quickstart</em>
+          <em>Streamlabs quick instructions</em>
           <TextButton
             onClick={() =>
               setStreamlabsQuickstartIsExpanded(!streamlabsQuickstartIsExpanded)
@@ -85,7 +85,7 @@ const HowToBroadcast = () => {
           </Typography>
         )}
         <Typography className={classes.quickstartContainer}>
-          <em>OBS quickstart</em>
+          <em>OBS quick instructions</em>
           <TextButton
             onClick={() => setObsQuickstartIsExpanded(!obsQuickstartIsExpanded)}
             className={classes.quickstartToggle}

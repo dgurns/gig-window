@@ -74,7 +74,7 @@ const Countdown = ({
   }, [shouldTriggerCallback, onTargetDateReached]);
 
   return (
-    <Typography className={className}>
+    <Typography color="inherit" className={className}>
       {isAfterTargetDate || shouldTriggerCallback ? (
         postTargetLabel
       ) : (

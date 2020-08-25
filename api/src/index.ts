@@ -24,6 +24,7 @@ import { ChatResolver } from 'resolvers/ChatResolver';
 import { ChatEventResolver } from 'resolvers/ChatEventResolver';
 import { PaymentResolver } from 'resolvers/PaymentResolver';
 import { ShowResolver } from 'resolvers/ShowResolver';
+import { AdminResolver } from 'resolvers/AdminResolver';
 
 const {
   NODE_ENV,
@@ -88,6 +89,7 @@ async function start() {
         ChatEventResolver,
         PaymentResolver,
         ShowResolver,
+        AdminResolver,
       ],
       pubSub,
       authChecker,

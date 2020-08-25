@@ -7,7 +7,16 @@ import {
   Column,
   Index,
 } from 'typeorm';
-import { ObjectType, Field, Int } from 'type-graphql';
+import { ObjectType, Field, Int, registerEnumType } from 'type-graphql';
+
+export enum UserPermission {
+  User = 'USER',
+  Admin = 'ADMIN',
+}
+
+registerEnumType(UserPermission, {
+  name: 'UserPermission',
+});
 
 @Entity()
 @ObjectType()
@@ -15,6 +24,16 @@ export class User extends BaseEntity {
   @Field((type) => Int)
   @PrimaryGeneratedColumn()
   readonly id: number;
+
+  @Field((type) => [UserPermission])
+  @Column({
+    type: 'enum',
+    enum: UserPermission,
+    array: true,
+    nullable: true,
+    default: [UserPermission.User],
+  })
+  permissions: UserPermission[];
 
   @Field((type) => String)
   @Column({ unique: true })

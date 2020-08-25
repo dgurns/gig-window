@@ -14,6 +14,7 @@ import EditProfile from 'screens/EditProfile';
 import EditShows from 'screens/EditShows';
 import Payments from 'screens/Payments';
 import LinkStripeAccount from 'screens/LinkStripeAccount';
+import Admin from 'screens/Admin';
 
 const useStyles = makeStyles(() => ({
   content: {
@@ -48,6 +49,10 @@ function App() {
 
           <Route exact path="/oauth/stripe-connect">
             <LinkStripeAccount />
+          </Route>
+
+          <Route exact path="/admin">
+            <Admin />
           </Route>
 
           <Route path={`/${currentUserUrlSlug}`}>

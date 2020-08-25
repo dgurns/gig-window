@@ -14,6 +14,7 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
     height: '100%',
   },
   countdown: {
+    color: palette.secondary.main,
     margin: spacing(2),
     textAlign: 'center',
   },
@@ -70,13 +71,12 @@ const ShowMarquee = ({ show, payee }: ShowMarqueeProps) => {
       alignItems="center"
       className={classes.container}
     >
-      <Grid item className={classes.countdown}>
-        <Countdown
-          targetDate={show.showtime}
-          countdownSuffix="until showtime"
-          postTargetLabel="Waiting for stream"
-        />
-      </Grid>
+      <Countdown
+        targetDate={show.showtime}
+        countdownSuffix="until showtime"
+        postTargetLabel="Waiting for stream"
+        className={classes.countdown}
+      />
       <Grid
         item
         container
