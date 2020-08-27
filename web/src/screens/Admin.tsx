@@ -1,10 +1,12 @@
 import React from 'react';
 
-import { Container } from '@material-ui/core';
+import { Container, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import useCurrentUser from 'hooks/useCurrentUser';
 import User from 'services/User';
+
+import AdminSearchUsers from 'components/AdminSearchUsers';
 
 const useStyles = makeStyles(({ spacing }) => ({
   pageContent: {
@@ -17,12 +19,28 @@ const useStyles = makeStyles(({ spacing }) => ({
 const Admin = () => {
   const classes = useStyles();
 
-  const [currentUser] = useCurrentUser();
+  const [currentUser, { loading }] = useCurrentUser();
   const currentUserIsAdmin = User.isAdmin(currentUser);
+
+  if (loading) {
+    return null;
+  }
+
+  if (!currentUserIsAdmin) {
+    return (
+      <Container maxWidth="md" disableGutters className={classes.pageContent}>
+        <Typography color="secondary">
+          {currentUser
+            ? 'Current user is not an admin'
+            : 'Please log in as an admin'}
+        </Typography>
+      </Container>
+    );
+  }
 
   return (
     <Container maxWidth="md" disableGutters className={classes.pageContent}>
-      {currentUserIsAdmin ? 'Admin UI' : 'User is not admin'}
+      <AdminSearchUsers />
     </Container>
   );
 };

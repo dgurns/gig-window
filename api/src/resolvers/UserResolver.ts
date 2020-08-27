@@ -29,8 +29,17 @@ import UserService from 'services/User';
 @Resolver()
 export class UserResolver {
   @Query(() => [User])
-  getAllUsers() {
-    return User.find();
+  async searchUsers(@Arg('searchTerm') searchTerm: string) {
+    if (!searchTerm) {
+      throw new Error('Search term cannot be empty');
+    }
+
+    const response = await getManager()
+      .createQueryBuilder(User, 'user')
+      .select()
+      .where('username ILIKE :searchTerm', { searchTerm: `%${searchTerm}%` })
+      .getMany();
+    return response;
   }
 
   @Query(() => User)
