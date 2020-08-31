@@ -160,7 +160,8 @@ const EditShows = () => {
           <Grid className={classes.section}>
             <Typography color="secondary">
               You need to link a Stripe account before you can create or edit
-              shows.
+              shows. Stripe is a payment processor which enables fan payments to
+              go directly to your bank account, and it's free to set up.
             </Typography>
           </Grid>
         )}

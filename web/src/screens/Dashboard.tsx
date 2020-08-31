@@ -15,6 +15,7 @@ import DateTime from 'services/DateTime';
 import Image from 'services/Image';
 
 import DashboardSubheader from 'components/DashboardSubheader';
+import LinkStripeAccountBanner from 'components/LinkStripeAccountBanner';
 import DashboardModeSwitcher from 'components/DashboardModeSwitcher';
 import LiveVideoArea from 'components/LiveVideoArea';
 import StreamPreviewMessage from 'components/StreamPreviewMessage';
@@ -90,13 +91,14 @@ const useStyles = makeStyles(({ breakpoints, palette, spacing }) => ({
 const Dashboard = () => {
   const classes = useStyles();
 
-  const [currentUser] = useCurrentUser({ subscribe: true });
+  const [currentUser, currentUserQuery] = useCurrentUser({ subscribe: true });
   const {
     id,
     username,
     profileImageUrl,
     isAllowedToStream,
     muxLiveStreamStatus,
+    stripeConnectAccountId,
   } = currentUser ?? {};
 
   const [, showsQuery, activeShow] = useShowsForUser(currentUser?.id);
@@ -158,9 +160,13 @@ const Dashboard = () => {
     );
   }
 
+  const shouldShowLinkStripeAccountMessage =
+    isAllowedToStream && !stripeConnectAccountId && !currentUserQuery.loading;
+
   return (
     <>
       <DashboardSubheader />
+      {shouldShowLinkStripeAccountMessage && <LinkStripeAccountBanner />}
 
       <Container disableGutters maxWidth={false} className={classes.container}>
         <Grid container direction="row" className={classes.artistInfoContainer}>

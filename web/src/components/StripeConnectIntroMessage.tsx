@@ -53,7 +53,7 @@ const StripeConnectIntroMessage = () => {
         onClick={() => (window.location.href = buildStripeOauthUrl())}
         className={classes.button}
       >
-        Link Stripe account
+        Next
       </Button>
     </Grid>
   );

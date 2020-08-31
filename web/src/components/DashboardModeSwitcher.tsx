@@ -46,7 +46,7 @@ const DashboardModeSwitcher = () => {
   const onTogglePublicMode = () => {
     if (!currentUser?.stripeConnectAccountId && !isInPublicMode) {
       return window.alert(
-        'You need to link a Stripe account before you can switch to public mode.'
+        "You need to link a Stripe account before you can switch to public mode. Stripe is a payment processor which enables fan payments to go directly to your bank account, and it's free to set up."
       );
     } else {
       return setPublicMode({

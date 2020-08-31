@@ -147,7 +147,9 @@ const Payments = () => {
             ) : (
               <Typography color="secondary">
                 You need to link a Stripe account before you can accept
-                payments.
+                payments. Stripe is a payment processor which enables fan
+                payments to go directly to your bank account. It's free to set
+                up.
               </Typography>
             )}
           </Grid>
