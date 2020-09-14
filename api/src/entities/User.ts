@@ -51,10 +51,10 @@ export class User extends BaseEntity {
   @Column()
   hashedPassword: string;
 
-  @Column()
+  @Column({ nullable: true, default: null })
   autoLoginToken: string;
 
-  @Column({ type: 'timestamptz' })
+  @Column({ type: 'timestamptz', nullable: true, default: null })
   autoLoginTokenExpiry: Date;
 
   @Field((type) => Boolean)

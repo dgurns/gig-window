@@ -1,11 +1,11 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class addAutoLoginToken1600075629527 implements MigrationInterface {
-    name = 'addAutoLoginToken1600075629527'
+export class addAutoLoginToken1600080228367 implements MigrationInterface {
+    name = 'addAutoLoginToken1600080228367'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`ALTER TABLE "user" ADD "autoLoginToken" character varying NOT NULL`, undefined);
-        await queryRunner.query(`ALTER TABLE "user" ADD "autoLoginTokenExpiry" TIMESTAMP WITH TIME ZONE NOT NULL`, undefined);
+        await queryRunner.query(`ALTER TABLE "user" ADD "autoLoginToken" character varying DEFAULT null`, undefined);
+        await queryRunner.query(`ALTER TABLE "user" ADD "autoLoginTokenExpiry" TIMESTAMP WITH TIME ZONE DEFAULT null`, undefined);
         await queryRunner.query(`ALTER TABLE "user" ALTER COLUMN "muxLiveStreamId" SET DEFAULT null`, undefined);
         await queryRunner.query(`ALTER TABLE "user" ALTER COLUMN "muxStreamKey" SET DEFAULT null`, undefined);
         await queryRunner.query(`ALTER TABLE "user" ALTER COLUMN "muxPlaybackId" SET DEFAULT null`, undefined);

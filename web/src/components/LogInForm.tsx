@@ -6,6 +6,8 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 
+import TextButton from 'components/TextButton';
+
 interface LogInFormProps {
   submitLabel?: string;
   onSuccess?: () => void;
@@ -19,40 +21,72 @@ const LOG_IN = gql`
   }
 `;
 
-const useStyles = makeStyles((theme) => ({
+const SEND_EMAIL_WITH_AUTO_LOGIN_URL = gql`
+  mutation SendEmailWithAutoLoginUrl($email: String!) {
+    sendEmailWithAutoLoginUrl(email: $email)
+  }
+`;
+
+const useStyles = makeStyles(({ spacing }) => ({
   formField: {
-    marginBottom: theme.spacing(3),
+    marginBottom: spacing(3),
   },
   error: {
-    marginBottom: theme.spacing(3),
+    marginBottom: spacing(3),
     textAlign: 'center',
   },
   submitButton: {
     width: '100%',
   },
+  forgotPassword: {
+    marginTop: spacing(2),
+  },
 }));
 
 const LogInForm = (props: LogInFormProps) => {
   const { onSuccess } = props;
-
   const classes = useStyles();
-  const [logIn, { loading, data, error }] = useMutation(LOG_IN, {
-    errorPolicy: 'all',
-  });
-
-  useEffect(() => {
-    if (data && data.logIn?.id) {
-      onSuccess ? onSuccess() : window.location.reload();
-    }
-  }, [data, onSuccess]);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const [
+    logIn,
+    { loading: logInLoading, data: logInData, error: logInError },
+  ] = useMutation(LOG_IN, {
+    errorPolicy: 'all',
+  });
+  const [
+    sendEmailWithAutoLoginUrl,
+    { loading: sendEmailLoading, data: sendEmailData, error: sendEmailError },
+  ] = useMutation(SEND_EMAIL_WITH_AUTO_LOGIN_URL, {
+    errorPolicy: 'all',
+  });
 
   const onLogInClicked = (event: React.FormEvent) => {
     event.preventDefault();
     logIn({ variables: { email, password } });
   };
+
+  useEffect(() => {
+    if (logInData && logInData.logIn?.id) {
+      onSuccess ? onSuccess() : window.location.reload();
+    }
+  }, [logInData, onSuccess]);
+
+  const onForgotPasswordClicked = (event: React.FormEvent) => {
+    event.preventDefault();
+    sendEmailWithAutoLoginUrl({ variables: { email } });
+  };
+
+  useEffect(() => {
+    const recipientEmail = sendEmailData?.sendEmailWithAutoLoginUrl;
+    if (recipientEmail) {
+      window.alert(
+        `Ok, we've sent an email to ${recipientEmail} with a link to log in. Please check your inbox (and spam folder just in case).`
+      );
+    }
+  }, [sendEmailData]);
 
   return (
     <Grid container direction="column">
@@ -73,22 +107,35 @@ const LogInForm = (props: LogInFormProps) => {
           type="password"
           className={classes.formField}
         />
-        {error && (
-          <Typography variant="body2" color="error" className={classes.error}>
-            {error.graphQLErrors.map(({ message }) => message)}
+        {logInError && (
+          <Typography color="error" className={classes.error}>
+            {logInError.graphQLErrors.map(({ message }) => message)}
+          </Typography>
+        )}
+        {sendEmailError && (
+          <Typography color="error" className={classes.error}>
+            {sendEmailError.graphQLErrors.map(({ message }) => message)}
           </Typography>
         )}
         <Button
           color="primary"
           variant="contained"
           size="medium"
-          disabled={loading}
+          disabled={logInLoading}
           type="submit"
           className={classes.submitButton}
         >
           {props.submitLabel}
         </Button>
       </form>
+
+      <TextButton
+        onClick={onForgotPasswordClicked}
+        disabled={sendEmailLoading}
+        className={classes.forgotPassword}
+      >
+        Forgot password?
+      </TextButton>
     </Grid>
   );
 };
