@@ -19,7 +19,7 @@ const sendEmailWithAutoLoginUrl = (user: User) => {
     to: user.email,
     from: 'no-reply@gigwindow.com',
     subject: 'Your login for GigWindow',
-    text: `Hi ${user.username}, you can use this link to log in to GigWindow: ${autoLoginUrl}. It will be valid for the next 15 minutes. If you didn't request this, you can ignore this email.`,
+    text: `Hi ${user.username}, you can use this link to log in to GigWindow: ${autoLoginUrl} . It will be valid for the next 15 minutes. If you didn't request this, you can ignore this email.`,
   };
 
   return sendEmail(data);
