@@ -11,6 +11,8 @@
 # The staging web app is served separately via Vercel
 # but points to this backend.
 
+git pull origin develop
+
 docker pull dgurney/gig-window-nginx:latest
 docker pull dgurney/gig-window-api:latest
 
