@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt';
+import { v4 as uuid } from 'uuid';
 import {
   Resolver,
   Query,
@@ -12,6 +13,8 @@ import {
   Publisher,
 } from 'type-graphql';
 import { getManager } from 'typeorm';
+import addMinutes from 'date-fns/addMinutes';
+
 import { User } from 'entities/User';
 import {
   GetUserInput,
@@ -20,10 +23,12 @@ import {
   LogInInput,
 } from 'resolvers/types/UserResolver';
 import { CustomContext } from 'authChecker';
+
 import Stripe from 'services/stripe/Stripe';
 import StripeConnect from 'services/stripe/Connect';
 import AwsS3 from 'services/aws/S3';
 import Mux from 'services/Mux';
+import Mailer from 'services/Mailer';
 import UserService from 'services/User';
 
 @Resolver()
@@ -148,6 +153,46 @@ export class UserResolver {
     return true;
   }
 
+  @Mutation(() => String)
+  async sendEmailWithAutoLoginUrl(@Arg('email') email: string) {
+    if (!email || !UserService.isValidEmail(email)) {
+      throw new Error('Please provide a valid email address');
+    }
+
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return email;
+    }
+    user.autoLoginToken = uuid();
+    user.autoLoginTokenExpiry = addMinutes(new Date(), 15);
+    await user.save();
+
+    await Mailer.sendEmailWithAutoLoginUrl(user);
+
+    return email;
+  }
+
+  @Mutation(() => User)
+  async logInWithAutoLoginToken(
+    @Arg('token') token: string,
+    @Ctx() ctx: CustomContext
+  ) {
+    if (!token) throw new Error('No auto-login token provided');
+
+    const user = await User.findOne({ where: { autoLoginToken: token } });
+    if (!user || !user.autoLoginTokenExpiry) {
+      throw new Error('Invalid auto-login token');
+    }
+
+    const tokenExpiry = new Date(user.autoLoginTokenExpiry);
+    if (tokenExpiry > new Date()) {
+      await ctx.login(user);
+      return user;
+    } else {
+      throw new Error('This auto-login token has expired');
+    }
+  }
+
   @Mutation(() => User)
   async regenerateLiveStreamConfigForUser(@Ctx() ctx: CustomContext) {
     const user = ctx.getUser();
@@ -162,7 +207,7 @@ export class UserResolver {
     const user = ctx.getUser();
     if (!user) throw new Error('User is not logged in');
 
-    const s3Key = UserService.generateProfileImageAwsS3Key(user.id);
+    const s3Key = UserService.buildProfileImageAwsS3Key(user.id);
     const presignedUrl = await AwsS3.getSignedPutUrl(s3Key);
     return presignedUrl;
   }

@@ -1,3 +1,7 @@
+import { User } from 'entities/User';
+
+const { WEB_ORIGIN } = process.env;
+
 const isValidEmail = (email?: string) => {
   if (!email) return false;
 
@@ -14,12 +18,17 @@ const isSecurePassword = (password?: string) => {
   return true;
 };
 
-const generateProfileImageAwsS3Key = (userId: number) => {
+const buildAutoLoginUrl = (user: User) => {
+  return `${WEB_ORIGIN}/auto-login/${user.autoLoginToken}`;
+};
+
+const buildProfileImageAwsS3Key = (userId: number) => {
   return `users/${userId}/profileImage.jpeg`;
 };
 
 export default {
   isValidEmail,
   isSecurePassword,
-  generateProfileImageAwsS3Key,
+  buildAutoLoginUrl,
+  buildProfileImageAwsS3Key,
 };

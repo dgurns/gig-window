@@ -51,6 +51,12 @@ export class User extends BaseEntity {
   @Column()
   hashedPassword: string;
 
+  @Column()
+  autoLoginToken: string;
+
+  @Column({ type: 'timestamptz' })
+  autoLoginTokenExpiry: Date;
+
   @Field((type) => Boolean)
   @Column({ default: false })
   isAllowedToStream: boolean;
