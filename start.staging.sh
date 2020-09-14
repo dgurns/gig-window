@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# This script pulls updated Docker images and then
+# This script pulls the latest `develop` branch (ie. 
+# staging), pulls updated Docker images, and then
 # starts the full backend (nginx, api, and redis), 
 # providing it with staging env variables. 
 # It also removes any outdated Docker images.
