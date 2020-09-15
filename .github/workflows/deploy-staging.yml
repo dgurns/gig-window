@@ -26,6 +26,25 @@ jobs:
           workdir: ./nginx
           tags: 'latest,${{ github.sha }}'
 
+      - name: Build `api` Docker image and push to Docker Hub
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: dgurney/gig-window-api
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          workdir: ./api
+          tags: 'latest,${{ github.sha }}'
+
+      - name: Test SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: api-staging.gigwindow.com
+          username: root
+          key: ${{ secrets.PRIVATE_SSH_KEY }}
+          script: |
+            whoami
+            ls -al
+
       # - name: Run `start.staging.sh` on staging server
       #   uses: garygrossgarten/github-action-ssh@release
       #   with:
