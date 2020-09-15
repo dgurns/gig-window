@@ -13,7 +13,7 @@ services:
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
     environment:
-      - DOMAIN=api-staging.gigwindow.com
+      - DOMAIN=api.gigwindow.com
 
   api:
     image: dgurney/gig-window-api:latest
@@ -22,23 +22,23 @@ services:
     restart: always
     environment:
       - NODE_ENV=production
-      - DATABASE_HOST=gigwindow-staging.ctgvfpoeqoab.us-east-1.rds.amazonaws.com
+      - DATABASE_HOST=gig-window-production.ctgvfpoeqoab.us-east-1.rds.amazonaws.com
       - DATABASE_PORT=5432
       - DATABASE_USERNAME=postgres
       - DATABASE_PASSWORD=${DATABASE_PASSWORD}
       - DATABASE_NAME=postgres
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-      - WEB_ORIGIN=https://staging.gigwindow.com
+      - WEB_ORIGIN=https://gigwindow.com
       - COOKIE_SESSION_KEY=${COOKIE_SESSION_KEY}
       - MUX_TOKEN_ID=${MUX_TOKEN_ID}
       - MUX_TOKEN_SECRET=${MUX_TOKEN_SECRET}
-      - MUX_USE_TEST_LIVE_STREAMS=true
+      - MUX_USE_TEST_LIVE_STREAMS=false
       - MUX_WEBHOOK_SECRET=${MUX_WEBHOOK_SECRET}
       - AWS_REGION=us-east-1
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-      - AWS_S3_BUCKET=gig-window-staging
+      - AWS_S3_BUCKET=gig-window-production
       - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
       - SENDGRID_API_KEY=${SENDGRID_API_KEY}
 
