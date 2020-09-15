@@ -37,4 +37,4 @@ jobs:
           host: api-staging.gigwindow.com
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY_STAGING_SERVER }}
-          script: sudo ./start.staging.sh
+          script: cd gig-window && ./start.staging.sh
