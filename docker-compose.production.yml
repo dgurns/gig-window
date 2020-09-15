@@ -22,7 +22,7 @@ services:
     restart: always
     environment:
       - NODE_ENV=production
-      - DATABASE_HOST=___REPLACE-ME____gig-window-staging.ctgvfpoeqoab.us-east-1.rds.amazonaws.com
+      - DATABASE_HOST=gig-window-production.ctgvfpoeqoab.us-east-1.rds.amazonaws.com
       - DATABASE_PORT=5432
       - DATABASE_USERNAME=postgres
       - DATABASE_PASSWORD=${DATABASE_PASSWORD}
