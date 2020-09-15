@@ -32,8 +32,7 @@ jobs:
       - name: Build and push `nginx` Docker image
         uses: docker/build-push-action@v2
         with:
-          context: nginx
-          file: Dockerfile
+          file: ./nginx/Dockerfile
           push: true
           tags: |
             dgurney/gig-window-nginx:latest
@@ -44,8 +43,7 @@ jobs:
       - name: Build and push `api` Docker image
         uses: docker/build-push-action@v2
         with:
-          context: api
-          file: Dockerfile
+          file: ./api/Dockerfile
           push: true
           tags: |
             dgurney/gig-window-api:latest
