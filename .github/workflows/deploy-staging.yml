@@ -1,54 +1,40 @@
 name: Deploy to Staging
 
 on:
-  pull_request:
-    types: [opened, synchronize]
-
-# on:
-#   push:
-#     branches:
-#       - develop
+  push:
+    branches:
+      - develop
 
 jobs:
   build-push-update:
-    name: Build images, push to Docker Hub, and update staging server
+    name: Build and push Docker images, then update staging server
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
         uses: actions/checkout@v2
 
-      # - name: Build `nginx` Docker image and push to Docker Hub
-      #   uses: elgohr/Publish-Docker-Github-Action@master
-      #   with:
-      #     name: dgurney/gig-window-nginx
-      #     username: ${{ secrets.DOCKER_HUB_USERNAME }}
-      #     password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-      #     workdir: ./nginx
-      #     tags: 'latest,${{ github.sha }}'
+      - name: Build `nginx` Docker image and push to Docker Hub
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: dgurney/gig-window-nginx
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          workdir: ./nginx
+          tags: 'latest,${{ github.sha }}'
 
-      # - name: Build `api` Docker image and push to Docker Hub
-      #   uses: elgohr/Publish-Docker-Github-Action@master
-      #   with:
-      #     name: dgurney/gig-window-api
-      #     username: ${{ secrets.DOCKER_HUB_USERNAME }}
-      #     password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-      #     workdir: ./api
-      #     tags: 'latest,${{ github.sha }}'
+      - name: Build `api` Docker image and push to Docker Hub
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: dgurney/gig-window-api
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          workdir: ./api
+          tags: 'latest,${{ github.sha }}'
 
-      - name: Test SSH
+      - name: Run `start.staging.sh` on staging server
         uses: appleboy/ssh-action@master
         with:
           host: api-staging.gigwindow.com
           username: root
-          key: ${{ secrets.SSH_KEY_STAGING_SERVER }}
-          script: |
-            whoami
-            ls -al
-
-      # - name: Run `start.staging.sh` on staging server
-      #   uses: garygrossgarten/github-action-ssh@release
-      #   with:
-      #     command: sh start.staging.sh
-      #     host: api-staging.gigwindow.com
-      #     username: root
-      #     privateKey: ${{ secrets.PRIVATE_SSH_KEY }}
+          key: ${{ secrets.SSH_PRIVATE_KEY_STAGING_SERVER }}
+          script: sh start.staging.sh
