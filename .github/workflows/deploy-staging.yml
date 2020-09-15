@@ -23,8 +23,7 @@ jobs:
           name: dgurney/gig-window-nginx
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-          workdir: nginx
-          context: nginx
+          workdir: ./nginx
           tags: 'latest,${{ github.sha }}'
 
       # - name: Run `start.staging.sh` on staging server
