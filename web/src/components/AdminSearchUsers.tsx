@@ -1,4 +1,5 @@
 import React, { useEffect, useCallback } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import { useLazyQuery, useMutation, gql } from '@apollo/client';
 import debounce from 'lodash/debounce';
 
@@ -26,6 +27,7 @@ const SEARCH_USERS = gql`
     searchUsers(searchTerm: $searchTerm) {
       id
       username
+      urlSlug
       email
       isAllowedToStream
     }
@@ -128,11 +130,20 @@ const AdminSearchUsers = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>ID</TableCell>
-              <TableCell align="left">Username</TableCell>
-              <TableCell align="left">Email</TableCell>
+              <TableCell>
+                <Typography>ID</Typography>
+              </TableCell>
+              <TableCell align="left">
+                <Typography>Username</Typography>
+              </TableCell>
+              <TableCell align="left">
+                <Typography>Email</Typography>
+              </TableCell>
+              <TableCell align="left">
+                <Typography>URL</Typography>
+              </TableCell>
               <TableCell align="left" className={classes.actionsColumn}>
-                Actions
+                <Typography>Actions</Typography>
               </TableCell>
             </TableRow>
           </TableHead>
@@ -140,10 +151,19 @@ const AdminSearchUsers = () => {
             {userResults.map((user) => (
               <TableRow key={user.id}>
                 <TableCell component="th" scope="row">
-                  {user.id}
+                  <Typography>{user.id}</Typography>
                 </TableCell>
-                <TableCell align="left">{user.username}</TableCell>
-                <TableCell align="left">{user.email}</TableCell>
+                <TableCell align="left">
+                  <Typography>{user.username}</Typography>
+                </TableCell>
+                <TableCell align="left">
+                  <Typography>{user.email}</Typography>
+                </TableCell>
+                <TableCell align="left">
+                  <Link component={RouterLink} to={user.urlSlug}>
+                    /{user.urlSlug}
+                  </Link>
+                </TableCell>
                 <TableCell align="left" className={classes.actionsColumn}>
                   {isAllowedToStreamLoading || searchUsersLoading ? (
                     <Typography color="secondary">Loading...</Typography>

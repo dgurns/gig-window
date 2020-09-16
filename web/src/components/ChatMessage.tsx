@@ -58,12 +58,7 @@ const ChatMessage = ({ chat }: ChatMessageProps) => {
         )}
       </RouterLink>
       <Grid item className={classes.textContainer}>
-        <Link
-          variant="body1"
-          component={RouterLink}
-          to={user.urlSlug}
-          color="textPrimary"
-        >
+        <Link component={RouterLink} to={user.urlSlug} color="textPrimary">
           {user.username}
         </Link>
         <Typography variant="body1" color="textSecondary">
