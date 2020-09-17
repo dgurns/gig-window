@@ -1,4 +1,4 @@
-import { Resolver, Mutation, Args, Arg, Ctx } from 'type-graphql';
+import { Resolver, Authorized, Mutation, Args, Arg, Ctx } from 'type-graphql';
 import { CustomContext } from 'authChecker';
 import { UpdateUserIsAllowedToStreamArgs } from './types/AdminResolver';
 import { User, UserPermission } from 'entities/User';
@@ -14,13 +14,11 @@ const restrictToAdmin = (user: User) => {
 @Resolver()
 export class AdminResolver {
   @Mutation(() => User)
+  @Authorized(UserPermission.Admin)
   async updateUserIsAllowedToStream(
     @Args() { userId, isAllowedToStream }: UpdateUserIsAllowedToStreamArgs,
     @Ctx() ctx: CustomContext
   ) {
-    const user = ctx.getUser();
-    restrictToAdmin(user);
-
     const userToModify = await User.findOne({ id: userId });
     if (!userToModify) throw new Error('Could not find user with that ID');
 
@@ -31,13 +29,11 @@ export class AdminResolver {
   }
 
   @Mutation(() => User)
+  @Authorized(UserPermission.Admin)
   async makeUserAdmin(
     @Arg('userId') userId: number,
     @Ctx() ctx: CustomContext
   ) {
-    const user = ctx.getUser();
-    restrictToAdmin(user);
-
     const userToModify = await User.findOne({ id: userId });
     if (!userToModify) throw new Error('Could not find user with that ID');
 

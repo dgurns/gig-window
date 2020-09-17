@@ -23,11 +23,11 @@ const useStyles = makeStyles(({ spacing }) => ({
 }));
 
 interface EditEmailFormProps {
-  email: string;
+  email?: string;
   onSuccess?: () => void;
 }
 
-const EditEmailForm = ({ email, onSuccess }: EditEmailFormProps) => {
+const EditEmailForm = ({ email = '', onSuccess }: EditEmailFormProps) => {
   const classes = useStyles();
   const [updateEmail, { loading, data, error }] = useMutation(UPDATE_EMAIL, {
     errorPolicy: 'all',

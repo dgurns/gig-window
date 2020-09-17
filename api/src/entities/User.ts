@@ -7,7 +7,13 @@ import {
   Column,
   Index,
 } from 'typeorm';
-import { ObjectType, Field, Int, registerEnumType } from 'type-graphql';
+import {
+  ObjectType,
+  Field,
+  Int,
+  Authorized,
+  registerEnumType,
+} from 'type-graphql';
 
 export enum UserPermission {
   User = 'USER',
@@ -35,7 +41,8 @@ export class User extends BaseEntity {
   })
   permissions: UserPermission[];
 
-  @Field((type) => String)
+  @Authorized()
+  @Field((type) => String, { nullable: true })
   @Column({ unique: true })
   email: string;
 
@@ -67,10 +74,10 @@ export class User extends BaseEntity {
 
   // Mux
 
-  @Field((type) => String, { nullable: true })
   @Column({ nullable: true, default: null })
   muxLiveStreamId?: string;
 
+  @Authorized()
   @Field((type) => String, { nullable: true })
   @Column({ nullable: true, default: null })
   muxStreamKey?: string;

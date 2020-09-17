@@ -6,13 +6,11 @@ export enum UserPermission {
 export interface User {
   id: number;
   permissions: UserPermission[];
-  email: string;
+  email?: string;
   username: string;
   urlSlug: string;
-  hashedPassword: string;
   isAllowedToStream: boolean;
   isInPublicMode: boolean;
-  muxLiveStreamId?: string;
   muxStreamKey?: string;
   muxPlaybackId?: string;
   muxLiveStreamStatus?:
