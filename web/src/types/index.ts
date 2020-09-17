@@ -6,7 +6,7 @@ export enum UserPermission {
 export interface User {
   id: number;
   permissions: UserPermission[];
-  email: string;
+  email?: string;
   username: string;
   urlSlug: string;
   hashedPassword: string;
