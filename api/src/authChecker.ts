@@ -21,14 +21,11 @@ export interface CustomContext {
 }
 
 export const authChecker: AuthChecker<CustomContext> = (
-  {
-    root,
-    context: {
-      req: { user },
-    },
-  },
+  { root, context },
   requiredRoles
 ) => {
+  const user = context.req?.user;
+
   // If there is no user in context, the request is not authorized
   if (!user) {
     return false;
@@ -44,6 +41,7 @@ export const authChecker: AuthChecker<CustomContext> = (
   // Otherwise, only return entities associated with current user
   // For now, we're only checking User entities
   if (root instanceof User) {
+    console.log('root id, user id', root.id, user.id);
     return root.id === user.id;
   }
 

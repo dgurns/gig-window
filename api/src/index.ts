@@ -93,6 +93,7 @@ async function start() {
       ],
       pubSub,
       authChecker,
+      authMode: 'null',
       dateScalarMode: 'isoDate',
       validate: false,
     });
