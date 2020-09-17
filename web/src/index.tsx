@@ -7,8 +7,8 @@ import {
   InMemoryCache,
   ApolloProvider,
 } from '@apollo/client';
+import { WebSocketLink } from '@apollo/client/link/ws';
 import { getMainDefinition } from '@apollo/client/utilities';
-import { WebSocketLink } from '@apollo/link-ws';
 import { ThemeProvider, CssBaseline } from '@material-ui/core';
 
 import theme from 'styles/theme';
@@ -29,7 +29,6 @@ const wsLink = new WebSocketLink({
   uri: `${REACT_APP_API_WEBSOCKET_ORIGIN}${REACT_APP_API_GRAPHQL_PATH}`,
   options: {
     reconnect: true,
-    timeout: 3000,
   },
 });
 const splitLink = split(

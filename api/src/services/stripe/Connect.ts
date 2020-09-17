@@ -4,7 +4,7 @@ import Payment from 'services/Payment';
 import Stripe from 'services/stripe/Stripe';
 
 const stripe = new StripeLib(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2020-03-02',
+  apiVersion: '2020-08-27',
 });
 
 const validateOauthAuthorizationCode = (authorizationCode: string) => {

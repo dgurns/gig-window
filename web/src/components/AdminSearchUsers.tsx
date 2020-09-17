@@ -1,7 +1,6 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { useLazyQuery, useMutation, gql } from '@apollo/client';
-import debounce from 'lodash/debounce';
 
 import {
   Grid,
@@ -61,6 +60,8 @@ const useStyles = makeStyles(({ spacing }) => ({
 const AdminSearchUsers = () => {
   const classes = useStyles();
 
+  const [searchTerm, setSearchTerm] = useState('');
+
   const [
     searchUsers,
     {
@@ -71,11 +72,12 @@ const AdminSearchUsers = () => {
     },
   ] = useLazyQuery<SearchUsersData>(SEARCH_USERS);
 
-  const onChangeSearchTerm = debounce((searchTerm: string) => {
-    if (searchTerm) {
+  useEffect(() => {
+    const debouncedSearch = setTimeout(() => {
       searchUsers({ variables: { searchTerm } });
-    }
-  }, 600);
+    }, 600);
+    return () => clearTimeout(debouncedSearch);
+  }, [searchTerm, searchUsers]);
 
   const [
     updateUserIsAllowedToStream,
@@ -106,11 +108,14 @@ const AdminSearchUsers = () => {
   }, [isAllowedToStreamError]);
 
   const userResults = searchUsersData?.searchUsers ?? [];
+  const emptyResults =
+    !searchUsersLoading && searchUsersData && userResults.length === 0;
 
   return (
     <Grid container direction="column">
       <TextField
-        onChange={({ target: { value } }) => onChangeSearchTerm(value)}
+        value={searchTerm}
+        onChange={({ target: { value } }) => setSearchTerm(value)}
         variant="outlined"
         label="Search for username..."
         className={classes.searchField}
@@ -123,7 +128,7 @@ const AdminSearchUsers = () => {
           Error: {searchUsersError.graphQLErrors[0].message}
         </Typography>
       )}
-      {searchUsersData && userResults.length === 0 && (
+      {emptyResults && (
         <Typography color="secondary">No users found</Typography>
       )}
       {userResults.length > 0 && (
