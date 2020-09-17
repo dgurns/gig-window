@@ -3,6 +3,11 @@ import { AuthenticateReturn } from 'graphql-passport';
 import { Response } from 'express';
 import { User, UserPermission } from 'entities/User';
 
+interface RequestWithContext {
+  user?: User;
+  session: CookieSessionInterfaces.CookieSessionObject;
+}
+
 export interface CustomContext {
   isAuthenticated: () => boolean;
   isUnauthenticated: () => boolean;
@@ -14,10 +19,7 @@ export interface CustomContext {
   login: (user: User, options?: object) => Promise<void>;
   logout: () => void;
   res?: Response;
-  req: {
-    user?: User;
-    session: CookieSessionInterfaces.CookieSessionObject;
-  };
+  req?: RequestWithContext;
 }
 
 export const authChecker: AuthChecker<CustomContext> = (
