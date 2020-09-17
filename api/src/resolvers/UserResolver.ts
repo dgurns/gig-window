@@ -34,15 +34,20 @@ import UserService from 'services/User';
 @Resolver()
 export class UserResolver {
   @Query(() => [User])
-  async searchUsers(@Arg('searchTerm') searchTerm: string) {
-    if (!searchTerm) {
-      throw new Error('Search term cannot be empty');
-    }
-
+  async searchUsers(
+    @Arg('searchTerm', { nullable: true, defaultValue: '' }) searchTerm: string,
+    @Arg('limit', { nullable: true, defaultValue: 20 }) limit?: number,
+    @Arg('offset', { nullable: true, defaultValue: 0 }) offset?: number
+  ) {
     const response = await getManager()
       .createQueryBuilder(User, 'user')
       .select()
-      .where('username ILIKE :searchTerm', { searchTerm: `%${searchTerm}%` })
+      .where('user.username ILIKE :searchTerm', {
+        searchTerm: `%${searchTerm}%`,
+      })
+      .take(limit)
+      .skip(offset)
+      .orderBy('user.createdAt', 'DESC')
       .getMany();
     return response;
   }

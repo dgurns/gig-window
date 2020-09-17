@@ -1,7 +1,11 @@
 import React from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import { Grid, Link, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { grey } from '@material-ui/core/colors';
+
+import useCurrentUser from 'hooks/useCurrentUser';
+import User from 'services/User';
 
 const useStyles = makeStyles(({ spacing, breakpoints }) => ({
   container: {
@@ -32,6 +36,8 @@ const useStyles = makeStyles(({ spacing, breakpoints }) => ({
 const Footer = () => {
   const classes = useStyles();
 
+  const [currentUser] = useCurrentUser();
+
   return (
     <Grid
       container
@@ -60,6 +66,11 @@ const Footer = () => {
           for source code and community
         </Typography>
       </Grid>
+      {User.isAdmin(currentUser) && (
+        <Link component={RouterLink} to="/admin">
+          Admin
+        </Link>
+      )}
     </Grid>
   );
 };
