@@ -41,7 +41,6 @@ export const authChecker: AuthChecker<CustomContext> = (
   // Otherwise, only return entities associated with current user
   // For now, we're only checking User entities
   if (root instanceof User) {
-    console.log('root id, user id', root.id, user.id);
     return root.id === user.id;
   }
 

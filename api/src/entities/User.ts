@@ -74,8 +74,6 @@ export class User extends BaseEntity {
 
   // Mux
 
-  @Authorized()
-  @Field((type) => String, { nullable: true })
   @Column({ nullable: true, default: null })
   muxLiveStreamId?: string;
 

@@ -9,10 +9,8 @@ export interface User {
   email?: string;
   username: string;
   urlSlug: string;
-  hashedPassword: string;
   isAllowedToStream: boolean;
   isInPublicMode: boolean;
-  muxLiveStreamId?: string;
   muxStreamKey?: string;
   muxPlaybackId?: string;
   muxLiveStreamStatus?:
