@@ -3,7 +3,8 @@
 An open source project from the co-founder of Concert Window  
 https://gigwindow.com
 
-Tech used in this project: Typescript, Create React App, Apollo Client, GraphQL, Apollo Server Express, TypeGraphQL, TypeORM, PostgreSQL, Docker, Github Actions
+_Tech used in this project:_  
+Typescript, Create React App, Apollo Client, Material UI, GraphQL, Apollo Server Express, TypeGraphQL, TypeORM, PostgreSQL, Docker, Github Actions
 
 ## Quick links:
 
