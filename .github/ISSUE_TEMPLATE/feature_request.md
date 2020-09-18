@@ -1,15 +1,16 @@
 ---
 name: Feature request
 about: Suggest an idea for GigWindow
-title: "[FEATURE]: Title"
+title: '[FEATURE]: Title'
 labels: enhancement
 assignees: ''
-
 ---
 
-_Feel free to submit feature requests. If it follows the template below, we will commit to reading it._
-_**Please note, there is no expectation that the feature will be built**_
-_Thank you for helping to improve the GigWindow project._ 🎉
+<!--
+Feel free to submit feature requests. If it follows the template below, we will commit to reading it.
+Please note, there is no expectation that the feature will be built.
+Thank you for helping to improve the GigWindow project. 🎉
+-->
 
 **Is your feature request related to a problem? Please describe.**
 A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
