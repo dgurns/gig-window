@@ -17,6 +17,10 @@ Typescript, Create React App, Apollo Client, Material UI, GraphQL, Apollo Server
 - **Want to contribute to the code?** Open a [pull request](https://github.com/dgurns/gig-window/compare). We recommend first posting an issue with your idea so others can comment on it. Not all pull requests will be accepted! To have the best chance, make it small, clean, and polished.
 - **Are you a musician who wants to learn how to code?** Have a look at [good first issues](https://github.com/dgurns/gig-window/labels/good%20first%20issue) and take a stab. Assign the issue to yourself when you are starting, so no one else takes it by mistake. Feel free to ask for help and we will do the best we can to help you get started.
 
+## What features are in development?
+
+Check out the [Roadmap](https://github.com/dgurns/gig-window/projects/1)
+
 ## Why am I doing this?
 
 I was crushed when Concert Window went out of business. We had created such a cool community and people really depended on it. When the company died, it all disappeared.
