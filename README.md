@@ -8,7 +8,9 @@ Typescript, Create React App, Apollo Client, Material UI, GraphQL, Apollo Server
 
 ## Quick links:
 
-- **Need support?** Ask your question in the [Discussions]() tab - first search to see if it has been answered already!
+- **Need support?** 
+  - Soon: Ask your question in the Discussions tab - Github will enable this when the project has 3 contributors.
+  - For now: Post a [new issue](https://github.com/dgurns/gig-window/issues/new/choose)- first search to see if it has been answered already! If anyone wants to write some guides in the Wiki, please go for it.
 - **Want to raise a bug?** Post a [new issue](https://github.com/dgurns/gig-window/issues/new/choose). First search to see if it's been raised already, and be sure to fill out the complete issue template so we can recreate the bug. Bugs without the template will be closed.
 - **Want to contribute to the code?** Open a [pull request](https://github.com/dgurns/gig-window/compare). We recommend first posting an issue with your idea so others can comment on it. Not all pull requests will be accepted! To have the best chance, make it small, clean, and polished.
 - **Are you a musician who wants to learn how to code?** Have a look at [good first issues](https://github.com/dgurns/gig-window/labels/good%20first%20issue) and take a stab. Assign the issue to yourself when you are starting, so no one else takes it by mistake. Feel free to ask for help and we will do the best we can to help you get started.
