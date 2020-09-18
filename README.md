@@ -3,6 +3,8 @@
 An open source project from the co-founder of Concert Window  
 https://gigwindow.com
 
+Tech used in this project: Typescript, Create React App, Apollo Client, GraphQL, Apollo Server Express, TypeGraphQL, TypeORM, PostgreSQL, Docker, Github Actions
+
 ## Quick links:
 
 - **Need support?** Ask your question in the [Discussions]() tab - first search to see if it has been answered already!
@@ -24,7 +26,7 @@ I want to run this as a sustainable project for the community, and to do that I 
 
 - If you’re a musician, play shows!
 - If you’re a fan, watch shows and support the artists
-- If you’d like to help others, solve people’s support questions in the [Discussions]() tab
+- If you’d like to help others, solve people’s support questions in the [Discussions]() tab (Github will enable this when the project has 3 contributors)
 - If you’re a coder or a musician who wants to become one, submit a [pull request](https://github.com/dgurns/gig-window/compare) or [bug report](https://github.com/dgurns/gig-window/issues/new?assignees=&labels=bug&template=bug_report.md&title=%5BBUG%5D%3A+Title) here on Github. One of my goals is to help musicians upskill and I pledge to spend extra time helping musicians who want to learn how to code.
 
 Thank you!  
