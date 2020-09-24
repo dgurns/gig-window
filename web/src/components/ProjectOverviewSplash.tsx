@@ -175,7 +175,8 @@ const ProjectOverviewSplash = () => {
             questions on{' '}
             <Link href="https://github.com/dgurns/gig-window" target="_blank">
               Github
-            </Link>
+            </Link>{' '}
+            or in live chat during shows
             <br />- If you’re a coder or a musician who wants to become one,
             submit a pull request or bug report on{' '}
             <Link href="https://github.com/dgurns/gig-window" target="_blank">

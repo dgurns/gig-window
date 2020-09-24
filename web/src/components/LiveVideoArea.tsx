@@ -93,6 +93,7 @@ const LiveVideoArea = ({ show, payee }: LiveVideoAreaProps) => {
     userUrlSlug: payee?.urlSlug,
   });
   const hasAccessToLiveVideo = UserService.hasAccessToLiveVideo({
+    user: currentUser,
     paymentForShow,
     recentPaymentsToPayee,
   });

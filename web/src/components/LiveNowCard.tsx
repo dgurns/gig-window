@@ -6,7 +6,7 @@ import { grey } from '@material-ui/core/colors';
 
 import { User, Show } from 'types';
 
-const useStyles = makeStyles(({ palette, spacing }) => ({
+const useStyles = makeStyles(({ spacing }) => ({
   cardLink: {
     textDecoration: 'none',
   },
@@ -24,11 +24,12 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
   },
   image: {
     height: 72,
-    marginRight: 10,
+    marginRight: spacing(1),
     minWidth: 109,
   },
   textContent: {
     height: 72,
+    marginLeft: spacing(1),
     overflow: 'hidden',
   },
 }));
@@ -45,7 +46,9 @@ const LiveNowCard = ({ user, show }: LiveNowCardProps) => {
     <>
       <Link to={user.urlSlug} className={classes.cardLink}>
         <Card className={classes.card} elevation={3}>
-          <CardMedia image={user.profileImageUrl} className={classes.image} />
+          {user.profileImageUrl && (
+            <CardMedia image={user.profileImageUrl} className={classes.image} />
+          )}
           <Grid className={classes.textContent}>
             {show && <Typography variant="body1">{show.title}</Typography>}
             <Typography variant="body1" color="textSecondary">

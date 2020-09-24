@@ -9,6 +9,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
+import useCurrentUser from 'hooks/useCurrentUser';
 import useUser from 'hooks/useUser';
 import useShowsForUser from 'hooks/useShowsForUser';
 import useFreePreview from 'hooks/useFreePreview';
@@ -98,6 +99,7 @@ const Watch = () => {
   const { pathname } = useLocation();
   const urlSlug = pathname.split('/')[1];
 
+  const [currentUser] = useCurrentUser();
   const [user, userQuery] = useUser({ urlSlug, subscribe: true });
   const { freePreviewIsUsed } = useFreePreview({
     userUrlSlug: urlSlug,
@@ -135,6 +137,7 @@ const Watch = () => {
     const shouldShowLiveVideo =
       user.isInPublicMode && user.muxLiveStreamStatus === 'active';
     const hasAccessToLiveVideo = User.hasAccessToLiveVideo({
+      user: currentUser,
       paymentForShow,
       recentPaymentsToPayee,
     });
@@ -148,6 +151,7 @@ const Watch = () => {
     }
   }, [
     user,
+    currentUser,
     freePreviewIsUsed,
     paymentForShow,
     recentPaymentsToPayee,
