@@ -2,7 +2,7 @@ export const seedUsers = [
   {
     id: 1,
     permissions: ['User', 'Admin'],
-    email: 'dan@dangurney.net',
+    email: 'dan@dan.net',
     username: 'dang',
     urlSlug: 'dang',
     isAllowedToStream: true,
