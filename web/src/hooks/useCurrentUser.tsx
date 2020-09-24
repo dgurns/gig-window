@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useQuery, gql, QueryResult } from '@apollo/client';
 import { User } from 'types';
 
-const GET_CURRENT_USER = gql`
+export const GET_CURRENT_USER = gql`
   {
     getCurrentUser {
       id

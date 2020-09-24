@@ -1,7 +1,7 @@
 import { useQuery, gql, QueryHookOptions, QueryResult } from '@apollo/client';
 import { User } from 'types';
 
-const GET_USERS_STREAMING_LIVE = gql`
+export const GET_USERS_STREAMING_LIVE = gql`
   query {
     getUsersStreamingLive {
       id

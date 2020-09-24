@@ -1,7 +1,7 @@
 import { useQuery, gql, QueryHookOptions, QueryResult } from '@apollo/client';
 import { Show } from 'types';
 
-const GET_SHOWS = gql`
+export const GET_SHOWS = gql`
   query GetShows($minShowtime: String, $take: Int, $skip: Int) {
     getShows(minShowtime: $minShowtime, take: $take, skip: $skip) {
       id
