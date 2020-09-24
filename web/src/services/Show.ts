@@ -35,7 +35,18 @@ const generateLiveNowData = (
   return usersStreamingLive.map((user) => {
     const showsByUser = filterShowsByUser(shows, user.id);
     const activeShow = getActiveShow(showsByUser);
-    const activeShowStartsSoon = DateTime.showtimeIsSoon(activeShow?.showtime);
+    if (!activeShow) {
+      return {
+        user,
+        show: undefined,
+      };
+    }
+    const activeShowAlreadyStarted =
+      new Date(activeShow.showtime) <= new Date();
+    if (activeShowAlreadyStarted) {
+      return { user, show: activeShow };
+    }
+    const activeShowStartsSoon = DateTime.showtimeIsSoon(activeShow.showtime);
     return {
       user,
       show: activeShowStartsSoon ? activeShow : undefined,

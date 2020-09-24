@@ -2,15 +2,21 @@ import { User, UserPermission } from 'types';
 import { PaymentForShow, RecentPaymentToPayee } from 'hooks/usePayments';
 
 interface HasAccessToLiveVideoArgs {
+  user?: User;
   paymentForShow?: PaymentForShow;
   recentPaymentsToPayee?: RecentPaymentToPayee[];
 }
 
 const hasAccessToLiveVideo = ({
+  user,
   paymentForShow,
   recentPaymentsToPayee,
 }: HasAccessToLiveVideoArgs) => {
-  if (Boolean(paymentForShow) || Boolean(recentPaymentsToPayee?.length)) {
+  if (
+    Boolean(isAdmin(user)) ||
+    Boolean(paymentForShow) ||
+    Boolean(recentPaymentsToPayee?.length)
+  ) {
     return true;
   }
   return false;
