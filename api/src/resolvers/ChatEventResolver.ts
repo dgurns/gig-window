@@ -15,7 +15,7 @@ export class ChatEventResolver {
       order: {
         createdAt: 'DESC',
       },
-      take: 10,
+      take: 15,
     });
     const payments = await Payment.find({
       where: { payeeUserId: parentUserId },
@@ -23,7 +23,7 @@ export class ChatEventResolver {
       order: {
         createdAt: 'DESC',
       },
-      take: 10,
+      take: 15,
     });
 
     const chatsAndPayments = [...chats, ...payments];
