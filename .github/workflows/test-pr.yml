@@ -1,0 +1,22 @@
+name: Run tests on PR
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  lint-test:
+    name: Run unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Install Yarn
+        run: npm install -g yarn
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Run unit tests
+        run: yarn test:ci
