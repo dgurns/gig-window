@@ -17,6 +17,9 @@ jobs:
         with:
           node-version: '10.x'
 
+      - name: Switch to web directory
+        run: cd web
+
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
