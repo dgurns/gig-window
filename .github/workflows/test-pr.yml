@@ -5,9 +5,12 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  lint-test:
-    name: Run unit tests
+  test-web:
+    name: Run unit tests for `web`
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
     steps:
       - name: Check out code
         uses: actions/checkout@v2
@@ -16,9 +19,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '10.x'
-
-      - name: Switch to web directory
-        run: cd web
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
