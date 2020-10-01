@@ -3,7 +3,7 @@ import { seedUsers } from "./seedUsers";
 import { seedShows } from "./seedShows";
 
 export const handlers = [
-  graphql.mutation("GetCurrentUser", (_, res, ctx) => {
+  graphql.query("GetCurrentUser", (_, res, ctx) => {
     return res(
       ctx.data({
         getCurrentUser: seedUsers["1"],

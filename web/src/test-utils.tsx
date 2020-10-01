@@ -2,8 +2,7 @@ import React from "react";
 import { render, RenderOptions } from "@testing-library/react";
 import { Router } from "react-router-dom";
 import { createMemoryHistory, MemoryHistory, State } from "history";
-import { ThemeProvider, CssBaseline } from "@material-ui/core";
-import theme from "styles/theme";
+import AppProviders from "./AppProviders";
 
 const defaultHistory = createMemoryHistory();
 
@@ -14,13 +13,15 @@ interface RenderWithProvidersOptions {
 
 const renderWithProviders = (
   ui: JSX.Element,
-  { history = defaultHistory, renderOptions = {} }: RenderWithProvidersOptions
+  {
+    history = defaultHistory,
+    renderOptions = {},
+  }: RenderWithProvidersOptions = {}
 ) =>
   render(
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
+    <AppProviders>
       <Router history={history}>{ui}</Router>
-    </ThemeProvider>,
+    </AppProviders>,
     { ...renderOptions }
   );
 

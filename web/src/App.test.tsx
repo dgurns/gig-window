@@ -1,27 +1,16 @@
-import React from 'react';
-import { render, screen, wait } from 'test-utils';
-import App from 'App';
-import {
-  getCurrentUser_loggedOut,
-  getUsersStreamingLive_one,
-  getShows_two,
-} from 'mocks';
+import React from "react";
+import { render, screen } from "test-utils";
+import App from "App";
 
-const mocks = [
-  getCurrentUser_loggedOut,
-  getUsersStreamingLive_one,
-  getShows_two,
-];
-
-describe('App component', () => {
-  it('should not display UI while fetching current user status', async () => {
-    const { container } = render(<App />, { mocks });
+describe("App component", () => {
+  it("should not display UI while fetching current user status", async () => {
+    const { container } = render(<App />);
     expect(container.firstChild).toBe(null);
     await Promise.resolve();
   });
 
-  it('should show app content after checking for current user', async () => {
-    render(<App />, { mocks });
+  it("should show app content after checking for current user", async () => {
+    render(<App />);
 
     await screen.findByText(/Monetize your live streams/i);
     screen.getByText(/Log in/i);
