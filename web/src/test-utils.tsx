@@ -1,16 +1,26 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, RenderOptions } from '@testing-library/react';
 import { Router } from 'react-router-dom';
-import { createMemoryHistory } from 'history';
-import { MockedProvider } from '@apollo/client/testing';
+import { createMemoryHistory, MemoryHistory, State } from 'history';
+import { MockedProvider, MockedResponse } from '@apollo/client/testing';
 import { ThemeProvider, CssBaseline } from '@material-ui/core';
 import theme from 'styles/theme';
 
 const defaultHistory = createMemoryHistory();
 
+interface RenderWithProvidersOptions {
+  mocks?: ReadonlyArray<MockedResponse>;
+  history?: MemoryHistory<State>;
+  renderOptions?: Omit<RenderOptions, 'queries'>;
+}
+
 const renderWithProviders = (
-  ui,
-  { mocks = [], history = defaultHistory, renderOptions = {} }
+  ui: JSX.Element,
+  {
+    mocks = [],
+    history = defaultHistory,
+    renderOptions = {},
+  }: RenderWithProvidersOptions
 ) =>
   render(
     <MockedProvider mocks={mocks}>
