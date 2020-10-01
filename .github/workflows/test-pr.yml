@@ -24,7 +24,7 @@ jobs:
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
 
-      - name: Try to restore Yarn cache
+      - name: Try to restore Yarn cache; if not, cache path for next run
         uses: actions/cache@v2
         id: yarn-cache
         with:

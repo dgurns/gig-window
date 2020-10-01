@@ -60,8 +60,7 @@
     },
     "coverageReporters": [
       "text"
-    ],
-    "globalSetup": "<rootDir>/jestGlobalSetup.js"
+    ]
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
@@ -71,8 +70,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "test:ci": "CI=true yarn test --coverage",
+    "test": "TZ=UTC react-scripts test",
+    "test:ci": "TZ=UTC CI=true yarn test --coverage",
     "eject": "react-scripts eject"
   },
   "husky": {
