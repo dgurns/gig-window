@@ -24,7 +24,7 @@ describe("Home screen", () => {
       expect(screen.queryAllByText(/dang/i).length).toEqual(3);
     });
     screen.getByText(/Upcoming shows/i);
-    screen.getByText(/October 2 at 8:00 PM/i);
+    screen.getByText(/October 2 at 7:00 PM/i);
     screen.getByText(/Dan's show/i);
   });
 
@@ -36,7 +36,7 @@ describe("Home screen", () => {
       expect(screen.queryAllByText(/dang/i).length).toEqual(3);
     });
     screen.getByText(/Upcoming shows/i);
-    screen.getByText(/October 2 at 8:00 PM/i);
+    screen.getByText(/October 2 at 7:00 PM/i);
     screen.getByText(/Dan's show/i);
 
     expect(screen.queryByText(/Monetize your live streams/)).toBeFalsy();

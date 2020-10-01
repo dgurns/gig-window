@@ -17,7 +17,7 @@ describe("App component", () => {
       expect(screen.queryAllByText(/dang/i).length).toEqual(4);
     });
     screen.getByText(/Upcoming shows/i);
-    screen.getByText(/October 2 at 8:00 PM/i);
+    screen.getByText(/October 2 at 7:00 PM/i);
     screen.getByText(/Dan's show/i);
     screen.getAllByText(/Github/i, { exact: false });
 
