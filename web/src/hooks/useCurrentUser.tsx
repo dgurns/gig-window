@@ -1,9 +1,9 @@
-import { useEffect } from 'react';
-import { useQuery, gql, QueryResult } from '@apollo/client';
-import { User } from 'types';
+import { useEffect } from "react";
+import { useQuery, gql, QueryResult } from "@apollo/client";
+import { User } from "types";
 
 export const GET_CURRENT_USER = gql`
-  {
+  query GetCurrentUser {
     getCurrentUser {
       id
       permissions
