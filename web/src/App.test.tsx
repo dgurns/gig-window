@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen } from "test-utils";
+import { render, screen, wait } from "test-utils";
 import App from "App";
 
 describe("App component", () => {
@@ -13,6 +13,9 @@ describe("App component", () => {
     render(<App />);
 
     await screen.findByText(/Live now/i);
+    await wait(() => {
+      expect(screen.queryAllByText(/dang/i).length).toEqual(4);
+    });
     screen.getByText(/Upcoming shows/i);
     screen.getByText(/October 2 at 8:00 PM/i);
     screen.getByText(/Dan's show/i);
