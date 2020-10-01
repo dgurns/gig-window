@@ -20,21 +20,15 @@ jobs:
         with:
           node-version: '10.x'
 
-      - name: Get Yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - name: Try to restore Yarn cache; if not, cache path for next run
+      - name: Try to restore node_modules from cache; if not, cache them for next run
         uses: actions/cache@v2
-        id: yarn-cache
+        id: node-modules-cache
         with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
+          path: './node_modules'
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
 
       - name: Install dependencies if cache was not restored
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        if: steps.node-modules-cache.outputs.cache-hit != 'true'
         run: yarn install --frozen-lockfile
 
       - name: Run unit tests
