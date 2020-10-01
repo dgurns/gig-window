@@ -1,0 +1,35 @@
+name: Run tests on PR
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  test-web:
+    name: Run unit tests for `web`
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Set up Node environment
+        uses: actions/setup-node@v1
+        with:
+          node-version: '10.x'
+
+      - name: Try to restore node_modules from cache; if not, cache them for next run
+        uses: actions/cache@v2
+        id: node-modules-cache
+        with:
+          path: './node_modules'
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Install dependencies if cache was not restored
+        if: steps.node-modules-cache.outputs.cache-hit != 'true'
+        run: yarn install --frozen-lockfile
+
+      - name: Run unit tests
+        run: yarn test:ci

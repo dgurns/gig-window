@@ -1,8 +1,8 @@
-import { useQuery, gql, QueryHookOptions, QueryResult } from '@apollo/client';
-import { User } from 'types';
+import { useQuery, gql, QueryHookOptions, QueryResult } from "@apollo/client";
+import { User } from "types";
 
-const GET_USERS_STREAMING_LIVE = gql`
-  query {
+export const GET_USERS_STREAMING_LIVE = gql`
+  query GetUsersStreamingLive {
     getUsersStreamingLive {
       id
       username
