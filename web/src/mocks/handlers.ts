@@ -22,7 +22,7 @@ export const handlers = [
   graphql.query("GetUsersStreamingLive", (_, res, ctx) => {
     return res(
       ctx.data({
-        getUsersStreamingLive: [seedUsers["1"], seedUsers["2"]],
+        getUsersStreamingLive: [seedUsers["1"]],
       })
     );
   }),

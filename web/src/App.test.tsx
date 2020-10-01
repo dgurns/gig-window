@@ -6,20 +6,20 @@ describe("App component", () => {
   it("should not display UI while fetching current user status", async () => {
     const { container } = render(<App />);
     expect(container.firstChild).toBe(null);
-    await Promise.resolve();
+    await screen.findByText(/Live now/i);
   });
 
-  it("should show app content after checking for current user", async () => {
+  it("should display UI after the current user has been fetched", async () => {
     render(<App />);
 
-    await screen.findByText(/Monetize your live streams/i);
-    screen.getByText(/Log in/i);
-    expect(screen.getAllByText(/Sign up/i).length).toEqual(2);
-
-    screen.getByText(/Live now/i);
+    await screen.findByText(/Live now/i);
     screen.getByText(/Upcoming shows/i);
     screen.getByText(/October 2 at 8:00 PM/i);
     screen.getByText(/Dan's show/i);
     screen.getAllByText(/Github/i, { exact: false });
+
+    expect(screen.queryByText(/Monetize your live streams/i)).toBe(null);
+    expect(screen.queryByText(/Log in/i)).toBe(null);
+    expect(screen.queryByText(/Sign up/i)).toBe(null);
   });
 });
