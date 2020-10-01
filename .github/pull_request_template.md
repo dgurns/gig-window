@@ -2,7 +2,7 @@
 
 **Linked issue:**
 
-#xxx
+Fixes #xxx
 
 **What does this PR change or add to the repo?**
 
