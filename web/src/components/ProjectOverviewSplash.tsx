@@ -1,20 +1,20 @@
-import React from 'react';
+import React from "react";
 
-import useCurrentUser from 'hooks/useCurrentUser';
-import useDialog from 'hooks/useDialog';
+import useCurrentUser from "hooks/useCurrentUser";
+import useDialog from "hooks/useDialog";
 
-import { Grid, Typography, Button, Card, Link } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { grey } from '@material-ui/core/colors';
+import { Grid, Typography, Button, Card, Link } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import { grey } from "@material-ui/core/colors";
 
-import AuthForm from 'components/AuthForm';
+import AuthForm from "components/AuthForm";
 
 const useStyles = makeStyles(({ palette, spacing, breakpoints }) => ({
   container: {
     paddingBottom: spacing(4),
     paddingTop: spacing(3),
-    textAlign: 'center',
-    [breakpoints.up('sm')]: {
+    textAlign: "center",
+    [breakpoints.up("sm")]: {
       paddingBottom: spacing(5),
     },
   },
@@ -27,28 +27,28 @@ const useStyles = makeStyles(({ palette, spacing, breakpoints }) => ({
   },
   sellingPoint: {
     marginTop: spacing(4),
-    textAlign: 'center',
+    textAlign: "center",
     width: 200,
-    [breakpoints.down('sm')]: {
+    [breakpoints.down("sm")]: {
       marginBottom: 0,
     },
   },
   detailsContainer: {
     marginTop: spacing(6),
     padding: spacing(3),
-    textAlign: 'left',
-    width: '100%',
-    [breakpoints.up('sm')]: {
-      width: '90%',
+    textAlign: "left",
+    width: "100%",
+    [breakpoints.up("sm")]: {
+      width: "90%",
     },
-    [breakpoints.up('md')]: {
-      width: '75%',
+    [breakpoints.up("md")]: {
+      width: "75%",
     },
   },
   introLetter: {
     marginTop: spacing(6),
     paddingBottom: spacing(7),
-    textAlign: 'left',
+    textAlign: "left",
   },
   introLetterTitle: {
     marginBottom: spacing(3),
@@ -56,12 +56,12 @@ const useStyles = makeStyles(({ palette, spacing, breakpoints }) => ({
   divider: {
     borderBottom: `1px solid ${grey[400]}`,
     height: 1,
-    width: '100%',
-    [breakpoints.up('sm')]: {
-      width: '95%',
+    width: "100%",
+    [breakpoints.up("sm")]: {
+      width: "95%",
     },
-    [breakpoints.up('md')]: {
-      width: '45%',
+    [breakpoints.up("md")]: {
+      width: "45%",
     },
   },
 }));
@@ -121,10 +121,11 @@ const ProjectOverviewSplash = () => {
         </Grid>
         <Card elevation={3} className={classes.detailsContainer}>
           <Typography color="secondary">
-            • Stream from laptop, tablet, or smartphone - we supply an RTMP URL
+            • Stream from laptop, tablet, or smartphone with your favorite
+            streaming software
             <br />
-            • Adaptive streaming to viewers means that your stream will
-            automatically optimize for smooth playback
+            • Adaptive streaming to viewers means your video will automatically
+            optimize for smooth playback
             <br />
             • The project is completely free to use – you keep 80% of revenue
             after payment processing fees (2.9% + $0.30 per transaction)
@@ -172,13 +173,13 @@ const ProjectOverviewSplash = () => {
             <br />
             - If you’re a fan, watch shows and support the artists
             <br />- If you’d like to help others, solve people’s support
-            questions on{' '}
+            questions on{" "}
             <Link href="https://github.com/dgurns/gig-window" target="_blank">
               Github
-            </Link>{' '}
+            </Link>{" "}
             or in live chat during shows
             <br />- If you’re a coder or a musician who wants to become one,
-            submit a pull request or bug report on{' '}
+            submit a pull request or bug report on{" "}
             <Link href="https://github.com/dgurns/gig-window" target="_blank">
               Github
             </Link>

@@ -16,7 +16,7 @@ import {
   GetUserPaymentsArgs,
   GetUserPaymentForShowArgs,
   GetUserPaymentsToPayeeArgs,
-  CreatePaymentInput,
+  ChargeCardAsPayeeInput,
   RefundPaymentInput,
   SetupIntent,
   PaymentMethod,
@@ -99,14 +99,14 @@ export class PaymentResolver {
   }
 
   @Mutation((returns) => Payment)
-  async createPayment(
-    @Arg('data') data: CreatePaymentInput,
+  async chargeCardAsPayee(
+    @Arg('data') data: ChargeCardAsPayeeInput,
     @Ctx() ctx: CustomContext,
     @PubSub('PAYMENT_CREATED') publish: Publisher<Payment>
   ): Promise<Payment> {
     const user = ctx.getUser();
     if (!user) {
-      throw new Error('User must be logged in to create a Payment');
+      throw new Error('User must be logged in to charge their card');
     }
 
     const payee = await User.findOne({ where: { id: data.payeeUserId } });

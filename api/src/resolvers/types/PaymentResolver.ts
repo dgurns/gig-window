@@ -26,7 +26,7 @@ export class GetUserPaymentsToPayeeArgs {
 }
 
 @InputType()
-export class CreatePaymentInput {
+export class ChargeCardAsPayeeInput {
   @Field((type) => Int)
   amountInCents: number;
 

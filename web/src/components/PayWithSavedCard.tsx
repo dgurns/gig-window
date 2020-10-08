@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { useMutation, gql } from '@apollo/client';
-import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
-import { makeStyles } from '@material-ui/core/styles';
+import React, { useEffect, useState } from "react";
+import { useMutation, gql } from "@apollo/client";
+import Grid from "@material-ui/core/Grid";
+import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
+import TextField from "@material-ui/core/TextField";
+import { makeStyles } from "@material-ui/core/styles";
 
-import TextButton from './TextButton';
+import TextButton from "./TextButton";
 
-const CREATE_PAYMENT = gql`
-  mutation CreatePayment(
+const CHARGE_CARD_AS_PAYEE = gql`
+  mutation ChargeCardAsPayee(
     $amountInCents: Int!
     $payeeUserId: Int!
     $showId: Int
   ) {
-    createPayment(
+    chargeCardAsPayee(
       data: {
         amountInCents: $amountInCents
         payeeUserId: $payeeUserId
@@ -40,14 +40,14 @@ const useStyles = makeStyles(({ spacing }) => ({
   },
   error: {
     marginBottom: spacing(3),
-    textAlign: 'center',
+    textAlign: "center",
   },
   hiddenField: {
     height: 0,
     width: 0,
   },
   submitButton: {
-    width: '100%',
+    width: "100%",
   },
 }));
 
@@ -78,22 +78,25 @@ const PayWithSavedCard = (props: PayWithSavedCardProps) => {
 
   const classes = useStyles();
 
-  const [paymentError, setPaymentError] = useState('');
-  const [deleteCardError, setDeleteCardError] = useState('');
+  const [paymentError, setPaymentError] = useState("");
+  const [deleteCardError, setDeleteCardError] = useState("");
 
-  const [createPayment, createPaymentMutation] = useMutation(CREATE_PAYMENT, {
-    errorPolicy: 'all',
-  });
+  const [chargeCardAsPayee, createPaymentMutation] = useMutation(
+    CHARGE_CARD_AS_PAYEE,
+    {
+      errorPolicy: "all",
+    }
+  );
   const [deleteCard, deleteCardMutation] = useMutation(DELETE_CARD, {
-    errorPolicy: 'all',
+    errorPolicy: "all",
   });
 
   useEffect(() => {
-    if (createPaymentMutation.data?.createPayment) {
+    if (createPaymentMutation.data?.chargeCardAsPayee) {
       onSuccess();
     } else if (createPaymentMutation.error) {
       setPaymentError(
-        'Could not process payment. Please try again or use a different card.'
+        "Could not process payment. Please try again or use a different card."
       );
     }
   }, [createPaymentMutation.data, createPaymentMutation.error, onSuccess]);
@@ -102,14 +105,14 @@ const PayWithSavedCard = (props: PayWithSavedCardProps) => {
     if (deleteCardMutation.data?.detachPaymentMethodFromUser) {
       onDeleteCard();
     } else if (deleteCardMutation.error) {
-      setDeleteCardError('Error deleting card. Please try again.');
+      setDeleteCardError("Error deleting card. Please try again.");
     }
   }, [deleteCardMutation.data, deleteCardMutation.error, onDeleteCard]);
 
   const onSubmitPayment = async (event: React.FormEvent) => {
     event.preventDefault();
-    setPaymentError('');
-    createPayment({
+    setPaymentError("");
+    chargeCardAsPayee({
       variables: {
         amountInCents: paymentAmountInCents,
         payeeUserId,
@@ -125,11 +128,11 @@ const PayWithSavedCard = (props: PayWithSavedCardProps) => {
 
   let buttonLabel;
   if (!paymentAmountInCents) {
-    buttonLabel = 'No amount entered';
+    buttonLabel = "No amount entered";
   } else if (createPaymentMutation.loading) {
-    buttonLabel = 'Submitting...';
+    buttonLabel = "Submitting...";
   } else if (deleteCardMutation.loading) {
-    buttonLabel = 'Deleting card...';
+    buttonLabel = "Deleting card...";
   } else if (paymentAmountInCents) {
     buttonLabel = `Pay $${paymentAmountInCents / 100}`;
   }

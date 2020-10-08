@@ -1,14 +1,14 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import classnames from 'classnames';
-import { useMutation, gql } from '@apollo/client';
-import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Grid from '@material-ui/core/Grid';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import React, { useEffect, useState, useCallback } from "react";
+import classnames from "classnames";
+import { useMutation, gql } from "@apollo/client";
+import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Grid from "@material-ui/core/Grid";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Checkbox from "@material-ui/core/Checkbox";
+import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
+import { makeStyles } from "@material-ui/core/styles";
 
 const CREATE_SETUP_INTENT = gql`
   mutation CreateSetupIntent {
@@ -18,14 +18,14 @@ const CREATE_SETUP_INTENT = gql`
   }
 `;
 
-const CREATE_PAYMENT = gql`
-  mutation CreatePayment(
+const CHARGE_CARD_AS_PAYEE = gql`
+  mutation ChargeCardAsPayee(
     $amountInCents: Int!
     $payeeUserId: Int!
     $showId: Int
     $shouldDetachPaymentMethodAfter: Boolean!
   ) {
-    createPayment(
+    chargeCardAsPayee(
       data: {
         amountInCents: $amountInCents
         payeeUserId: $payeeUserId
@@ -45,18 +45,18 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
     margin: `${spacing(2)}px 0 ${spacing(1)}px`,
     padding: 13,
     paddingBottom: 12,
-    position: 'relative',
-    '&:hover': {
+    position: "relative",
+    "&:hover": {
       border: `1px solid ${palette.common.black}`,
     },
   },
   cardElementLoading: {
     left: 13,
-    position: 'absolute',
+    position: "absolute",
     top: 13,
   },
   cardElementLoadingHidden: {
-    display: 'none',
+    display: "none",
   },
   saveCard: {
     color: palette.secondary.main,
@@ -68,21 +68,21 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
   },
   error: {
     marginBottom: spacing(3),
-    textAlign: 'center',
+    textAlign: "center",
   },
   submitButton: {
-    width: '100%',
+    width: "100%",
   },
 }));
 
 const cardElementOptions = {
   style: {
     base: {
-      color: '#212121',
+      color: "#212121",
       fontFamily: '"Lato", sans-serif',
-      fontSize: '15px',
-      '::placeholder': {
-        color: '#9e9e9e',
+      fontSize: "15px",
+      "::placeholder": {
+        color: "#9e9e9e",
       },
     },
   },
@@ -105,15 +105,15 @@ const PayWithCard = (props: PayWithCardProps) => {
   const [shouldSaveCard, setShouldSaveCard] = useState(true);
   const [cardElementIsReady, setCardElementIsReady] = useState(false);
   const [paymentIsSubmitting, setPaymentIsSubmitting] = useState(false);
-  const [paymentError, setPaymentError] = useState('');
+  const [paymentError, setPaymentError] = useState("");
 
   const [createSetupIntent, setupIntent] = useMutation(CREATE_SETUP_INTENT, {
-    errorPolicy: 'all',
+    errorPolicy: "all",
   });
   const setupIntentClientSecret =
     setupIntent.data?.createSetupIntent.client_secret;
-  const [createPayment, payment] = useMutation(CREATE_PAYMENT, {
-    errorPolicy: 'all',
+  const [chargeCardAsPayee, payment] = useMutation(CHARGE_CARD_AS_PAYEE, {
+    errorPolicy: "all",
   });
 
   useEffect(() => {
@@ -121,11 +121,11 @@ const PayWithCard = (props: PayWithCardProps) => {
   }, [createSetupIntent]);
 
   useEffect(() => {
-    if (payment.data?.createPayment) {
+    if (payment.data?.chargeCardAsPayee) {
       onSuccess();
     } else if (payment.error) {
       setPaymentIsSubmitting(false);
-      setPaymentError('Could not process payment. Please try again.');
+      setPaymentError("Could not process payment. Please try again.");
     }
   }, [payment.data, payment.error, onSuccess]);
 
@@ -138,7 +138,7 @@ const PayWithCard = (props: PayWithCardProps) => {
       if (!card) return;
 
       setPaymentIsSubmitting(true);
-      setPaymentError('');
+      setPaymentError("");
 
       const result = await stripe.confirmCardSetup(setupIntentClientSecret, {
         payment_method: {
@@ -149,12 +149,12 @@ const PayWithCard = (props: PayWithCardProps) => {
       if (result.error) {
         setPaymentError(
           result.error.message ||
-            'Error confirming payment. Please check your card details'
+            "Error confirming payment. Please check your card details"
         );
         setPaymentIsSubmitting(false);
       } else {
-        if (result.setupIntent?.status === 'succeeded') {
-          createPayment({
+        if (result.setupIntent?.status === "succeeded") {
+          chargeCardAsPayee({
             variables: {
               amountInCents: paymentAmountInCents,
               payeeUserId,
@@ -168,7 +168,7 @@ const PayWithCard = (props: PayWithCardProps) => {
     [
       stripe,
       elements,
-      createPayment,
+      chargeCardAsPayee,
       payeeUserId,
       paymentAmountInCents,
       setupIntentClientSecret,
@@ -194,11 +194,11 @@ const PayWithCard = (props: PayWithCardProps) => {
 
   let buttonLabel;
   if (!paymentAmountInCents) {
-    buttonLabel = 'No amount entered';
+    buttonLabel = "No amount entered";
   } else if (setupIntent.loading || !cardElementIsReady) {
-    buttonLabel = 'Loading...';
+    buttonLabel = "Loading...";
   } else if (paymentIsSubmitting) {
-    buttonLabel = 'Submitting...';
+    buttonLabel = "Submitting...";
   } else if (paymentAmountInCents) {
     buttonLabel = `Pay $${paymentAmountInCents / 100}`;
   }
