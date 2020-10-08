@@ -10,9 +10,9 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 
-const CREATE_SETUP_INTENT = gql`
-  mutation CreateSetupIntent {
-    createSetupIntent {
+const CREATE_STRIPE_SETUP_INTENT = gql`
+  mutation CreateStripeSetupIntent {
+    createStripeSetupIntent {
       client_secret
     }
   }
@@ -107,18 +107,21 @@ const PayWithCard = (props: PayWithCardProps) => {
   const [paymentIsSubmitting, setPaymentIsSubmitting] = useState(false);
   const [paymentError, setPaymentError] = useState("");
 
-  const [createSetupIntent, setupIntent] = useMutation(CREATE_SETUP_INTENT, {
-    errorPolicy: "all",
-  });
+  const [createStripeSetupIntent, setupIntent] = useMutation(
+    CREATE_STRIPE_SETUP_INTENT,
+    {
+      errorPolicy: "all",
+    }
+  );
   const setupIntentClientSecret =
-    setupIntent.data?.createSetupIntent.client_secret;
+    setupIntent.data?.createStripeSetupIntent.client_secret;
   const [chargeCardAsPayee, payment] = useMutation(CHARGE_CARD_AS_PAYEE, {
     errorPolicy: "all",
   });
 
   useEffect(() => {
-    createSetupIntent();
-  }, [createSetupIntent]);
+    createStripeSetupIntent();
+  }, [createStripeSetupIntent]);
 
   useEffect(() => {
     if (payment.data?.chargeCardAsPayee) {

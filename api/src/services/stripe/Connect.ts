@@ -83,10 +83,19 @@ const createPaymentIntentAsPayee = async (args: {
   return paymentIntent;
 };
 
+const getPaymentIntentAsPayee = (args: {
+  paymentIntentId: string;
+  stripeConnectAccountId: string;
+}) => {
+  return stripe.paymentIntents.retrieve(args.paymentIntentId, {
+    stripeAccount: args.stripeConnectAccountId,
+  });
+};
+
 const refundPaymentIntentAsPayee = (args: {
   paymentIntentId: string;
   stripeConnectAccountId: string;
-}): Promise<StripeLib.Refund> => {
+}) => {
   return stripe.refunds.create(
     {
       payment_intent: args.paymentIntentId,
@@ -102,5 +111,6 @@ const refundPaymentIntentAsPayee = (args: {
 export default {
   validateOauthAuthorizationCode,
   createPaymentIntentAsPayee,
+  getPaymentIntentAsPayee,
   refundPaymentIntentAsPayee,
 };

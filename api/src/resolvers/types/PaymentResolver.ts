@@ -3,84 +3,105 @@ import Stripe from 'stripe';
 
 @ArgsType()
 export class GetUserPaymentsArgs {
-  @Field((type) => Int, { nullable: true, defaultValue: 0 })
+  @Field(() => Int, { nullable: true, defaultValue: 0 })
   offset: number;
 
-  @Field((type) => Int, { nullable: true, defaultValue: 30 })
+  @Field(() => Int, { nullable: true, defaultValue: 30 })
   limit: number;
 }
 
 @ArgsType()
 export class GetUserPaymentForShowArgs {
-  @Field((type) => Int)
+  @Field(() => Int)
   showId: number;
 }
 
 @ArgsType()
 export class GetUserPaymentsToPayeeArgs {
-  @Field((type) => Int)
+  @Field(() => Int)
   payeeUserId: number;
 
-  @Field((type) => Boolean, { nullable: true, defaultValue: true })
+  @Field(() => Boolean, { nullable: true, defaultValue: true })
   onlyRecent: boolean;
 }
 
 @InputType()
 export class CreateStripePaymentIntentAsPayeeInput {
-  @Field((type) => Int)
+  @Field(() => Int)
   amountInCents: number;
 
-  @Field((type) => Int)
+  @Field(() => Int)
   payeeUserId: number;
 }
 
 @InputType()
 export class ChargeCardAsPayeeInput {
-  @Field((type) => Int)
+  @Field(() => Int)
   amountInCents: number;
 
-  @Field((type) => Int)
+  @Field(() => Int)
   payeeUserId: number;
 
-  @Field((type) => Int, { nullable: true })
+  @Field(() => Int, { nullable: true })
   showId?: number;
 
-  @Field((type) => Boolean, { nullable: true, defaultValue: false })
+  @Field(() => Boolean, { nullable: true, defaultValue: false })
   shouldDetachPaymentMethodAfter?: boolean;
 }
 
 @InputType()
+export class CreatePaymentInput {
+  @Field(() => Int)
+  payeeUserId: number;
+
+  @Field(() => String)
+  stripePaymentIntentId: string;
+
+  @Field(() => Int, { nullable: true })
+  showId?: number;
+}
+
+@InputType()
 export class RefundPaymentInput {
-  @Field((type) => Int)
+  @Field(() => Int)
   paymentId: number;
 }
 
 @ObjectType()
-export class SetupIntent {
-  @Field((type) => String)
+export class StripePaymentIntent {
+  @Field(() => String)
+  id: string;
+
+  @Field(() => String)
   client_secret: string;
 }
 
 @ObjectType()
-class Card {
-  @Field((type) => String)
+export class StripeSetupIntent {
+  @Field(() => String)
+  client_secret: string;
+}
+
+@ObjectType()
+class StripeCard {
+  @Field(() => String)
   brand: string;
 
-  @Field((type) => String)
+  @Field(() => String)
   last4: string;
 }
 
 @ObjectType()
-export class PaymentMethod {
-  @Field((type) => String)
+export class StripePaymentMethod {
+  @Field(() => String)
   id: string;
 
-  @Field((type) => Card, { nullable: true })
+  @Field(() => StripeCard, { nullable: true })
   card?: Stripe.PaymentMethod.Card;
 
-  @Field((type) => Int)
+  @Field(() => Int)
   created: number;
 
-  @Field((type) => String)
+  @Field(() => String)
   type: Stripe.PaymentMethod.Type;
 }
