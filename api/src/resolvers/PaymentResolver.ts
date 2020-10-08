@@ -16,6 +16,7 @@ import {
   GetUserPaymentsArgs,
   GetUserPaymentForShowArgs,
   GetUserPaymentsToPayeeArgs,
+  CreateStripePaymentIntentAsPayeeInput,
   ChargeCardAsPayeeInput,
   RefundPaymentInput,
   SetupIntent,
@@ -98,6 +99,35 @@ export class PaymentResolver {
     return payments;
   }
 
+  @Mutation(() => String)
+  async createStripePaymentIntentAsPayee(
+    @Arg('data')
+    { amountInCents, payeeUserId }: CreateStripePaymentIntentAsPayeeInput,
+    @Ctx() ctx: CustomContext
+  ): Promise<string> {
+    const user = ctx.getUser();
+    if (!user) {
+      throw new Error('User must be logged in to charge their card');
+    }
+
+    const payee = await User.findOne({ where: { id: payeeUserId } });
+    if (!payee) {
+      throw new Error('Could not find payee user');
+    }
+
+    const { client_secret } = await StripeConnect.createPaymentIntentAsPayee({
+      amountInCents,
+      user,
+      payee,
+      shouldCharge: false,
+    });
+
+    if (client_secret === null) {
+      throw new Error('Error creating PaymentIntent. Please try again.');
+    }
+    return client_secret;
+  }
+
   @Mutation((returns) => Payment)
   async chargeCardAsPayee(
     @Arg('data') data: ChargeCardAsPayeeInput,
@@ -120,6 +150,7 @@ export class PaymentResolver {
         amountInCents: data.amountInCents,
         user,
         payee,
+        shouldCharge: true,
       });
     } catch {}
 

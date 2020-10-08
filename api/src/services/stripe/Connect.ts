@@ -34,8 +34,9 @@ const createPaymentIntentAsPayee = async (args: {
   amountInCents: number;
   user: User;
   payee: User;
+  shouldCharge?: boolean;
 }): Promise<StripeLib.PaymentIntent> => {
-  const { user, payee, amountInCents } = args;
+  const { user, payee, amountInCents, shouldCharge } = args;
 
   if (!user.stripeCustomerId) {
     throw new Error('User does not have Stripe customer ID');
@@ -59,7 +60,7 @@ const createPaymentIntentAsPayee = async (args: {
     {
       amount: amountInCents,
       payment_method: clonedPaymentMethod.id,
-      confirm: true,
+      confirm: Boolean(shouldCharge),
       off_session: true,
       currency: 'usd',
       description: `Payment from: Username "${user.username}" / Email "${user.email}"`,

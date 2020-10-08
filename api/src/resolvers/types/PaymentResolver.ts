@@ -26,6 +26,15 @@ export class GetUserPaymentsToPayeeArgs {
 }
 
 @InputType()
+export class CreateStripePaymentIntentAsPayeeInput {
+  @Field((type) => Int)
+  amountInCents: number;
+
+  @Field((type) => Int)
+  payeeUserId: number;
+}
+
+@InputType()
 export class ChargeCardAsPayeeInput {
   @Field((type) => Int)
   amountInCents: number;
