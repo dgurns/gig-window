@@ -1,22 +1,33 @@
-import React, { useState, useCallback } from 'react';
-import debounce from 'lodash/debounce';
-import { useQuery, gql } from '@apollo/client';
-import { Elements } from '@stripe/react-stripe-js';
-import { loadStripe } from '@stripe/stripe-js';
-import { Grid, Typography, Divider, CircularProgress } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import React, { useState, useCallback, useRef } from "react";
+import debounce from "lodash/debounce";
+import { useQuery, gql } from "@apollo/client";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import { Grid, Typography, Divider, CircularProgress } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 
-import useCurrentUser from 'hooks/useCurrentUser';
-import usePayments from 'hooks/usePayments';
+import useCurrentUser from "hooks/useCurrentUser";
+import usePayments from "hooks/usePayments";
+import { User, Show } from "types";
 
-import MoneyInputField from './MoneyInputField';
-import AuthForm from './AuthForm';
-import PayWithCard from './PayWithCard';
-import PayWithSavedCard from './PayWithSavedCard';
+import MoneyInputField from "./MoneyInputField";
+import AuthForm from "./AuthForm";
+import PayWithPaymentRequest from "./PayWithPaymentRequest";
+import PayWithCard from "./PayWithCard";
+import PayWithSavedCard from "./PayWithSavedCard";
 
-const stripePromise = loadStripe(
-  process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY ?? ''
-);
+// const stripePromiseAsPlatform = loadStripe(
+//   process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY ?? '',
+//   {
+//     apiVersion: '2020-08-27',
+//   }
+// );
+
+const createStripePromiseAsPayee = (payeeStripeConnectAccountId: string) =>
+  loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY ?? "", {
+    apiVersion: "2020-08-27",
+    stripeAccount: payeeStripeConnectAccountId,
+  });
 
 const GET_SAVED_PAYMENT_METHOD = gql`
   query {
@@ -46,19 +57,14 @@ const useStyles = makeStyles((theme) => ({
     margin: `${theme.spacing(2)}px 0 10px`,
   },
   loading: {
-    alignSelf: 'center',
+    alignSelf: "center",
     marginTop: theme.spacing(1),
   },
 }));
 
 interface PaymentFormProps {
-  payee: {
-    id: number;
-    username: string;
-  };
-  show?: {
-    id: number;
-  };
+  payee: User;
+  show?: Show;
   prefilledPaymentAmount?: string;
   onSuccess?: () => void;
 }
@@ -66,6 +72,10 @@ interface PaymentFormProps {
 const PaymentForm = (props: PaymentFormProps) => {
   const { payee, show, prefilledPaymentAmount, onSuccess } = props;
   const classes = useStyles();
+
+  const stripePromiseAsPayeeRef = useRef(
+    createStripePromiseAsPayee(payee.stripeConnectAccountId)
+  );
 
   const [
     currentUser,
@@ -78,7 +88,7 @@ const PaymentForm = (props: PaymentFormProps) => {
   const [paymentAmount, setPaymentAmount] = useState(prefilledPaymentAmount);
 
   const savedPaymentMethodQuery = useQuery(GET_SAVED_PAYMENT_METHOD, {
-    fetchPolicy: 'no-cache',
+    fetchPolicy: "no-cache",
     skip: !currentUser,
   });
   const savedPaymentMethod =
@@ -96,9 +106,9 @@ const PaymentForm = (props: PaymentFormProps) => {
   }, [refetchPayments, onSuccess]);
 
   const onChangePaymentAmount = debounce((value: string) => {
-    if (value === '' || value === '0') {
-      return setPaymentAmount('');
-    } else if (typeof parseInt(value) === 'number') {
+    if (value === "" || value === "0") {
+      return setPaymentAmount("");
+    } else if (typeof parseInt(value) === "number") {
       const absolutePaymentAmount = Math.abs(parseInt(value));
       return setPaymentAmount(absolutePaymentAmount.toString());
     }
@@ -129,14 +139,24 @@ const PaymentForm = (props: PaymentFormProps) => {
           onDeleteCard={savedPaymentMethodQuery.refetch}
         />
       ) : (
-        <Elements stripe={stripePromise}>
-          <PayWithCard
-            paymentAmountInCents={paymentAmountInCents}
-            payeeUserId={payee.id}
-            showId={show?.id}
-            onSuccess={onPaymentSuccess}
-          />
-        </Elements>
+        <>
+          <Elements stripe={stripePromiseAsPayeeRef.current}>
+            <PayWithPaymentRequest
+              paymentAmountInCents={paymentAmountInCents}
+              payee={payee}
+              showId={show?.id}
+              onSuccess={onPaymentSuccess}
+            />
+          </Elements>
+          {/* <Elements stripe={stripePromiseAsPlatform}>
+            <PayWithCard
+              paymentAmountInCents={paymentAmountInCents}
+              payeeUserId={payee.id}
+              showId={show?.id}
+              onSuccess={onPaymentSuccess}
+            />
+          </Elements> */}
+        </>
       );
     }
   };
@@ -146,7 +166,7 @@ const PaymentForm = (props: PaymentFormProps) => {
       <Typography variant="h4" className={classes.title}>
         {prefilledPaymentAmount
           ? `Tip $${prefilledPaymentAmount} to ${payee.username}`
-          : 'Name your price'}
+          : "Name your price"}
       </Typography>
       {!prefilledPaymentAmount && (
         <Grid

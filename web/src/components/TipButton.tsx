@@ -1,26 +1,22 @@
-import React, { useState } from 'react';
-import { Grid, Button } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import React, { useState } from "react";
+import { Grid, Button } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 
-import useDialog from 'hooks/useDialog';
+import { User, Show } from "types";
+import useDialog from "hooks/useDialog";
 
-import PaymentForm from 'components/PaymentForm';
-import MoneyInputField from 'components/MoneyInputField';
+import PaymentForm from "components/PaymentForm";
+import MoneyInputField from "components/MoneyInputField";
 
 interface TipButtonProps {
-  payee: {
-    id: number;
-    username: string;
-  };
-  show?: {
-    id: number;
-  };
+  payee: User;
+  show?: Show;
 }
 
 const useStyles = makeStyles(({ spacing }) => ({
   container: {
-    display: 'flex',
-    flexDirection: 'row',
+    display: "flex",
+    flexDirection: "row",
     width: 126,
   },
   tipAmount: {
@@ -33,12 +29,12 @@ const TipButton = ({ payee, show }: TipButtonProps) => {
   const classes = useStyles();
 
   const [PaymentDialog, setPaymentDialogIsVisible] = useDialog();
-  const [tipAmount, setTipAmount] = useState('5');
+  const [tipAmount, setTipAmount] = useState("5");
 
   const onChangeTipAmount = (value: string) => {
-    if (value === '' || value === '0') {
-      return setTipAmount('');
-    } else if (typeof parseInt(value) === 'number') {
+    if (value === "" || value === "0") {
+      return setTipAmount("");
+    } else if (typeof parseInt(value) === "number") {
       return setTipAmount(`${parseInt(value)}`);
     }
   };

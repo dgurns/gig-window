@@ -105,7 +105,10 @@ async function start() {
 
     server.applyMiddleware({
       app,
-      cors: { origin: WEB_ORIGIN, credentials: true },
+      cors: {
+        origin: WEB_ORIGIN,
+        credentials: true,
+      },
     });
     const httpServer = http.createServer(app);
     server.installSubscriptionHandlers(httpServer);
