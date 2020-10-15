@@ -16,11 +16,9 @@ import {
   GetUserPaymentsArgs,
   GetUserPaymentForShowArgs,
   GetUserPaymentsToPayeeArgs,
-  CreateStripePaymentIntentAsPayeeInput,
   ChargeCardAsPayeeInput,
   CreatePaymentInput,
   RefundPaymentInput,
-  StripePaymentIntent,
   StripeSetupIntent,
   StripePaymentMethod,
 } from './types/PaymentResolver';
@@ -101,42 +99,7 @@ export class PaymentResolver {
     return payments;
   }
 
-  @Mutation(() => StripePaymentIntent)
-  async createStripePaymentIntentAsPayee(
-    @Arg('data')
-    { amountInCents, payeeUserId }: CreateStripePaymentIntentAsPayeeInput,
-    @Ctx() ctx: CustomContext
-  ): Promise<StripePaymentIntent> {
-    const user = ctx.getUser();
-    if (!user) {
-      throw new Error('User must be logged in to charge their card');
-    }
-
-    const payee = await User.findOne({ where: { id: payeeUserId } });
-    if (!payee) {
-      throw new Error('Could not find payee user');
-    }
-
-    const {
-      id,
-      client_secret,
-    } = await StripeConnect.createPaymentIntentAsPayee({
-      amountInCents,
-      user,
-      payee,
-      shouldCharge: false,
-    });
-    if (client_secret === null) {
-      throw new Error('Error creating PaymentIntent. Please try again.');
-    }
-
-    return {
-      id,
-      client_secret,
-    };
-  }
-
-  @Mutation((returns) => Payment)
+  @Mutation(() => Payment)
   async chargeCardAsPayee(
     @Arg('data') data: ChargeCardAsPayeeInput,
     @Ctx() ctx: CustomContext,
@@ -263,7 +226,7 @@ export class PaymentResolver {
     }
   }
 
-  @Mutation((returns) => StripeSetupIntent)
+  @Mutation(() => StripeSetupIntent)
   async createStripeSetupIntent(
     @Ctx() ctx: CustomContext
   ): Promise<StripeLib.SetupIntent> {
@@ -283,7 +246,7 @@ export class PaymentResolver {
     }
   }
 
-  @Mutation((returns) => StripePaymentMethod)
+  @Mutation(() => StripePaymentMethod)
   async detachPaymentMethodFromUser(
     @Arg('paymentMethodId') paymentMethodId: string,
     @Ctx() ctx: CustomContext

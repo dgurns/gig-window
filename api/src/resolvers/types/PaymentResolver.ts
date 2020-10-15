@@ -26,15 +26,6 @@ export class GetUserPaymentsToPayeeArgs {
 }
 
 @InputType()
-export class CreateStripePaymentIntentAsPayeeInput {
-  @Field(() => Int)
-  amountInCents: number;
-
-  @Field(() => Int)
-  payeeUserId: number;
-}
-
-@InputType()
 export class ChargeCardAsPayeeInput {
   @Field(() => Int)
   amountInCents: number;
@@ -65,15 +56,6 @@ export class CreatePaymentInput {
 export class RefundPaymentInput {
   @Field(() => Int)
   paymentId: number;
-}
-
-@ObjectType()
-export class StripePaymentIntent {
-  @Field(() => String)
-  id: string;
-
-  @Field(() => String)
-  client_secret: string;
 }
 
 @ObjectType()
