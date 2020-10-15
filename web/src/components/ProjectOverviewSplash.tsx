@@ -121,8 +121,7 @@ const ProjectOverviewSplash = () => {
         </Grid>
         <Card elevation={3} className={classes.detailsContainer}>
           <Typography color="secondary">
-            • Stream from laptop, tablet, or smartphone with your favorite
-            streaming software
+            • Broadcast from your laptop, tablet, or smartphone
             <br />
             • Adaptive streaming to viewers means your video will automatically
             optimize for smooth playback
