@@ -17,7 +17,6 @@ import {
   GetUserPaymentForShowArgs,
   GetUserPaymentsToPayeeArgs,
   ChargeCardAsPayeeInput,
-  CreatePaymentInput,
   RefundPaymentInput,
   StripeSetupIntent,
   StripePaymentMethod,
@@ -152,47 +151,6 @@ export class PaymentResolver {
     } else {
       throw new Error('Error creating PaymentIntent');
     }
-  }
-
-  @Mutation(() => Payment)
-  async createPayment(
-    @Arg('data')
-    { payeeUserId, stripePaymentIntentId, showId }: CreatePaymentInput,
-    @Ctx() ctx: CustomContext,
-    @PubSub('PAYMENT_CREATED') publish: Publisher<Payment>
-  ) {
-    const user = ctx.getUser();
-    if (!user) throw new Error('User must be logged in to create a payment');
-
-    const payeeUser = await User.findOne({ where: { id: payeeUserId } });
-    if (!payeeUser) throw new Error('Could not find the payee user');
-
-    // Check to make sure the payment intent exists and was successful
-    const { id, status, amount } = await StripeConnect.getPaymentIntentAsPayee({
-      paymentIntentId: stripePaymentIntentId,
-      stripeConnectAccountId: payeeUser.stripeConnectAccountId,
-    });
-    if (!id || status !== 'succeeded' || !amount) {
-      throw new Error(
-        'The provided Stripe payment intent ID does not represent a valid payment'
-      );
-    }
-
-    // If so, create the payment in our database
-    const payment = Payment.create({
-      userId: user.id,
-      payeeUserId: payeeUser.id,
-      amountInCents: amount,
-      showId,
-      stripePaymentIntentId: id,
-    });
-    await payment.save();
-
-    payment.user = user;
-    payment.payeeUser = payeeUser;
-    await publish(payment);
-
-    return payment;
   }
 
   @Mutation(() => Payment)

@@ -41,18 +41,6 @@ export class ChargeCardAsPayeeInput {
 }
 
 @InputType()
-export class CreatePaymentInput {
-  @Field(() => Int)
-  payeeUserId: number;
-
-  @Field(() => String)
-  stripePaymentIntentId: string;
-
-  @Field(() => Int, { nullable: true })
-  showId?: number;
-}
-
-@InputType()
 export class RefundPaymentInput {
   @Field(() => Int)
   paymentId: number;
