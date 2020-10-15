@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useCallback } from "react";
 import debounce from "lodash/debounce";
 import { useQuery, gql } from "@apollo/client";
 import { Elements } from "@stripe/react-stripe-js";
@@ -16,18 +16,12 @@ import PayWithPaymentRequest from "./PayWithPaymentRequest";
 import PayWithCard from "./PayWithCard";
 import PayWithSavedCard from "./PayWithSavedCard";
 
-// const stripePromiseAsPlatform = loadStripe(
-//   process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY ?? '',
-//   {
-//     apiVersion: '2020-08-27',
-//   }
-// );
-
-const createStripePromiseAsPayee = (payeeStripeConnectAccountId: string) =>
-  loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY ?? "", {
+const stripePromiseAsPlatform = loadStripe(
+  process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY ?? "",
+  {
     apiVersion: "2020-08-27",
-    stripeAccount: payeeStripeConnectAccountId,
-  });
+  }
+);
 
 const GET_SAVED_PAYMENT_METHOD = gql`
   query {
@@ -72,10 +66,6 @@ interface PaymentFormProps {
 const PaymentForm = (props: PaymentFormProps) => {
   const { payee, show, prefilledPaymentAmount, onSuccess } = props;
   const classes = useStyles();
-
-  const stripePromiseAsPayeeRef = useRef(
-    createStripePromiseAsPayee(payee.stripeConnectAccountId)
-  );
 
   const [
     currentUser,
@@ -139,24 +129,20 @@ const PaymentForm = (props: PaymentFormProps) => {
           onDeleteCard={savedPaymentMethodQuery.refetch}
         />
       ) : (
-        <>
-          <Elements stripe={stripePromiseAsPayeeRef.current}>
-            <PayWithPaymentRequest
-              paymentAmountInCents={paymentAmountInCents}
-              payee={payee}
-              showId={show?.id}
-              onSuccess={onPaymentSuccess}
-            />
-          </Elements>
-          {/* <Elements stripe={stripePromiseAsPlatform}>
-            <PayWithCard
-              paymentAmountInCents={paymentAmountInCents}
-              payeeUserId={payee.id}
-              showId={show?.id}
-              onSuccess={onPaymentSuccess}
-            />
-          </Elements> */}
-        </>
+        <Elements stripe={stripePromiseAsPlatform}>
+          <PayWithPaymentRequest
+            paymentAmountInCents={paymentAmountInCents}
+            payee={payee}
+            showId={show?.id}
+            onSuccess={onPaymentSuccess}
+          />
+          <PayWithCard
+            paymentAmountInCents={paymentAmountInCents}
+            payeeUserId={payee.id}
+            showId={show?.id}
+            onSuccess={onPaymentSuccess}
+          />
+        </Elements>
       );
     }
   };

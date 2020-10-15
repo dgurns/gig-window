@@ -1,33 +1,56 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useQuery, gql } from "@apollo/client";
+import { useMutation, gql } from "@apollo/client";
 import {
   PaymentRequestButtonElement,
   useStripe,
 } from "@stripe/react-stripe-js";
-import { PaymentRequest } from "@stripe/stripe-js";
-import { Grid, Typography, Divider, CircularProgress } from "@material-ui/core";
+import {
+  PaymentRequest,
+  PaymentRequestPaymentMethodEvent,
+} from "@stripe/stripe-js";
+import { Grid, Typography, CircularProgress } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 import { User } from "types";
 
-const useStyles = makeStyles((theme) => ({
-  title: {
-    marginBottom: theme.spacing(1),
+const CREATE_STRIPE_SETUP_INTENT = gql`
+  mutation CreateStripeSetupIntent {
+    createStripeSetupIntent {
+      client_secret
+    }
+  }
+`;
+
+const CHARGE_CARD_AS_PAYEE = gql`
+  mutation ChargeCardAsPayee(
+    $amountInCents: Int!
+    $payeeUserId: Int!
+    $showId: Int
+    $shouldDetachPaymentMethodAfter: Boolean!
+  ) {
+    chargeCardAsPayee(
+      data: {
+        amountInCents: $amountInCents
+        payeeUserId: $payeeUserId
+        showId: $showId
+        shouldDetachPaymentMethodAfter: $shouldDetachPaymentMethodAfter
+      }
+    ) {
+      id
+    }
+  }
+`;
+
+const useStyles = makeStyles(({ spacing }) => ({
+  container: {
+    paddingTop: spacing(1),
   },
-  moneyInput: {
-    marginBottom: theme.spacing(1),
-    marginTop: theme.spacing(1),
+  placeholder: {
+    height: 88,
   },
-  moneyInputField: {
-    marginRight: theme.spacing(1),
-    width: 80,
-  },
-  divider: {
-    margin: `${theme.spacing(2)}px 0 10px`,
-  },
-  loading: {
-    alignSelf: "center",
-    marginTop: theme.spacing(1),
+  button: {
+    marginBottom: spacing(2),
+    width: "100%",
   },
 }));
 
@@ -35,12 +58,39 @@ interface PayWithPaymentRequestProps {
   paymentAmountInCents: number;
   payee: User;
   showId?: number;
-  onSuccess?: () => void;
+  onSuccess: () => void;
 }
 
 const PayWithPaymentRequest = (props: PayWithPaymentRequestProps) => {
   const { paymentAmountInCents, payee, showId, onSuccess } = props;
   const classes = useStyles();
+
+  const [paymentError, setPaymentError] = useState("");
+  const [paymentIsSubmitting, setPaymentIsSubmitting] = useState(false);
+
+  const [createStripeSetupIntent, setupIntent] = useMutation(
+    CREATE_STRIPE_SETUP_INTENT,
+    {
+      errorPolicy: "all",
+    }
+  );
+  const setupIntentClientSecret =
+    setupIntent.data?.createStripeSetupIntent.client_secret;
+  const [chargeCardAsPayee, payment] = useMutation(CHARGE_CARD_AS_PAYEE, {
+    errorPolicy: "all",
+  });
+
+  useEffect(() => {
+    createStripeSetupIntent();
+  }, [createStripeSetupIntent]);
+
+  useEffect(() => {
+    if (payment.data?.chargeCardAsPayee) {
+      onSuccess();
+    } else if (payment.error) {
+      setPaymentError("Could not process payment. Please try again.");
+    }
+  }, [payment.data, payment.error, onSuccess]);
 
   const stripe = useStripe();
   const [paymentRequest, setPaymentRequest] = useState<PaymentRequest | null>(
@@ -60,10 +110,7 @@ const PayWithPaymentRequest = (props: PayWithPaymentRequestProps) => {
         requestPayerEmail: true,
       });
 
-      console.log({ pr });
-
       pr.canMakePayment().then((result) => {
-        console.log("Apple Pay", result?.applePay);
         if (result) {
           setPaymentRequest(pr);
         }
@@ -71,13 +118,105 @@ const PayWithPaymentRequest = (props: PayWithPaymentRequestProps) => {
     }
   }, [stripe, paymentAmountInCents, payee]);
 
-  if (!paymentRequest) {
+  const onPaymentMethodSelected = useCallback(
+    async (ev: PaymentRequestPaymentMethodEvent) => {
+      if (!stripe) return;
+
+      setPaymentError("");
+      setPaymentIsSubmitting(true);
+
+      try {
+        const setupResult = await stripe.confirmCardSetup(
+          setupIntentClientSecret,
+          { payment_method: ev.paymentMethod.id },
+          { handleActions: false }
+        );
+        if (
+          setupResult.error ||
+          setupResult.setupIntent?.status !== "succeeded"
+        ) {
+          throw new Error();
+        }
+      } catch (error) {
+        setPaymentError(
+          "Error confirming payment. Please check your card details or try a different card"
+        );
+        setPaymentIsSubmitting(false);
+        return ev.complete("fail");
+      }
+
+      const chargeResult = await chargeCardAsPayee({
+        variables: {
+          amountInCents: paymentAmountInCents,
+          payeeUserId: payee.id,
+          showId,
+          shouldDetachPaymentMethodAfter: true,
+        },
+      });
+      setPaymentIsSubmitting(false);
+      if (chargeResult.data?.chargeCardAsPayee) {
+        return ev.complete("success");
+      } else {
+        setPaymentError(
+          "Error charging card. Please try again or use a different card."
+        );
+        return ev.complete("fail");
+      }
+    },
+    [
+      stripe,
+      paymentAmountInCents,
+      payee,
+      showId,
+      chargeCardAsPayee,
+      setupIntentClientSecret,
+    ]
+  );
+
+  useEffect(() => {
+    if (paymentRequest) {
+      paymentRequest.on("paymentmethod", onPaymentMethodSelected);
+    }
+  }, [paymentRequest, onPaymentMethodSelected]);
+
+  if (!paymentRequest || !stripe) {
     return null;
   }
 
+  if (paymentRequest && setupIntent.loading) {
+    return <div className={classes.placeholder} />;
+  }
+
+  if (setupIntent.error) {
+    return (
+      <Typography color="secondary">
+        Error initializing system payment button
+      </Typography>
+    );
+  }
+
   return (
-    <Grid container direction="column">
-      <PaymentRequestButtonElement options={{ paymentRequest }} />
+    <Grid
+      container
+      direction="column"
+      alignItems="center"
+      className={classes.container}
+    >
+      <Grid
+        item
+        container
+        direction="column"
+        alignItems="center"
+        className={classes.button}
+      >
+        {!paymentIsSubmitting ? (
+          <CircularProgress color="secondary" size={18} />
+        ) : (
+          <PaymentRequestButtonElement options={{ paymentRequest }} />
+        )}
+      </Grid>
+      {paymentError && <Typography color="error">{paymentError}</Typography>}
+      <Typography color="secondary">OR</Typography>
     </Grid>
   );
 };
