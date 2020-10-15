@@ -10,22 +10,14 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
-const CREATE_SETUP_INTENT = gql`
-  mutation CreateSetupIntent {
-    createSetupIntent {
-      client_secret
-    }
-  }
-`;
-
-const CREATE_PAYMENT = gql`
-  mutation CreatePayment(
+const CHARGE_CARD_AS_PAYEE = gql`
+  mutation ChargeCardAsPayee(
     $amountInCents: Int!
     $payeeUserId: Int!
     $showId: Int
     $shouldDetachPaymentMethodAfter: Boolean!
   ) {
-    createPayment(
+    chargeCardAsPayee(
       data: {
         amountInCents: $amountInCents
         payeeUserId: $payeeUserId
@@ -93,10 +85,17 @@ interface PayWithCardProps {
   showId?: number;
   paymentAmountInCents?: number;
   onSuccess: () => void;
+  setupIntentClientSecret: string;
 }
 
 const PayWithCard = (props: PayWithCardProps) => {
-  const { payeeUserId, showId, paymentAmountInCents, onSuccess } = props;
+  const {
+    payeeUserId,
+    showId,
+    paymentAmountInCents,
+    onSuccess,
+    setupIntentClientSecret,
+  } = props;
 
   const classes = useStyles();
   const stripe = useStripe();
@@ -107,21 +106,12 @@ const PayWithCard = (props: PayWithCardProps) => {
   const [paymentIsSubmitting, setPaymentIsSubmitting] = useState(false);
   const [paymentError, setPaymentError] = useState('');
 
-  const [createSetupIntent, setupIntent] = useMutation(CREATE_SETUP_INTENT, {
-    errorPolicy: 'all',
-  });
-  const setupIntentClientSecret =
-    setupIntent.data?.createSetupIntent.client_secret;
-  const [createPayment, payment] = useMutation(CREATE_PAYMENT, {
+  const [chargeCardAsPayee, payment] = useMutation(CHARGE_CARD_AS_PAYEE, {
     errorPolicy: 'all',
   });
 
   useEffect(() => {
-    createSetupIntent();
-  }, [createSetupIntent]);
-
-  useEffect(() => {
-    if (payment.data?.createPayment) {
+    if (payment.data?.chargeCardAsPayee) {
       onSuccess();
     } else if (payment.error) {
       setPaymentIsSubmitting(false);
@@ -154,7 +144,7 @@ const PayWithCard = (props: PayWithCardProps) => {
         setPaymentIsSubmitting(false);
       } else {
         if (result.setupIntent?.status === 'succeeded') {
-          createPayment({
+          chargeCardAsPayee({
             variables: {
               amountInCents: paymentAmountInCents,
               payeeUserId,
@@ -168,7 +158,7 @@ const PayWithCard = (props: PayWithCardProps) => {
     [
       stripe,
       elements,
-      createPayment,
+      chargeCardAsPayee,
       payeeUserId,
       paymentAmountInCents,
       setupIntentClientSecret,
@@ -177,16 +167,7 @@ const PayWithCard = (props: PayWithCardProps) => {
     ]
   );
 
-  if (setupIntent.error) {
-    return (
-      <Typography color="secondary">
-        Error initializing payment form. Please reload.
-      </Typography>
-    );
-  }
-
   const shouldDisableButton =
-    setupIntent.loading ||
     !cardElementIsReady ||
     !paymentAmountInCents ||
     !setupIntentClientSecret ||
@@ -195,7 +176,7 @@ const PayWithCard = (props: PayWithCardProps) => {
   let buttonLabel;
   if (!paymentAmountInCents) {
     buttonLabel = 'No amount entered';
-  } else if (setupIntent.loading || !cardElementIsReady) {
+  } else if (!cardElementIsReady) {
     buttonLabel = 'Loading...';
   } else if (paymentIsSubmitting) {
     buttonLabel = 'Submitting...';

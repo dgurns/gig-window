@@ -8,13 +8,13 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import TextButton from './TextButton';
 
-const CREATE_PAYMENT = gql`
-  mutation CreatePayment(
+const CHARGE_CARD_AS_PAYEE = gql`
+  mutation ChargeCardAsPayee(
     $amountInCents: Int!
     $payeeUserId: Int!
     $showId: Int
   ) {
-    createPayment(
+    chargeCardAsPayee(
       data: {
         amountInCents: $amountInCents
         payeeUserId: $payeeUserId
@@ -81,15 +81,18 @@ const PayWithSavedCard = (props: PayWithSavedCardProps) => {
   const [paymentError, setPaymentError] = useState('');
   const [deleteCardError, setDeleteCardError] = useState('');
 
-  const [createPayment, createPaymentMutation] = useMutation(CREATE_PAYMENT, {
-    errorPolicy: 'all',
-  });
+  const [chargeCardAsPayee, createPaymentMutation] = useMutation(
+    CHARGE_CARD_AS_PAYEE,
+    {
+      errorPolicy: 'all',
+    }
+  );
   const [deleteCard, deleteCardMutation] = useMutation(DELETE_CARD, {
     errorPolicy: 'all',
   });
 
   useEffect(() => {
-    if (createPaymentMutation.data?.createPayment) {
+    if (createPaymentMutation.data?.chargeCardAsPayee) {
       onSuccess();
     } else if (createPaymentMutation.error) {
       setPaymentError(
@@ -109,7 +112,7 @@ const PayWithSavedCard = (props: PayWithSavedCardProps) => {
   const onSubmitPayment = async (event: React.FormEvent) => {
     event.preventDefault();
     setPaymentError('');
-    createPayment({
+    chargeCardAsPayee({
       variables: {
         amountInCents: paymentAmountInCents,
         payeeUserId,

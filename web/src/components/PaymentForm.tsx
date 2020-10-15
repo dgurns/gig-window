@@ -1,6 +1,6 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import debounce from 'lodash/debounce';
-import { useQuery, gql } from '@apollo/client';
+import { useQuery, useMutation, gql } from '@apollo/client';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { Grid, Typography, Divider, CircularProgress } from '@material-ui/core';
@@ -8,14 +8,19 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import useCurrentUser from 'hooks/useCurrentUser';
 import usePayments from 'hooks/usePayments';
+import { User, Show } from 'types';
 
 import MoneyInputField from './MoneyInputField';
 import AuthForm from './AuthForm';
+import PayWithPaymentRequest from './PayWithPaymentRequest';
 import PayWithCard from './PayWithCard';
 import PayWithSavedCard from './PayWithSavedCard';
 
-const stripePromise = loadStripe(
-  process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY ?? ''
+const stripePromiseAsPlatform = loadStripe(
+  process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY ?? '',
+  {
+    apiVersion: '2020-08-27',
+  }
 );
 
 const GET_SAVED_PAYMENT_METHOD = gql`
@@ -26,6 +31,14 @@ const GET_SAVED_PAYMENT_METHOD = gql`
         brand
         last4
       }
+    }
+  }
+`;
+
+const CREATE_STRIPE_SETUP_INTENT = gql`
+  mutation CreateStripeSetupIntent {
+    createStripeSetupIntent {
+      client_secret
     }
   }
 `;
@@ -52,13 +65,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface PaymentFormProps {
-  payee: {
-    id: number;
-    username: string;
-  };
-  show?: {
-    id: number;
-  };
+  payee: User;
+  show?: Show;
   prefilledPaymentAmount?: string;
   onSuccess?: () => void;
 }
@@ -84,6 +92,20 @@ const PaymentForm = (props: PaymentFormProps) => {
   const savedPaymentMethod =
     savedPaymentMethodQuery.data?.getLatestPaymentMethodForUser;
 
+  const [createStripeSetupIntent, setupIntent] = useMutation(
+    CREATE_STRIPE_SETUP_INTENT,
+    {
+      errorPolicy: 'all',
+    }
+  );
+  useEffect(() => {
+    if (currentUser) {
+      createStripeSetupIntent();
+    }
+  }, [createStripeSetupIntent, currentUser]);
+  const setupIntentClientSecret =
+    setupIntent.data?.createStripeSetupIntent.client_secret;
+
   const onAuthSuccess = useCallback(() => {
     refetchCurrentUser();
   }, [refetchCurrentUser]);
@@ -105,7 +127,11 @@ const PaymentForm = (props: PaymentFormProps) => {
   }, 400);
 
   const renderAuthOrPaymentForm = () => {
-    if (currentUserLoading || savedPaymentMethodQuery.loading) {
+    if (
+      currentUserLoading ||
+      savedPaymentMethodQuery.loading ||
+      setupIntent.loading
+    ) {
       return <CircularProgress color="secondary" className={classes.loading} />;
     } else if (!currentUser) {
       return (
@@ -117,9 +143,9 @@ const PaymentForm = (props: PaymentFormProps) => {
       );
     } else if (!paymentAmount) {
       return null;
-    } else {
+    } else if (savedPaymentMethod?.card) {
       const paymentAmountInCents = parseInt(paymentAmount) * 100;
-      return savedPaymentMethod?.card ? (
+      return (
         <PayWithSavedCard
           paymentMethod={savedPaymentMethod}
           paymentAmountInCents={paymentAmountInCents}
@@ -128,13 +154,30 @@ const PaymentForm = (props: PaymentFormProps) => {
           onSuccess={onPaymentSuccess}
           onDeleteCard={savedPaymentMethodQuery.refetch}
         />
-      ) : (
-        <Elements stripe={stripePromise}>
+      );
+    } else if (setupIntent.error || !setupIntentClientSecret) {
+      return (
+        <Typography color="error">
+          Error initializing payment form. Please reload.
+        </Typography>
+      );
+    } else {
+      const paymentAmountInCents = parseInt(paymentAmount) * 100;
+      return (
+        <Elements stripe={stripePromiseAsPlatform}>
+          <PayWithPaymentRequest
+            paymentAmountInCents={paymentAmountInCents}
+            payee={payee}
+            showId={show?.id}
+            onSuccess={onPaymentSuccess}
+            setupIntentClientSecret={setupIntentClientSecret}
+          />
           <PayWithCard
             paymentAmountInCents={paymentAmountInCents}
             payeeUserId={payee.id}
             showId={show?.id}
             onSuccess={onPaymentSuccess}
+            setupIntentClientSecret={setupIntentClientSecret}
           />
         </Elements>
       );

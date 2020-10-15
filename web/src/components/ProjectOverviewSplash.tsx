@@ -121,10 +121,10 @@ const ProjectOverviewSplash = () => {
         </Grid>
         <Card elevation={3} className={classes.detailsContainer}>
           <Typography color="secondary">
-            • Stream from laptop, tablet, or smartphone - we supply an RTMP URL
+            • Broadcast from your laptop, tablet, or smartphone
             <br />
-            • Adaptive streaming to viewers means that your stream will
-            automatically optimize for smooth playback
+            • Adaptive streaming to viewers means the video will automatically
+            optimize for smooth playback
             <br />
             • The project is completely free to use – you keep 80% of revenue
             after payment processing fees (2.9% + $0.30 per transaction)
