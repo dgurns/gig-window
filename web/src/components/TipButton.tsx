@@ -2,19 +2,15 @@ import React, { useState } from 'react';
 import { Grid, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
+import { User, Show } from 'types';
 import useDialog from 'hooks/useDialog';
 
 import PaymentForm from 'components/PaymentForm';
 import MoneyInputField from 'components/MoneyInputField';
 
 interface TipButtonProps {
-  payee: {
-    id: number;
-    username: string;
-  };
-  show?: {
-    id: number;
-  };
+  payee: User;
+  show?: Show;
 }
 
 const useStyles = makeStyles(({ spacing }) => ({

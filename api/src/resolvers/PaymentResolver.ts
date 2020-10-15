@@ -16,10 +16,10 @@ import {
   GetUserPaymentsArgs,
   GetUserPaymentForShowArgs,
   GetUserPaymentsToPayeeArgs,
-  CreatePaymentInput,
+  ChargeCardAsPayeeInput,
   RefundPaymentInput,
-  SetupIntent,
-  PaymentMethod,
+  StripeSetupIntent,
+  StripePaymentMethod,
 } from './types/PaymentResolver';
 import { User } from 'entities/User';
 import { Payment } from 'entities/Payment';
@@ -28,7 +28,7 @@ import StripeConnect from 'services/stripe/Connect';
 
 @Resolver()
 export class PaymentResolver {
-  @Query(() => PaymentMethod, { nullable: true })
+  @Query(() => StripePaymentMethod, { nullable: true })
   getLatestPaymentMethodForUser(@Ctx() ctx: CustomContext) {
     const user = ctx.getUser();
     if (!user) throw new Error('User must be logged in');
@@ -98,15 +98,15 @@ export class PaymentResolver {
     return payments;
   }
 
-  @Mutation((returns) => Payment)
-  async createPayment(
-    @Arg('data') data: CreatePaymentInput,
+  @Mutation(() => Payment)
+  async chargeCardAsPayee(
+    @Arg('data') data: ChargeCardAsPayeeInput,
     @Ctx() ctx: CustomContext,
     @PubSub('PAYMENT_CREATED') publish: Publisher<Payment>
   ): Promise<Payment> {
     const user = ctx.getUser();
     if (!user) {
-      throw new Error('User must be logged in to create a Payment');
+      throw new Error('User must be logged in to charge their card');
     }
 
     const payee = await User.findOne({ where: { id: data.payeeUserId } });
@@ -120,6 +120,7 @@ export class PaymentResolver {
         amountInCents: data.amountInCents,
         user,
         payee,
+        shouldCharge: true,
       });
     } catch {}
 
@@ -152,7 +153,7 @@ export class PaymentResolver {
     }
   }
 
-  @Mutation((returns) => Payment)
+  @Mutation(() => Payment)
   async refundPayment(
     @Arg('data') { paymentId }: RefundPaymentInput,
     @Ctx() ctx: CustomContext
@@ -183,8 +184,8 @@ export class PaymentResolver {
     }
   }
 
-  @Mutation((returns) => SetupIntent)
-  async createSetupIntent(
+  @Mutation(() => StripeSetupIntent)
+  async createStripeSetupIntent(
     @Ctx() ctx: CustomContext
   ): Promise<StripeLib.SetupIntent> {
     const user = ctx.getUser();
@@ -203,7 +204,7 @@ export class PaymentResolver {
     }
   }
 
-  @Mutation((returns) => PaymentMethod)
+  @Mutation(() => StripePaymentMethod)
   async detachPaymentMethodFromUser(
     @Arg('paymentMethodId') paymentMethodId: string,
     @Ctx() ctx: CustomContext
