@@ -13,14 +13,6 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import { User } from "types";
 
-const CREATE_STRIPE_SETUP_INTENT = gql`
-  mutation CreateStripeSetupIntent {
-    createStripeSetupIntent {
-      client_secret
-    }
-  }
-`;
-
 const CHARGE_CARD_AS_PAYEE = gql`
   mutation ChargeCardAsPayee(
     $amountInCents: Int!
@@ -61,30 +53,25 @@ interface PayWithPaymentRequestProps {
   payee: User;
   showId?: number;
   onSuccess: () => void;
+  setupIntentClientSecret: string;
 }
 
 const PayWithPaymentRequest = (props: PayWithPaymentRequestProps) => {
-  const { paymentAmountInCents, payee, showId, onSuccess } = props;
+  const {
+    paymentAmountInCents,
+    payee,
+    showId,
+    onSuccess,
+    setupIntentClientSecret,
+  } = props;
   const classes = useStyles();
 
   const [paymentError, setPaymentError] = useState("");
   const [paymentIsSubmitting, setPaymentIsSubmitting] = useState(false);
 
-  const [createStripeSetupIntent, setupIntent] = useMutation(
-    CREATE_STRIPE_SETUP_INTENT,
-    {
-      errorPolicy: "all",
-    }
-  );
-  const setupIntentClientSecret =
-    setupIntent.data?.createStripeSetupIntent.client_secret;
   const [chargeCardAsPayee, payment] = useMutation(CHARGE_CARD_AS_PAYEE, {
     errorPolicy: "all",
   });
-
-  useEffect(() => {
-    createStripeSetupIntent();
-  }, [createStripeSetupIntent]);
 
   useEffect(() => {
     if (payment.data?.chargeCardAsPayee) {
@@ -181,20 +168,8 @@ const PayWithPaymentRequest = (props: PayWithPaymentRequestProps) => {
     }
   }, [paymentRequest, onPaymentMethodSelected]);
 
-  if (!paymentRequest || !stripe) {
+  if (!stripe || !paymentRequest) {
     return null;
-  }
-
-  if (paymentRequest && setupIntent.loading) {
-    return <div className={classes.placeholder} />;
-  }
-
-  if (setupIntent.error) {
-    return (
-      <Typography color="secondary">
-        Error initializing system payment button
-      </Typography>
-    );
   }
 
   return (
