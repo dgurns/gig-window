@@ -155,7 +155,7 @@ const PaymentForm = (props: PaymentFormProps) => {
           onDeleteCard={savedPaymentMethodQuery.refetch}
         />
       );
-    } else if (setupIntent.error) {
+    } else if (setupIntent.error || !setupIntentClientSecret) {
       return (
         <Typography color="error">
           Error initializing payment form. Please reload.
