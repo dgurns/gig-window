@@ -123,7 +123,7 @@ const ProjectOverviewSplash = () => {
           <Typography color="secondary">
             • Broadcast from your laptop, tablet, or smartphone
             <br />
-            • Adaptive streaming to viewers means your video will automatically
+            • Adaptive streaming to viewers means the video will automatically
             optimize for smooth playback
             <br />
             • The project is completely free to use – you keep 80% of revenue
