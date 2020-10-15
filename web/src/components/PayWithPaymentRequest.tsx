@@ -1,17 +1,17 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { useMutation, gql } from "@apollo/client";
+import React, { useState, useEffect, useCallback } from 'react';
+import { useMutation, gql } from '@apollo/client';
 import {
   PaymentRequestButtonElement,
   useStripe,
-} from "@stripe/react-stripe-js";
+} from '@stripe/react-stripe-js';
 import {
   PaymentRequest,
   PaymentRequestPaymentMethodEvent,
-} from "@stripe/stripe-js";
-import { Grid, Typography, CircularProgress } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+} from '@stripe/stripe-js';
+import { Grid, Typography, CircularProgress } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 
-import { User } from "types";
+import { User } from 'types';
 
 const CHARGE_CARD_AS_PAYEE = gql`
   mutation ChargeCardAsPayee(
@@ -43,8 +43,8 @@ const useStyles = makeStyles(({ spacing }) => ({
   buttonWrapper: {
     height: 40,
     marginBottom: spacing(2),
-    textAlign: "center",
-    width: "100%",
+    textAlign: 'center',
+    width: '100%',
   },
 }));
 
@@ -66,18 +66,18 @@ const PayWithPaymentRequest = (props: PayWithPaymentRequestProps) => {
   } = props;
   const classes = useStyles();
 
-  const [paymentError, setPaymentError] = useState("");
+  const [paymentError, setPaymentError] = useState('');
   const [paymentIsSubmitting, setPaymentIsSubmitting] = useState(false);
 
   const [chargeCardAsPayee, payment] = useMutation(CHARGE_CARD_AS_PAYEE, {
-    errorPolicy: "all",
+    errorPolicy: 'all',
   });
 
   useEffect(() => {
     if (payment.data?.chargeCardAsPayee) {
       onSuccess();
     } else if (payment.error) {
-      setPaymentError("Could not process payment. Please try again.");
+      setPaymentError('Could not process payment. Please try again.');
     }
   }, [payment.data, payment.error, onSuccess]);
 
@@ -89,8 +89,8 @@ const PayWithPaymentRequest = (props: PayWithPaymentRequestProps) => {
   useEffect(() => {
     if (stripe) {
       const pr = stripe.paymentRequest({
-        country: "US",
-        currency: "usd",
+        country: 'US',
+        currency: 'usd',
         total: {
           label: `Payment to ${payee.username}`,
           amount: paymentAmountInCents,
@@ -111,7 +111,7 @@ const PayWithPaymentRequest = (props: PayWithPaymentRequestProps) => {
     async (ev: PaymentRequestPaymentMethodEvent) => {
       if (!stripe) return;
 
-      setPaymentError("");
+      setPaymentError('');
       setPaymentIsSubmitting(true);
 
       try {
@@ -122,15 +122,15 @@ const PayWithPaymentRequest = (props: PayWithPaymentRequestProps) => {
         );
         if (
           setupResult.error ||
-          setupResult.setupIntent?.status !== "succeeded"
+          setupResult.setupIntent?.status !== 'succeeded'
         ) {
           throw new Error();
         }
       } catch (error) {
         setPaymentError(
-          "Error confirming payment. Please check your card details or try a different card"
+          'Error confirming payment. Please check your card details or try a different card'
         );
-        ev.complete("fail");
+        ev.complete('fail');
         return setPaymentIsSubmitting(false);
       }
 
@@ -143,12 +143,12 @@ const PayWithPaymentRequest = (props: PayWithPaymentRequestProps) => {
         },
       });
       if (chargeResult.data?.chargeCardAsPayee) {
-        ev.complete("success");
+        ev.complete('success');
       } else {
         setPaymentError(
-          "Error charging card. Please try again or use a different card."
+          'Error charging card. Please try again or use a different card.'
         );
-        ev.complete("fail");
+        ev.complete('fail');
       }
       return setPaymentIsSubmitting(false);
     },
@@ -164,7 +164,7 @@ const PayWithPaymentRequest = (props: PayWithPaymentRequestProps) => {
 
   useEffect(() => {
     if (paymentRequest) {
-      paymentRequest.on("paymentmethod", onPaymentMethodSelected);
+      paymentRequest.on('paymentmethod', onPaymentMethodSelected);
     }
   }, [paymentRequest, onPaymentMethodSelected]);
 
