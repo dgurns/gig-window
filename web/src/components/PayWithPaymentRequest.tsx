@@ -48,8 +48,10 @@ const useStyles = makeStyles(({ spacing }) => ({
   placeholder: {
     height: 88,
   },
-  button: {
+  buttonWrapper: {
+    height: 40,
     marginBottom: spacing(2),
+    textAlign: "center",
     width: "100%",
   },
 }));
@@ -141,8 +143,8 @@ const PayWithPaymentRequest = (props: PayWithPaymentRequestProps) => {
         setPaymentError(
           "Error confirming payment. Please check your card details or try a different card"
         );
-        setPaymentIsSubmitting(false);
-        return ev.complete("fail");
+        ev.complete("fail");
+        return setPaymentIsSubmitting(false);
       }
 
       const chargeResult = await chargeCardAsPayee({
@@ -153,15 +155,15 @@ const PayWithPaymentRequest = (props: PayWithPaymentRequestProps) => {
           shouldDetachPaymentMethodAfter: true,
         },
       });
-      setPaymentIsSubmitting(false);
       if (chargeResult.data?.chargeCardAsPayee) {
-        return ev.complete("success");
+        ev.complete("success");
       } else {
         setPaymentError(
           "Error charging card. Please try again or use a different card."
         );
-        return ev.complete("fail");
+        ev.complete("fail");
       }
+      return setPaymentIsSubmitting(false);
     },
     [
       stripe,
@@ -202,14 +204,8 @@ const PayWithPaymentRequest = (props: PayWithPaymentRequestProps) => {
       alignItems="center"
       className={classes.container}
     >
-      <Grid
-        item
-        container
-        direction="column"
-        alignItems="center"
-        className={classes.button}
-      >
-        {!paymentIsSubmitting ? (
+      <Grid className={classes.buttonWrapper}>
+        {paymentIsSubmitting ? (
           <CircularProgress color="secondary" size={18} />
         ) : (
           <PaymentRequestButtonElement options={{ paymentRequest }} />
