@@ -7,6 +7,7 @@ import useChat, { ChatEvent } from 'hooks/useChat';
 
 import ChatMessage from 'components/ChatMessage';
 import TipMessage from 'components/TipMessage';
+import EmojiPicker from 'components/EmojiPicker';
 
 interface ChatBoxProps {
   userId?: number;
@@ -28,6 +29,12 @@ const useStyles = makeStyles((theme) => ({
   },
   textInput: {
     margin: theme.spacing(1),
+    position: 'relative',
+  },
+  emojiPicker: {
+    bottom: 0,
+    position: 'absolute',
+    right: 0,
   },
 }));
 
@@ -87,18 +94,20 @@ const ChatBox = (props: ChatBoxProps) => {
       <Grid item className={classes.chats} ref={chatsRef}>
         {chatEvents.map(renderChatEvent)}
       </Grid>
-      <TextField
-        placeholder="Your message here..."
-        multiline
-        rows="3"
-        variant="outlined"
-        className={classes.textInput}
-        value={inputMessage}
-        onChange={onInputMessageChanged}
-        inputProps={{
-          onKeyDown: onKeyPressed,
-        }}
-      />
+      <Grid item className={classes.textInput}>
+        <TextField
+          placeholder="Your message here..."
+          multiline
+          rows="3"
+          variant="outlined"
+          value={inputMessage}
+          onChange={onInputMessageChanged}
+          inputProps={{
+            onKeyDown: onKeyPressed,
+          }}
+        />
+        <EmojiPicker onEmojiPicked={sendChat} className={classes.emojiPicker} />
+      </Grid>
     </Grid>
   );
 };

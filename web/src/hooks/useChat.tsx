@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useQuery, useMutation, gql } from '@apollo/client';
 import { Chat, Payment } from 'types';
 
@@ -110,16 +110,19 @@ const useChat = (
     errorPolicy: 'all',
   });
 
-  const sendChat = (message?: string) => {
-    if (!message || !parentUserId) return;
+  const sendChat = useCallback(
+    (message?: string) => {
+      if (!message || !parentUserId) return;
 
-    createChat({
-      variables: {
-        parentUserId,
-        message,
-      },
-    });
-  };
+      createChat({
+        variables: {
+          parentUserId,
+          message,
+        },
+      });
+    },
+    [parentUserId, createChat]
+  );
 
   return [chatEvents, sendChat];
 };
