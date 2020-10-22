@@ -1,8 +1,11 @@
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import classnames from 'classnames';
 import { Grid, Link, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { Chat } from 'types';
+
+import { EMOJI_OPTIONS } from 'components/EmojiPicker';
 
 interface ChatMessageProps {
   chat: Chat;
@@ -33,6 +36,9 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
     flexDirection: 'column',
     marginTop: -5,
   },
+  emoji: {
+    fontSize: '2.2rem',
+  },
 }));
 
 const ChatMessage = ({ chat }: ChatMessageProps) => {
@@ -43,6 +49,8 @@ const ChatMessage = ({ chat }: ChatMessageProps) => {
   }
 
   const { user, message } = chat;
+
+  const isEmojiMessage = EMOJI_OPTIONS.indexOf(message) > -1;
 
   return (
     <Grid container direction="row" className={classes.container}>
@@ -61,7 +69,12 @@ const ChatMessage = ({ chat }: ChatMessageProps) => {
         <Link component={RouterLink} to={user.urlSlug} color="textPrimary">
           {user.username}
         </Link>
-        <Typography variant="body1" color="textSecondary">
+        <Typography
+          color="textSecondary"
+          className={classnames({
+            [classes.emoji]: isEmojiMessage,
+          })}
+        >
           {message}
         </Typography>
       </Grid>

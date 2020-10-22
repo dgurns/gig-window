@@ -3,17 +3,16 @@ import classnames from 'classnames';
 import { Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-const EMOJI_OPTIONS = ['👍', '😂', '🎉', '👏', '💯'];
+export const EMOJI_OPTIONS = ['👍', '😂', '🎉', '👏', '🔥', '💯'];
 
-const useStyles = makeStyles(({ spacing }) => ({
+const useStyles = makeStyles(({ palette, spacing }) => ({
   container: {
-    width: 'auto',
+    backgroundColor: palette.common.white,
+    borderRadius: spacing(1),
     fontSize: '1.5rem',
     lineHeight: '1.5rem',
-    transition: 'width 1s',
-  },
-  containerOpen: {
-    width: '100%',
+    margin: 2,
+    width: 'auto',
   },
   trigger: {
     cursor: 'pointer',
@@ -49,17 +48,16 @@ const EmojiPicker = ({ onEmojiPicked, className }: Props) => {
       direction="row"
       alignItems="center"
       justify="flex-end"
-      className={classnames(classes.container, className, {
-        [classes.containerOpen]: isExpanded,
-      })}
+      className={classnames(classes.container, className)}
     >
       {isExpanded &&
-        EMOJI_OPTIONS.map((emoji) => (
+        EMOJI_OPTIONS.map((emoji, index) => (
           <span
             onClick={() => onEmojiClicked(emoji)}
             className={classes.emojiOption}
             role="img"
             aria-label={emoji}
+            key={index}
           >
             {emoji}
           </span>
