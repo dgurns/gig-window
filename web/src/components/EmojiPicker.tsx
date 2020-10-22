@@ -18,10 +18,18 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
     cursor: 'pointer',
     filter: 'grayscale(100%)',
     padding: spacing(1),
+    transition: 'transform 0.05s',
+    '&:hover': {
+      filter: 'grayscale(100%) brightness(85%)',
+    },
   },
   emojiOption: {
     cursor: 'pointer',
     padding: spacing(1),
+    transition: 'transform 0.05s',
+    '&:hover': {
+      transform: 'scale(1.2)',
+    },
   },
 }));
 
