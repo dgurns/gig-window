@@ -54,7 +54,7 @@ const EmojiPicker = ({ onEmojiPicked, className }: Props) => {
     <Grid
       container
       direction="row"
-      alignItems="center"
+      alignItems="flex-end"
       justify="flex-end"
       className={classnames(classes.container, className)}
     >
