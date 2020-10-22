@@ -1,8 +1,8 @@
-<!-- Feature/Improvement/Fix: PR Title -->
+<!-- [Feature/Improvement/Fix]: PR Title -->
 
 **Linked issue:**
 
-Fixes #xxx
+Closes #xxx
 
 **What does this PR change or add to the repo?**
 

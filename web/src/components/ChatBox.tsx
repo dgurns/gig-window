@@ -80,6 +80,16 @@ const ChatBox = (props: ChatBoxProps) => {
     [currentUser, inputMessage, sendChat]
   );
 
+  const onEmojiPicked = useCallback(
+    (emoji) => {
+      if (!currentUser) {
+        return window.alert('You need to log in or sign up to chat');
+      }
+      sendChat(emoji);
+    },
+    [currentUser, sendChat]
+  );
+
   const renderChatEvent = useCallback((chatEvent: ChatEvent, index: number) => {
     const { chat, payment } = chatEvent;
     if (chat) {
@@ -106,7 +116,10 @@ const ChatBox = (props: ChatBoxProps) => {
             onKeyDown: onKeyPressed,
           }}
         />
-        <EmojiPicker onEmojiPicked={sendChat} className={classes.emojiPicker} />
+        <EmojiPicker
+          onEmojiPicked={onEmojiPicked}
+          className={classes.emojiPicker}
+        />
       </Grid>
     </Grid>
   );
