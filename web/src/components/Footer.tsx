@@ -20,15 +20,17 @@ const useStyles = makeStyles(({ spacing, breakpoints }) => ({
   },
   divider: {
     borderTop: `1px solid ${grey[400]}`,
-    marginBottom: spacing(2),
+    marginBottom: spacing(3),
     width: 65,
   },
-  githubLogoWrapper: {
+  footerRow: {
+    marginBottom: spacing(2),
+  },
+  logoWrapper: {
     height: 26,
-    marginBottom: spacing(1),
     marginRight: spacing(1),
   },
-  githubLogo: {
+  logo: {
     width: 26,
   },
 }));
@@ -46,16 +48,22 @@ const Footer = () => {
       className={classes.container}
     >
       <div className={classes.divider} />
-      <Grid item container direction="row" alignItems="center">
+      <Grid
+        item
+        container
+        direction="row"
+        alignItems="center"
+        className={classes.footerRow}
+      >
         <Link
           href="https://github.com/dgurns/gig-window"
           target="_blank"
-          className={classes.githubLogoWrapper}
+          className={classes.logoWrapper}
         >
           <img
             src="/images/GitHub-Mark-120px-plus.png"
             alt="GitHub logo"
-            className={classes.githubLogo}
+            className={classes.logo}
           />
         </Link>
         <Typography color="secondary">
@@ -64,6 +72,32 @@ const Footer = () => {
             Github
           </Link>{' '}
           for source code and community
+        </Typography>
+      </Grid>
+      <Grid
+        item
+        container
+        direction="row"
+        alignItems="center"
+        className={classes.footerRow}
+      >
+        <Link
+          href="https://twitter.com/danpgurney"
+          target="_blank"
+          className={classes.logoWrapper}
+        >
+          <img
+            src="/images/TwitterLogo.png"
+            alt="Twitter logo"
+            className={classes.logo}
+          />
+        </Link>
+        <Typography color="secondary">
+          Read{' '}
+          <Link href="https://twitter.com/danpgurney" target="_blank">
+            tweets
+          </Link>{' '}
+          from the project's maintainer
         </Typography>
       </Grid>
       {User.isAdmin(currentUser) && (
