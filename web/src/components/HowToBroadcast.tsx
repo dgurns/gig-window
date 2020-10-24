@@ -28,6 +28,10 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
     marginLeft: spacing(2),
     paddingLeft: spacing(2),
   },
+  inlineCopyButton: {
+    display: 'inline',
+    paddingLeft: spacing(1),
+  },
   rtmpField: {
     maxWidth: 370,
     position: 'relative',
@@ -43,10 +47,9 @@ const HowToBroadcast = () => {
   const classes = useStyles();
   const [currentUser] = useCurrentUser();
 
-  const [
-    streamlabsQuickstartIsExpanded,
-    setStreamlabsQuickstartIsExpanded,
-  ] = useState(false);
+  const [larixQuickstartIsExpanded, setLarixQuickstartIsExpanded] = useState(
+    false
+  );
   const [obsQuickstartIsExpanded, setObsQuickstartIsExpanded] = useState(false);
 
   return (
@@ -55,33 +58,49 @@ const HowToBroadcast = () => {
       <Grid className={classes.section}>
         <Typography>
           1. Pick a streaming app - anything that lets you stream to an RTMP
-          URL. Many people like <Link href="https://obsproject.com/">OBS</Link>{' '}
-          (laptop/desktop) or{' '}
-          <Link href="https://streamlabs.com/mobile-app">Streamlabs</Link>{' '}
-          (iPad/iPhone/Android), which are free and open source. Both have
-          plenty of help resources and guides for getting started.
+          URL. Many people like OBS (for{' '}
+          <Link href="https://obsproject.com/">laptop/desktop</Link>) or Larix
+          Broadcaster (for{' '}
+          <Link href="https://apps.apple.com/us/app/larix-broadcaster/id1042474385">
+            iPhone/iPad
+          </Link>{' '}
+          or{' '}
+          <Link href="https://play.google.com/store/apps/details?id=com.wmspanel.larix_broadcaster">
+            Android
+          </Link>
+          ) , which are free. Both have plenty of help resources and guides for
+          getting started.
         </Typography>
         <Typography className={classes.quickstartContainer}>
-          <em>Streamlabs instructions</em>
+          <em>Larix Broadcaster instructions</em>
           <TextButton
             onClick={() =>
-              setStreamlabsQuickstartIsExpanded(!streamlabsQuickstartIsExpanded)
+              setLarixQuickstartIsExpanded(!larixQuickstartIsExpanded)
             }
             className={classes.quickstartToggle}
           >
-            {streamlabsQuickstartIsExpanded ? 'Minimize' : 'Expand'}
+            {larixQuickstartIsExpanded ? 'Minimize' : 'Expand'}
           </TextButton>
         </Typography>
-        {streamlabsQuickstartIsExpanded && (
+        {larixQuickstartIsExpanded && (
           <Typography className={classes.quickstartBody}>
-            - Download app
+            - Download and open app
             <br />
-            - On login screen tap "Log in with Custom RTMP"
+            - Allow access to camera and microphone
             <br />
-            - Copy/paste RTMP URL and stream key from below
+            - Press the Gear icon in top right
             <br />
-            - Tap "Stream yourself" and allow camera and mic access
-            <br />- Press "Go Live" to start streaming
+            - Press "Connections" and then the Plus icon in top right
+            <br />- Enter a name like "GigWindow"
+            <br />- For the URL enter{' '}
+            <strong>{`${process.env.REACT_APP_RTMP_URL}/${currentUser?.muxStreamKey}`}</strong>
+            <CopyToClipboardButton
+              textToCopy={`${process.env.REACT_APP_RTMP_URL}/${currentUser?.muxStreamKey}`}
+              className={classes.inlineCopyButton}
+            />
+            <br />
+            - Press "Save" and go back to main broadcast screen
+            <br />- Press the red button to start streaming
             <br />- Monitor chats here on GigWindow
           </Typography>
         )}
