@@ -76,12 +76,13 @@ const HowToBroadcast = () => {
           <Typography className={classes.quickstartBody}>
             - Download app
             <br />
-            - On login screen tap "Other Platforms"
+            - On login screen tap "Log in with Custom RTMP"
             <br />
             - Copy/paste RTMP URL and stream key from below
             <br />
-            - Ignore the part about selecting widgets, just click "Next"
-            <br />- Press the red button to start streaming
+            - Tap "Stream yourself" and allow camera and mic access
+            <br />- Press "Go Live" to start streaming
+            <br />- Monitor chats here on GigWindow
           </Typography>
         )}
         <Typography className={classes.quickstartContainer}>
@@ -104,6 +105,7 @@ const HowToBroadcast = () => {
             into the "Server" field, and copy/paste the Stream Key
             <br />- Click "Apply", then "OK" and close the window
             <br />- Click "Start Streaming"
+            <br />- Monitor chats here on GigWindow
           </Typography>
         )}
       </Grid>
