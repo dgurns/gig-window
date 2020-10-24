@@ -84,7 +84,7 @@ const ProjectOverviewSplash = () => {
         alignItems="center"
         className={classes.container}
       >
-        <Typography variant="h1">Monetize your live streams</Typography>
+        <Typography variant="h1">Play online shows</Typography>
         <Typography variant="h6" className={classes.subheading}>
           An open source project from the co-founder of Concert Window
         </Typography>
@@ -125,6 +125,8 @@ const ProjectOverviewSplash = () => {
             <br />
             • Adaptive streaming to viewers means the video will automatically
             optimize for smooth playback
+            <br />
+            • Accept Apple Pay, Google Pay, and credit cards
             <br />
             • The project is completely free to use – you keep 80% of revenue
             after payment processing fees (2.9% + $0.30 per transaction)
