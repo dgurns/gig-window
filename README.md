@@ -1,7 +1,10 @@
-# GigWindow - Monetize your live streams
+# GigWindow - Play online shows
 
 An open source project from the co-founder of Concert Window  
 https://gigwindow.com
+
+_Overview video:_  
+https://youtu.be/-pn49imMqsk
 
 _Tech used in this project:_  
 Typescript, Create React App, Apollo Client, Material UI, GraphQL, Apollo Server Express, TypeGraphQL, TypeORM, PostgreSQL, Docker, Github Actions
