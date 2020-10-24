@@ -1,14 +1,21 @@
 import React, { useState, useCallback } from 'react';
+
 import Grid from '@material-ui/core/Grid';
 import DialogComponent from '@material-ui/core/Dialog';
 import { makeStyles } from '@material-ui/core/styles';
 
-interface DialogProps {
-  onClose?: () => void;
-  children?: React.ReactNode;
-}
-
 const useStyles = makeStyles((theme) => ({
+  dialogPaper: {
+    overflow: 'visible',
+    [theme.breakpoints.down('xs')]: {
+      width: '100%',
+    },
+  },
+  dialogPaperFullscreen: {
+    overflow: 'visible',
+    height: '70%',
+    minWidth: '96%',
+  },
   container: {
     flexDirection: 'column',
     overflowY: 'scroll',
@@ -19,13 +26,20 @@ const useStyles = makeStyles((theme) => ({
       width: '100%',
     },
   },
-  dialogPaper: {
-    overflow: 'visible',
-    [theme.breakpoints.down('xs')]: {
-      width: '100%',
-    },
+  containerFullscreen: {
+    flexDirection: 'column',
+    overflowY: 'scroll',
+    padding: theme.spacing(3),
+    height: '100%',
+    width: '100%',
   },
 }));
+
+interface DialogProps {
+  onClose?: () => void;
+  fullscreen?: boolean;
+  children?: React.ReactNode;
+}
 
 const useDialog = (
   isVisibleByDefault: boolean = false
@@ -35,16 +49,26 @@ const useDialog = (
   const [isVisible, setIsVisible] = useState(isVisibleByDefault);
 
   const Dialog = useCallback(
-    (props: DialogProps) => (
+    ({ onClose, fullscreen = false, children }: DialogProps) => (
       <DialogComponent
         open={isVisible}
         onClose={() => {
           setIsVisible(false);
-          props.onClose && props.onClose();
+          onClose && onClose();
         }}
-        classes={{ paper: classes.dialogPaper }}
+        classes={{
+          paper: fullscreen
+            ? classes.dialogPaperFullscreen
+            : classes.dialogPaper,
+        }}
       >
-        <Grid className={classes.container}>{props.children}</Grid>
+        <Grid
+          className={
+            fullscreen ? classes.containerFullscreen : classes.container
+          }
+        >
+          {children}
+        </Grid>
       </DialogComponent>
     ),
     [isVisible, setIsVisible, classes]
