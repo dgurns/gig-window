@@ -6,6 +6,7 @@ import useDialog from 'hooks/useDialog';
 import { Grid, Typography, Button, Card, Link } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { grey } from '@material-ui/core/colors';
+import PlayIcon from '@material-ui/icons/PlayArrow';
 
 import AuthForm from 'components/AuthForm';
 
@@ -32,6 +33,27 @@ const useStyles = makeStyles(({ palette, spacing, breakpoints }) => ({
     [breakpoints.down('sm')]: {
       marginBottom: 0,
     },
+  },
+  videoThumbnailContainer: {
+    cursor: 'pointer',
+    height: 96,
+    marginTop: spacing(4),
+    position: 'relative',
+    transform: 'rotate(-8deg)',
+    '&:hover #play-button': {
+      transform: 'scale(1.14)',
+    },
+  },
+  videoThumbnail: {
+    height: 96,
+  },
+  playButton: {
+    color: palette.common.white,
+    fontSize: '6rem',
+    transition: 'all 0.2s ease',
+    left: 38,
+    position: 'absolute',
+    top: 0,
   },
   detailsContainer: {
     marginTop: spacing(6),
@@ -70,6 +92,7 @@ const ProjectOverviewSplash = () => {
   const classes = useStyles();
 
   const [, currentUserQuery] = useCurrentUser();
+  const [VideoDialog, setVideoDialogIsVisible] = useDialog();
   const [AuthDialog, setAuthDialogIsVisible] = useDialog();
 
   const onAuthSuccess = () => {
@@ -84,7 +107,7 @@ const ProjectOverviewSplash = () => {
         alignItems="center"
         className={classes.container}
       >
-        <Typography variant="h1">Monetize your live streams</Typography>
+        <Typography variant="h1">Play online shows</Typography>
         <Typography variant="h6" className={classes.subheading}>
           An open source project from the co-founder of Concert Window
         </Typography>
@@ -119,12 +142,26 @@ const ProjectOverviewSplash = () => {
             your bank account
           </Typography>
         </Grid>
+        <Card
+          elevation={3}
+          className={classes.videoThumbnailContainer}
+          onClick={() => setVideoDialogIsVisible(true)}
+        >
+          <img
+            src="/images/GigWindowVideoThumbnail.jpg"
+            alt="Video thumbnail"
+            className={classes.videoThumbnail}
+          />
+          <PlayIcon className={classes.playButton} id="play-button" />
+        </Card>
         <Card elevation={3} className={classes.detailsContainer}>
           <Typography color="secondary">
             • Broadcast from your laptop, tablet, or smartphone
             <br />
             • Adaptive streaming to viewers means the video will automatically
             optimize for smooth playback
+            <br />
+            • Accept Apple Pay, Google Pay, and credit cards
             <br />
             • The project is completely free to use – you keep 80% of revenue
             after payment processing fees (2.9% + $0.30 per transaction)
@@ -193,6 +230,18 @@ const ProjectOverviewSplash = () => {
         </Grid>
         <div className={classes.divider} />
       </Grid>
+
+      <VideoDialog fullscreen>
+        <iframe
+          width="100%"
+          height="100%"
+          src="https://www.youtube.com/embed/-pn49imMqsk"
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          title="GigWindow overview video"
+          allowFullScreen
+        ></iframe>
+      </VideoDialog>
 
       <AuthDialog>
         <AuthForm showSignUpFirst onSuccess={onAuthSuccess} />
