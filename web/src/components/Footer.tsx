@@ -29,6 +29,9 @@ const useStyles = makeStyles(({ spacing, breakpoints }) => ({
   logoWrapper: {
     height: 26,
     marginRight: spacing(1),
+    [breakpoints.down('xs')]: {
+      marginBottom: spacing(1),
+    },
   },
   logo: {
     width: 26,
