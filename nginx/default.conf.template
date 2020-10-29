@@ -2,6 +2,10 @@ server {
   listen 80 default_server;
   listen [::]:80 default_server;
 
+  location /.well-known {
+    root /var/www/html/;
+  }
+
   return 301 https://$host$request_uri;
 }
 

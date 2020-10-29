@@ -1,4 +1,4 @@
-<!-- [Release]: Title -->
+<!-- vX.x.x -->
 
 Any introductory notes about this release...
 
