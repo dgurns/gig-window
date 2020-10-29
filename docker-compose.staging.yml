@@ -12,7 +12,7 @@ services:
     command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
-      - /var/www:/var/www
+      - /var/www/certbot:/var/www/certbot
     environment:
       - DOMAIN=api-staging.gigwindow.com
 
