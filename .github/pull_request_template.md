@@ -1,4 +1,4 @@
-<!-- [Feature/Improvement/Fix]: PR Title -->
+<!-- [Feature/Improvement/Fix/Release]: Title -->
 
 **Linked issue:**
 
