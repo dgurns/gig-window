@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import classnames from 'classnames';
 
 import { Grid, Typography, CircularProgress, Button } from '@material-ui/core';
@@ -28,15 +28,32 @@ const useStyles = makeStyles(({ palette, spacing, breakpoints }) => ({
     position: 'absolute',
     right: 0,
     top: 0,
+    '&:hover #play-button': {
+      transform: 'scale(1.24)',
+    },
     [breakpoints.down('xs')]: {
       paddingBottom: spacing(10),
     },
   },
   videoPlayer: {
-    height: '100%',
-    width: '100%',
-    '&:hover #play-button': {
-      transform: 'scale(1.18)',
+    backgroundColor: palette.common.black,
+    bottom: 0,
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+  },
+  videoOverlayGradient: {
+    background:
+      'linear-gradient(0deg, rgba(0,0,0,0.8) 43%, rgba(255,255,255,0) 74%)',
+    bottom: 0,
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    [breakpoints.up('xs')]: {
+      background:
+        'linear-gradient(0deg, rgba(0,0,0,0.8) 32%, rgba(255,255,255,0) 74%)',
     },
   },
   primaryContentText: {
@@ -104,6 +121,20 @@ const EmbeddedPlayer = () => {
   const [, showsQuery, activeShow] = useShowsForUser(user?.id);
 
   const [videoIsStarted, setVideoIsStarted] = useState(false);
+  const [previewIsOver, setPreviewIsOver] = useState(false);
+
+  useEffect(() => {
+    if (!videoIsStarted) {
+      return;
+    }
+    // Only set timer if video is started
+    const lengthOfPreview = 1000 * 60 * 2; // 2 minutes
+    const previewTimer = setTimeout(
+      () => setPreviewIsOver(true),
+      lengthOfPreview
+    );
+    return () => clearTimeout(previewTimer);
+  }, [videoIsStarted]);
 
   const activeShowDescription = useMemo(() => {
     if (showsQuery.loading) {
@@ -191,6 +222,17 @@ const EmbeddedPlayer = () => {
           </Grid>
         </>
       );
+    } else if (userIsStreamingLive && previewIsOver) {
+      return (
+        <Button
+          variant="contained"
+          size="large"
+          color="primary"
+          onClick={() => navigateToProfile(urlSlug)}
+        >
+          Keep watching?
+        </Button>
+      );
     }
   }, [
     userQuery,
@@ -200,9 +242,15 @@ const EmbeddedPlayer = () => {
     activeShow,
     classes,
     userIsStreamingLive,
+    previewIsOver,
   ]);
 
   const secondaryContent = useMemo(() => {
+    const shouldShowPlayButton =
+      userIsStreamingLive && !previewIsOver && !videoIsStarted;
+    const shouldShowPayWhatYouWantButton =
+      userIsStreamingLive && !previewIsOver && videoIsStarted;
+
     if (!user || userQuery.loading || showsQuery.loading) {
       return null;
     } else {
@@ -224,7 +272,7 @@ const EmbeddedPlayer = () => {
               {user?.isAllowedToStream && activeShowDescription}
             </Grid>
           </Grid>
-          {userIsStreamingLive && !videoIsStarted && (
+          {shouldShowPlayButton && (
             <Grid
               item
               container
@@ -239,7 +287,7 @@ const EmbeddedPlayer = () => {
               <PlayButton id="play-button" className={classes.playButton} />
             </Grid>
           )}
-          {userIsStreamingLive && !videoIsStarted && (
+          {shouldShowPayWhatYouWantButton && (
             <Button
               variant="contained"
               size="large"
@@ -262,6 +310,7 @@ const EmbeddedPlayer = () => {
     urlSlug,
     userIsStreamingLive,
     videoIsStarted,
+    previewIsOver,
   ]);
 
   return (
@@ -272,18 +321,23 @@ const EmbeddedPlayer = () => {
       alignItems="center"
       className={classes.container}
     >
-      {userIsStreamingLive && (
+      {userIsStreamingLive && !previewIsOver && (
         <Grid
           item
           container
           className={classes.videoPlayer}
-          onClick={() => setVideoIsStarted(true)}
+          onClick={() =>
+            !videoIsStarted
+              ? setVideoIsStarted(true)
+              : navigateToProfile(urlSlug)
+          }
         >
           <HlsPlayer
             hlsUrl={`https://stream.mux.com/${user?.muxPlaybackId}.m3u8`}
             shouldPlay={videoIsStarted}
             shouldHideControls={!videoIsStarted}
           />
+          <div className={classes.videoOverlayGradient} />
         </Grid>
       )}
       {primaryContent}
