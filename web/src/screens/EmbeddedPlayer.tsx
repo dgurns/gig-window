@@ -15,7 +15,6 @@ import HlsPlayer from 'components/HlsPlayer';
 
 const useStyles = makeStyles(({ palette, spacing, breakpoints }) => ({
   container: {
-    backgroundColor: palette.common.black,
     background: 'url("/images/curtains.jpg")',
     backgroundPosition: 'center',
     backgroundSize: 'cover',
@@ -72,6 +71,7 @@ const useStyles = makeStyles(({ palette, spacing, breakpoints }) => ({
     justifyContent: 'space-between',
     left: 0,
     padding: spacing(3),
+    paddingBottom: 0,
     position: 'absolute',
     right: 0,
     [breakpoints.down('xs')]: {
@@ -81,8 +81,10 @@ const useStyles = makeStyles(({ palette, spacing, breakpoints }) => ({
   },
   userInfoContainer: {
     alignItems: 'center',
+    cursor: 'pointer',
     display: 'flex',
     flexDirection: 'row',
+    paddingBottom: spacing(3),
     paddingRight: spacing(2),
   },
   userImage: {
@@ -103,6 +105,7 @@ const useStyles = makeStyles(({ palette, spacing, breakpoints }) => ({
     transition: 'all 0.2s ease',
   },
   secondaryCta: {
+    marginBottom: spacing(3),
     [breakpoints.down('xs')]: {
       marginTop: spacing(2),
     },
