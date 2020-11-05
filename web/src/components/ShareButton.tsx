@@ -26,10 +26,10 @@ const useStyles = makeStyles(({ spacing }) => ({
 }));
 
 interface Props {
-  urlSlug: string;
+  urlSlug?: string;
 }
 
-const ShareButton = ({ urlSlug }: Props) => {
+const ShareButton = ({ urlSlug = '' }: Props) => {
   const classes = useStyles();
 
   const [ShareDialog, setShareDialogIsVisible] = useDialog();
