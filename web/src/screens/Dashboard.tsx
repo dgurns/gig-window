@@ -20,6 +20,7 @@ import DashboardModeSwitcher from 'components/DashboardModeSwitcher';
 import LiveVideoArea from 'components/LiveVideoArea';
 import StreamPreviewMessage from 'components/StreamPreviewMessage';
 import ChatBox from 'components/ChatBox';
+import ShareButton from 'components/ShareButton';
 import HowToBroadcast from 'components/HowToBroadcast';
 
 const useStyles = makeStyles(({ breakpoints, palette, spacing }) => ({
@@ -76,14 +77,15 @@ const useStyles = makeStyles(({ breakpoints, palette, spacing }) => ({
   },
   tools: {
     marginTop: spacing(2),
+    paddingLeft: spacing(4),
     [breakpoints.down('sm')]: {
-      padding: `0 ${spacing(2)}px`,
+      padding: `0 ${spacing(3)}px`,
     },
   },
   howTo: {
-    padding: `${spacing(4)}px ${spacing(4)}px ${spacing(12)}px`,
+    padding: `${spacing(5)}px ${spacing(4)}px ${spacing(12)}px`,
     [breakpoints.down('xs')]: {
-      padding: `${spacing(3)}px ${spacing(3)}px`,
+      padding: `${spacing(4)}px ${spacing(3)}px`,
     },
   },
 }));
@@ -95,6 +97,7 @@ const Dashboard = () => {
   const {
     id,
     username,
+    urlSlug,
     profileImageUrl,
     isAllowedToStream,
     muxLiveStreamStatus,
@@ -203,6 +206,15 @@ const Dashboard = () => {
             </Grid>
           </Grid>
         </Paper>
+
+        <Grid
+          container
+          direction="row"
+          justify="flex-start"
+          className={classes.tools}
+        >
+          <ShareButton urlSlug={urlSlug} />
+        </Grid>
 
         {isAllowedToStream && (
           <Grid

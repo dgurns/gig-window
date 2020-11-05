@@ -156,7 +156,8 @@ const ProjectOverviewSplash = () => {
         </Card>
         <Card elevation={3} className={classes.detailsContainer}>
           <Typography color="secondary">
-            • Broadcast from your laptop, tablet, or smartphone
+            • Broadcast from your laptop, tablet, or smartphone - we give you
+            RTMP details
             <br />
             • Adaptive streaming to viewers means the video will automatically
             optimize for smooth playback

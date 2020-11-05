@@ -81,6 +81,11 @@ export default createMuiTheme({
         display: 'flex',
       },
     },
+    MuiIconButton: {
+      root: {
+        padding: 8,
+      },
+    },
     MuiInputBase: {
       input: {
         fontSize: '1rem',
@@ -94,6 +99,9 @@ export default createMuiTheme({
     MuiOutlinedInput: {
       root: {
         borderRadius: 8,
+      },
+      inputAdornedEnd: {
+        paddingRight: 21,
       },
       inputMarginDense: {
         paddingBottom: 10,
