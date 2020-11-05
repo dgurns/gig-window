@@ -66,7 +66,7 @@ const useStyles = makeStyles(({ spacing, breakpoints, palette }) => ({
   },
   videoContainer: {
     backgroundColor: palette.common.black,
-    background: 'url("images/curtains.jpg")',
+    background: 'url("/images/curtains.jpg")',
     backgroundPosition: 'center',
     backgroundSize: 'cover',
     height: '100%',

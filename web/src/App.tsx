@@ -17,6 +17,7 @@ import Payments from 'screens/Payments';
 import LinkStripeAccount from 'screens/LinkStripeAccount';
 import AutoLogin from 'screens/AutoLogin';
 import Admin from 'screens/Admin';
+import EmbeddedPlayer from 'screens/EmbeddedPlayer';
 
 const useStyles = makeStyles(({ spacing }) => ({
   content: {
@@ -41,6 +42,10 @@ function App() {
       jssStyles.parentElement.removeChild(jssStyles);
     }
   }, []);
+
+  if (window.location.pathname.startsWith('/embed')) {
+    return <EmbeddedPlayer />;
+  }
 
   const isCheckingForCurrentUser = !data && loading;
   if (isCheckingForCurrentUser) {
