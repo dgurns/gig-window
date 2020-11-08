@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import CopyIcon from '@material-ui/icons/FileCopy';
+import CopyIcon from '@material-ui/icons/Assignment';
 import DoneIcon from '@material-ui/icons/Done';
 
 const useStyles = makeStyles(({ palette }) => ({

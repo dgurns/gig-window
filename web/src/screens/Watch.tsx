@@ -23,6 +23,7 @@ import ShowMarquee from 'components/ShowMarquee';
 import LiveVideoArea from 'components/LiveVideoArea';
 import Paywall from 'components/Paywall';
 import ChatBox from 'components/ChatBox';
+import ShareButton from 'components/ShareButton';
 import TipButton from 'components/TipButton';
 
 const useStyles = makeStyles(({ spacing, breakpoints, palette }) => ({
@@ -66,7 +67,7 @@ const useStyles = makeStyles(({ spacing, breakpoints, palette }) => ({
   },
   videoContainer: {
     backgroundColor: palette.common.black,
-    background: 'url("images/curtains.jpg")',
+    background: 'url("/images/curtains.jpg")',
     backgroundPosition: 'center',
     backgroundSize: 'cover',
     height: '100%',
@@ -84,6 +85,7 @@ const useStyles = makeStyles(({ spacing, breakpoints, palette }) => ({
   },
   tools: {
     marginTop: spacing(2),
+    paddingLeft: spacing(4),
     [breakpoints.down('sm')]: {
       padding: `0 ${spacing(2)}px`,
     },
@@ -224,7 +226,15 @@ const Watch = () => {
         justify="flex-start"
         className={classes.tools}
       >
-        <Grid item container direction="row" xs={12} sm={8} justify="flex-end">
+        <Grid
+          item
+          container
+          direction="row"
+          xs={12}
+          sm={8}
+          justify="space-between"
+        >
+          <ShareButton urlSlug={user.urlSlug} />
           {shouldShowTipButton && <TipButton payee={user} show={activeShow} />}
         </Grid>
       </Grid>
