@@ -78,6 +78,7 @@ const useStyles = makeStyles(({ breakpoints, palette, spacing }) => ({
   tools: {
     marginTop: spacing(2),
     paddingLeft: spacing(4),
+    paddingRight: spacing(4),
     [breakpoints.down('sm')]: {
       padding: `0 ${spacing(3)}px`,
     },
