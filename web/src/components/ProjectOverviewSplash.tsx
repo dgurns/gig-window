@@ -159,10 +159,12 @@ const ProjectOverviewSplash = () => {
             • Broadcast from your laptop, tablet, or smartphone - we give you
             RTMP details
             <br />
-            • Adaptive streaming to viewers means the video will automatically
-            optimize for smooth playback
+            • Adaptive streaming means the video will automatically optimize for
+            smooth playback
             <br />
             • Accept Apple Pay, Google Pay, and credit cards
+            <br />
+            • Embed your player on your own site
             <br />
             • The project is completely free to use – you keep 80% of revenue
             after payment processing fees (2.9% + $0.30 per transaction)
