@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Grid, Link, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -7,6 +7,8 @@ import VersionIcon from '@material-ui/icons/AssistantPhoto';
 
 import useCurrentUser from 'hooks/useCurrentUser';
 import User from 'services/User';
+
+const GIT_SHA = process.env.VERCEL_GITHUB_COMMIT_SHA;
 
 const useStyles = makeStyles(({ spacing, breakpoints }) => ({
   container: {
@@ -47,24 +49,10 @@ const useStyles = makeStyles(({ spacing, breakpoints }) => ({
   },
 }));
 
-const getGitSha = async (): Promise<string> => {
-  try {
-    const versionResponse = await fetch('version.json');
-    const { gitSha } = await versionResponse.json();
-    return gitSha;
-  } catch {}
-  return '';
-};
-
 const Footer = () => {
   const classes = useStyles();
 
   const [currentUser] = useCurrentUser();
-  const [gitSha, setGitSha] = useState('');
-
-  useEffect(() => {
-    getGitSha().then((sha) => setGitSha(sha));
-  }, []);
 
   return (
     <Grid
@@ -127,7 +115,7 @@ const Footer = () => {
         </Typography>
       </Grid>
 
-      {gitSha && (
+      {GIT_SHA && (
         <Grid
           item
           container
@@ -139,9 +127,9 @@ const Footer = () => {
           <Typography color="secondary">
             Version:{' '}
             <Link
-              href={`https://github.com/dgurns/gig-window/commit/${gitSha}`}
+              href={`https://github.com/dgurns/gig-window/commit/${GIT_SHA}`}
             >
-              {gitSha}
+              {GIT_SHA}
             </Link>
           </Typography>
         </Grid>
