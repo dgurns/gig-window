@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Grid, Link, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { grey } from '@material-ui/core/colors';
+import VersionIcon from '@material-ui/icons/AssistantPhoto';
 
 import useCurrentUser from 'hooks/useCurrentUser';
 import User from 'services/User';
@@ -36,12 +37,34 @@ const useStyles = makeStyles(({ spacing, breakpoints }) => ({
   logo: {
     width: 26,
   },
+  icon: {
+    height: 26,
+    marginRight: spacing(1),
+    width: 26,
+    [breakpoints.down('xs')]: {
+      marginBottom: spacing(1),
+    },
+  },
 }));
+
+const getGitSha = async (): Promise<string> => {
+  try {
+    const versionResponse = await fetch('version.json');
+    const { gitSha } = await versionResponse.json();
+    return gitSha;
+  } catch {}
+  return '';
+};
 
 const Footer = () => {
   const classes = useStyles();
 
   const [currentUser] = useCurrentUser();
+  const [gitSha, setGitSha] = useState('');
+
+  useEffect(() => {
+    getGitSha().then((sha) => setGitSha(sha));
+  }, []);
 
   return (
     <Grid
@@ -103,8 +126,29 @@ const Footer = () => {
           from the project's maintainer
         </Typography>
       </Grid>
+
+      {gitSha && (
+        <Grid
+          item
+          container
+          direction="row"
+          alignItems="center"
+          className={classes.footerRow}
+        >
+          <VersionIcon color="secondary" className={classes.icon} />
+          <Typography color="secondary">
+            Version:{' '}
+            <Link
+              href={`https://github.com/dgurns/gig-window/commit/${gitSha}`}
+            >
+              {gitSha}
+            </Link>
+          </Typography>
+        </Grid>
+      )}
+
       {User.isAdmin(currentUser) && (
-        <Link component={RouterLink} to="/admin">
+        <Link component={RouterLink} to="/admin" className={classes.footerRow}>
           Admin
         </Link>
       )}
