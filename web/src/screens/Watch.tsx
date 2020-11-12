@@ -1,12 +1,6 @@
 import React, { useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
-import {
-  Paper,
-  Container,
-  Typography,
-  Grid,
-  CircularProgress,
-} from '@material-ui/core';
+import { Paper, Container, Typography, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import useCurrentUser from 'hooks/useCurrentUser';
@@ -14,11 +8,10 @@ import useUser from 'hooks/useUser';
 import useShowsForUser from 'hooks/useShowsForUser';
 import useFreePreview from 'hooks/useFreePreview';
 import usePayments from 'hooks/usePayments';
-import DateTime from 'services/DateTime';
 import Ui from 'services/Ui';
-import Image from 'services/Image';
 import User from 'services/User';
 
+import UserInfoBlock from 'components/UserInfoBlock';
 import ShowMarquee from 'components/ShowMarquee';
 import LiveVideoArea from 'components/LiveVideoArea';
 import Paywall from 'components/Paywall';
@@ -37,18 +30,8 @@ const useStyles = makeStyles(({ spacing, breakpoints, palette }) => ({
       margin: `${spacing(1)}px ${spacing(3)}px`,
     },
   },
-  userInfoContainer: {
-    alignItems: 'center',
+  userInfo: {
     padding: `${spacing(4)}px ${spacing(4)}px`,
-  },
-  userImage: {
-    height: 80,
-    marginRight: spacing(2),
-    width: 80 * Image.DEFAULT_IMAGE_ASPECT_RATIO,
-  },
-  userText: {
-    flex: 1,
-    flexDirection: 'column',
   },
   videoChatContainer: {
     flexDirection: 'row',
@@ -66,7 +49,7 @@ const useStyles = makeStyles(({ spacing, breakpoints, palette }) => ({
     height: '100%',
     position: 'relative',
     [breakpoints.down('xs')]: {
-      height: 260,
+      minHeight: 260,
     },
   },
   chat: {
@@ -107,26 +90,6 @@ const Watch = () => {
     payeeUserId: user?.id,
   });
 
-  const activeShowDescription = useMemo(() => {
-    if (showsQuery.loading) {
-      return <CircularProgress size={19} color="secondary" />;
-    } else if (showsQuery.error) {
-      return (
-        <Typography color="textSecondary">Error fetching shows</Typography>
-      );
-    } else if (activeShow) {
-      return (
-        <Typography color="textSecondary">
-          {`${DateTime.formatUserReadableShowtime(activeShow.showtime)}: ${
-            activeShow.title
-          }`}
-        </Typography>
-      );
-    } else {
-      return <Typography color="textSecondary">No shows scheduled</Typography>;
-    }
-  }, [showsQuery, activeShow]);
-
   const videoArea = useMemo(() => {
     if (!user) return null;
 
@@ -157,7 +120,7 @@ const Watch = () => {
   if (userQuery.loading) {
     return (
       <Container disableGutters maxWidth={false}>
-        <Grid container direction="row" className={classes.userInfoContainer}>
+        <Grid container direction="row" className={classes.userInfo}>
           <Typography color="secondary">Loading...</Typography>
         </Grid>
       </Container>
@@ -165,7 +128,7 @@ const Watch = () => {
   } else if (!user || userQuery.error) {
     return (
       <Container disableGutters maxWidth={false}>
-        <Grid container direction="row" className={classes.userInfoContainer}>
+        <Grid container direction="row" className={classes.userInfo}>
           <Typography color="secondary">
             {userQuery.error
               ? 'Error fetching user'
@@ -191,19 +154,7 @@ const Watch = () => {
       maxWidth={false}
       className={classes.pageContainer}
     >
-      <Grid container direction="row" className={classes.userInfoContainer}>
-        {user.profileImageUrl && (
-          <img
-            src={user.profileImageUrl}
-            alt="Watch"
-            className={classes.userImage}
-          />
-        )}
-        <Grid item className={classes.userText}>
-          <Typography variant="h6">{user.username}</Typography>
-          {user?.isAllowedToStream && activeShowDescription}
-        </Grid>
-      </Grid>
+      <UserInfoBlock user={user} className={classes.userInfo} />
       <Paper elevation={3}>
         <Grid container className={classes.videoChatContainer}>
           <Grid item xs={12} sm={8} className={classes.videoContainer}>

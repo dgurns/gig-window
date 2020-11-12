@@ -1,21 +1,12 @@
 import React, { useMemo } from 'react';
-import {
-  Paper,
-  Button,
-  Grid,
-  Container,
-  Typography,
-  CircularProgress,
-} from '@material-ui/core';
+import { Paper, Button, Grid, Container, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import useCurrentUser from 'hooks/useCurrentUser';
-import useShowsForUser from 'hooks/useShowsForUser';
-import DateTime from 'services/DateTime';
-import Image from 'services/Image';
 
 import DashboardSubheader from 'components/DashboardSubheader';
 import LinkStripeAccountBanner from 'components/LinkStripeAccountBanner';
+import UserInfoBlock from 'components/UserInfoBlock';
 import DashboardModeSwitcher from 'components/DashboardModeSwitcher';
 import LiveVideoArea from 'components/LiveVideoArea';
 import StreamPreviewMessage from 'components/StreamPreviewMessage';
@@ -27,18 +18,8 @@ const useStyles = makeStyles(({ breakpoints, palette, spacing }) => ({
   container: {
     paddingBottom: spacing(4),
   },
-  artistInfoContainer: {
-    alignItems: 'center',
+  userInfo: {
     padding: `${spacing(4)}px ${spacing(4)}px`,
-  },
-  artistImage: {
-    height: 80,
-    marginRight: spacing(2),
-    width: 80 * Image.DEFAULT_IMAGE_ASPECT_RATIO,
-  },
-  artistText: {
-    flex: 1,
-    flexDirection: 'column',
   },
   videoChatContainer: {
     flexDirection: 'row',
@@ -90,35 +71,11 @@ const Dashboard = () => {
   const [currentUser, currentUserQuery] = useCurrentUser({ subscribe: true });
   const {
     id,
-    username,
     urlSlug,
-    profileImageUrl,
     isAllowedToStream,
     muxLiveStreamStatus,
     stripeConnectAccountId,
   } = currentUser ?? {};
-
-  const [, showsQuery, activeShow] = useShowsForUser(currentUser?.id);
-
-  const activeShowDescription = useMemo(() => {
-    if (showsQuery.loading) {
-      return <CircularProgress size={19} color="secondary" />;
-    } else if (showsQuery.error) {
-      return (
-        <Typography color="textSecondary">Error fetching shows</Typography>
-      );
-    } else if (activeShow) {
-      return (
-        <Typography color="textSecondary">
-          {`${DateTime.formatUserReadableShowtime(activeShow.showtime)}: ${
-            activeShow.title
-          }`}
-        </Typography>
-      );
-    } else {
-      return <Typography color="textSecondary">No shows scheduled</Typography>;
-    }
-  }, [showsQuery, activeShow]);
 
   const videoArea = useMemo(() => {
     if (!isAllowedToStream) {
@@ -150,7 +107,7 @@ const Dashboard = () => {
   if (!currentUser) {
     return (
       <Container disableGutters maxWidth={false} className={classes.container}>
-        <Grid container direction="row" className={classes.artistInfoContainer}>
+        <Grid container direction="row" className={classes.userInfo}>
           <Typography color="secondary">Loading...</Typography>
         </Grid>
       </Container>
@@ -166,20 +123,7 @@ const Dashboard = () => {
       {shouldShowLinkStripeAccountMessage && <LinkStripeAccountBanner />}
 
       <Container disableGutters maxWidth={false} className={classes.container}>
-        <Grid container direction="row" className={classes.artistInfoContainer}>
-          {profileImageUrl && (
-            <img
-              src={profileImageUrl}
-              alt="User"
-              className={classes.artistImage}
-            />
-          )}
-          <Grid item className={classes.artistText}>
-            <Typography variant="h6">{username}</Typography>
-            {isAllowedToStream && activeShowDescription}
-          </Grid>
-        </Grid>
-
+        <UserInfoBlock user={currentUser} className={classes.userInfo} />
         <Paper elevation={3}>
           {isAllowedToStream && <DashboardModeSwitcher />}
           <Grid container className={classes.videoChatContainer}>
