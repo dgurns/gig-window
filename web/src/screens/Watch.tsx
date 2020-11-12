@@ -40,21 +40,14 @@ const useStyles = makeStyles(({ spacing, breakpoints, palette }) => ({
   userInfoContainer: {
     alignItems: 'center',
     padding: `${spacing(4)}px ${spacing(4)}px`,
-    [breakpoints.down('xs')]: {
-      alignItems: 'flex-start',
-      flexDirection: 'column-reverse',
-      padding: `${spacing(3)}px ${spacing(3)}px`,
-    },
   },
   userImage: {
     height: 80,
     marginRight: spacing(2),
     width: 80 * Image.DEFAULT_IMAGE_ASPECT_RATIO,
-    [breakpoints.down('xs')]: {
-      marginTop: spacing(2),
-    },
   },
   userText: {
+    flex: 1,
     flexDirection: 'column',
   },
   videoChatContainer: {

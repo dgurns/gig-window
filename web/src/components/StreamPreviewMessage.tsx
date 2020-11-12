@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useMutation, gql } from '@apollo/client';
 import { Typography, CircularProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -41,6 +41,12 @@ const StreamPreviewMessage = ({ muxLiveStreamStatus }: Props) => {
       errorPolicy: 'all',
     }
   );
+
+  useEffect(() => {
+    if (data) {
+      window.location.reload();
+    }
+  }, [data]);
 
   let message;
   switch (muxLiveStreamStatus) {

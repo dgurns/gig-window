@@ -30,21 +30,14 @@ const useStyles = makeStyles(({ breakpoints, palette, spacing }) => ({
   artistInfoContainer: {
     alignItems: 'center',
     padding: `${spacing(4)}px ${spacing(4)}px`,
-    [breakpoints.down('xs')]: {
-      alignItems: 'flex-start',
-      flexDirection: 'column-reverse',
-      padding: `${spacing(3)}px ${spacing(3)}px`,
-    },
   },
   artistImage: {
     height: 80,
     marginRight: spacing(2),
     width: 80 * Image.DEFAULT_IMAGE_ASPECT_RATIO,
-    [breakpoints.down('xs')]: {
-      marginTop: spacing(2),
-    },
   },
   artistText: {
+    flex: 1,
     flexDirection: 'column',
   },
   videoChatContainer: {
@@ -72,7 +65,7 @@ const useStyles = makeStyles(({ breakpoints, palette, spacing }) => ({
     backgroundColor: palette.common.white,
     height: '100%',
     [breakpoints.down('xs')]: {
-      height: 260,
+      height: 300,
     },
   },
   tools: {
@@ -194,7 +187,7 @@ const Dashboard = () => {
               item
               container
               xs={12}
-              sm={8}
+              sm={5}
               direction="column"
               justify="center"
               alignItems="center"
@@ -202,7 +195,7 @@ const Dashboard = () => {
             >
               {videoArea}
             </Grid>
-            <Grid item container xs={false} sm={4} className={classes.chat}>
+            <Grid item container xs={false} sm={7} className={classes.chat}>
               <ChatBox userId={id} />
             </Grid>
           </Grid>
