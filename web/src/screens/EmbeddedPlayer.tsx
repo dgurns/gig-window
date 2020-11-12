@@ -1,17 +1,16 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import classnames from 'classnames';
 
-import { Grid, Typography, CircularProgress, Button } from '@material-ui/core';
+import { Grid, Typography, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import PlayButton from '@material-ui/icons/PlayArrow';
 
 import useUser from 'hooks/useUser';
 import useShowsForUser from 'hooks/useShowsForUser';
-import DateTime from 'services/DateTime';
-import Image from 'services/Image';
 
 import Countdown from 'components/Countdown';
 import HlsPlayer from 'components/HlsPlayer';
+import UserInfoBlock from 'components/UserInfoBlock';
 
 const useStyles = makeStyles(({ palette, spacing, breakpoints }) => ({
   container: {
@@ -79,21 +78,10 @@ const useStyles = makeStyles(({ palette, spacing, breakpoints }) => ({
       justifyContent: 'flex-end',
     },
   },
-  userInfoContainer: {
-    alignItems: 'center',
+  userInfo: {
     cursor: 'pointer',
-    display: 'flex',
-    flexDirection: 'row',
     paddingBottom: spacing(3),
     paddingRight: spacing(2),
-  },
-  userImage: {
-    height: 80,
-    marginRight: spacing(2),
-    width: 80 * Image.DEFAULT_IMAGE_ASPECT_RATIO,
-  },
-  userText: {
-    flexDirection: 'column',
   },
   playButtonContainer: {
     color: palette.common.white,
@@ -138,26 +126,6 @@ const EmbeddedPlayer = () => {
     );
     return () => clearTimeout(previewTimer);
   }, [videoIsStarted]);
-
-  const activeShowDescription = useMemo(() => {
-    if (showsQuery.loading) {
-      return <CircularProgress size={19} color="secondary" />;
-    } else if (showsQuery.error) {
-      return (
-        <Typography color="textSecondary">Error fetching shows</Typography>
-      );
-    } else if (activeShow) {
-      return (
-        <Typography color="textSecondary">
-          {`${DateTime.formatUserReadableShowtime(activeShow.showtime)}: ${
-            activeShow.title
-          }`}
-        </Typography>
-      );
-    } else {
-      return <Typography color="textSecondary">No shows scheduled</Typography>;
-    }
-  }, [showsQuery, activeShow]);
 
   const userIsStreamingLive =
     user?.isInPublicMode && user?.muxLiveStreamStatus === 'active';
@@ -259,22 +227,7 @@ const EmbeddedPlayer = () => {
     } else {
       return (
         <Grid container className={classes.secondaryContent}>
-          <Grid
-            className={classes.userInfoContainer}
-            onClick={() => navigateToProfile(urlSlug)}
-          >
-            {user.profileImageUrl && (
-              <img
-                src={user.profileImageUrl}
-                alt={user.username}
-                className={classes.userImage}
-              />
-            )}
-            <Grid item className={classes.userText}>
-              <Typography variant="h6">{user.username}</Typography>
-              {user?.isAllowedToStream && activeShowDescription}
-            </Grid>
-          </Grid>
+          <UserInfoBlock user={user} className={classes.userInfo} />
           {shouldShowPlayButton && (
             <Grid
               item
@@ -308,7 +261,6 @@ const EmbeddedPlayer = () => {
     userQuery,
     showsQuery,
     user,
-    activeShowDescription,
     classes,
     urlSlug,
     userIsStreamingLive,

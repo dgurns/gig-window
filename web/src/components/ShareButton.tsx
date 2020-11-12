@@ -35,7 +35,7 @@ const ShareButton = ({ urlSlug = '' }: Props) => {
   const [ShareDialog, setShareDialogIsVisible] = useDialog();
 
   const urlToShare = `${window.location.origin}/${urlSlug}`;
-  const embedCode = `<iframe width="100%" height="400" src="${window.location.origin}/embed/${urlSlug}"></iframe>`;
+  const embedCode = `<iframe width="100%" height="400" src="${window.location.origin}/embed/${urlSlug}" frameborder="0"></iframe>`;
 
   return (
     <>

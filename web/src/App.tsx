@@ -59,7 +59,9 @@ function App() {
         className={classes.networkError}
       >
         <Typography color="error">
-          Network error - please check your internet and refresh the page
+          Network error - could not reach the backend.
+          <br />
+          Please double-check your internet connection and reload the page.
         </Typography>
       </Grid>
     );
