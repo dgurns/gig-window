@@ -3,9 +3,12 @@ import { Link as RouterLink } from 'react-router-dom';
 import { Grid, Link, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { grey } from '@material-ui/core/colors';
+import VersionIcon from '@material-ui/icons/AssistantPhoto';
 
 import useCurrentUser from 'hooks/useCurrentUser';
 import User from 'services/User';
+
+const GIT_SHA = process.env.VERCEL_GITHUB_COMMIT_SHA;
 
 const useStyles = makeStyles(({ spacing, breakpoints }) => ({
   container: {
@@ -35,6 +38,14 @@ const useStyles = makeStyles(({ spacing, breakpoints }) => ({
   },
   logo: {
     width: 26,
+  },
+  icon: {
+    height: 26,
+    marginRight: spacing(1),
+    width: 26,
+    [breakpoints.down('xs')]: {
+      marginBottom: spacing(1),
+    },
   },
 }));
 
@@ -103,8 +114,29 @@ const Footer = () => {
           from the project's maintainer
         </Typography>
       </Grid>
+
+      {GIT_SHA && (
+        <Grid
+          item
+          container
+          direction="row"
+          alignItems="center"
+          className={classes.footerRow}
+        >
+          <VersionIcon color="secondary" className={classes.icon} />
+          <Typography color="secondary">
+            Version:{' '}
+            <Link
+              href={`https://github.com/dgurns/gig-window/commit/${GIT_SHA}`}
+            >
+              {GIT_SHA}
+            </Link>
+          </Typography>
+        </Grid>
+      )}
+
       {User.isAdmin(currentUser) && (
-        <Link component={RouterLink} to="/admin">
+        <Link component={RouterLink} to="/admin" className={classes.footerRow}>
           Admin
         </Link>
       )}
