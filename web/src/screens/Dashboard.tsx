@@ -140,7 +140,7 @@ const Dashboard = () => {
               {videoArea}
             </Grid>
             <Grid item container xs={false} sm={6} className={classes.chat}>
-              <ChatBox userId={id} />
+              <ChatBox userId={id} shouldShowFontSizeToggle />
             </Grid>
           </Grid>
         </Paper>

@@ -1,7 +1,14 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from 'react';
 import { Grid, TextField, Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import FontSizeIcon from '@material-ui/icons/FormatSize';
 
 import useCurrentUser from 'hooks/useCurrentUser';
 import useChat, { ChatEvent } from 'hooks/useChat';
@@ -10,11 +17,7 @@ import ChatMessage from 'components/ChatMessage';
 import TipMessage from 'components/TipMessage';
 import EmojiPicker from 'components/EmojiPicker';
 
-interface ChatBoxProps {
-  userId?: number;
-}
-
-const useStyles = makeStyles(({ spacing }) => ({
+const useStyles = makeStyles(({ spacing, palette }) => ({
   container: {
     flexDirection: 'column',
     height: '100%',
@@ -32,6 +35,17 @@ const useStyles = makeStyles(({ spacing }) => ({
     margin: spacing(1),
     position: 'relative',
   },
+  fontSizeToggle: {
+    backgroundColor: palette.common.white,
+    color: palette.secondary.main,
+    cursor: 'pointer',
+    bottom: spacing(1),
+    left: spacing(1),
+    position: 'absolute',
+    '&:hover': {
+      color: palette.secondary.dark,
+    },
+  },
   emojiPicker: {
     bottom: 0,
     position: 'absolute',
@@ -39,7 +53,12 @@ const useStyles = makeStyles(({ spacing }) => ({
   },
 }));
 
-const ChatBox = (props: ChatBoxProps) => {
+interface Props {
+  userId?: number;
+  shouldShowFontSizeToggle?: boolean;
+}
+
+const ChatBox = ({ userId, shouldShowFontSizeToggle = false }: Props) => {
   const classes = useStyles();
   const chatsRef = useRef<HTMLDivElement>(null);
 
@@ -48,9 +67,10 @@ const ChatBox = (props: ChatBoxProps) => {
   );
 
   const [currentUser] = useCurrentUser();
-  const [chatEvents, sendChat] = useChat(props.userId);
+  const [chatEvents, sendChat] = useChat(userId);
 
   const [inputMessage, setInputMessage] = useState('');
+  const [isLargeFontSize, setIsLargeFontSize] = useState(false);
 
   useEffect(() => {
     if (chatsRef.current) {
@@ -95,14 +115,33 @@ const ChatBox = (props: ChatBoxProps) => {
     [currentUser, sendChat]
   );
 
-  const renderChatEvent = useCallback((chatEvent: ChatEvent, index: number) => {
-    const { chat, payment } = chatEvent;
-    if (chat) {
-      return <ChatMessage chat={chat} key={index} />;
-    } else if (payment) {
-      return <TipMessage payment={payment} key={index} />;
-    }
-  }, []);
+  const renderChatEvent = useCallback(
+    (chatEvent: ChatEvent, index: number) => {
+      const { chat, payment } = chatEvent;
+      if (chat) {
+        return (
+          <ChatMessage
+            chat={chat}
+            isLargeFontSize={isLargeFontSize}
+            key={index}
+          />
+        );
+      } else if (payment) {
+        return (
+          <TipMessage
+            payment={payment}
+            isLargeFontSize={isLargeFontSize}
+            key={index}
+          />
+        );
+      }
+    },
+    [isLargeFontSize]
+  );
+
+  const onFontSizeToggled = useCallback(() => {
+    setIsLargeFontSize(!isLargeFontSize);
+  }, [isLargeFontSize]);
 
   return (
     <Grid container className={classes.container}>
@@ -121,6 +160,13 @@ const ChatBox = (props: ChatBoxProps) => {
             onKeyDown: onKeyPressed,
           }}
         />
+        {shouldShowFontSizeToggle && (
+          <FontSizeIcon
+            onClick={onFontSizeToggled}
+            color="secondary"
+            className={classes.fontSizeToggle}
+          />
+        )}
         <EmojiPicker
           onEmojiPicked={onEmojiPicked}
           className={classes.emojiPicker}
