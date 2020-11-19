@@ -69,7 +69,7 @@ const useStyles = makeStyles(({ palette, spacing, breakpoints }) => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     left: 0,
-    padding: spacing(3),
+    padding: spacing(2),
     paddingBottom: 0,
     position: 'absolute',
     right: 0,
@@ -80,7 +80,7 @@ const useStyles = makeStyles(({ palette, spacing, breakpoints }) => ({
   },
   userInfo: {
     cursor: 'pointer',
-    paddingBottom: spacing(3),
+    paddingBottom: spacing(2),
     paddingRight: spacing(2),
   },
   playButtonContainer: {
@@ -93,9 +93,11 @@ const useStyles = makeStyles(({ palette, spacing, breakpoints }) => ({
     transition: 'all 0.2s ease',
   },
   secondaryCta: {
-    marginBottom: spacing(3),
+    marginBottom: spacing(2),
+    marginRight: spacing(1),
     [breakpoints.down('xs')]: {
-      marginTop: spacing(2),
+      marginBottom: spacing(3),
+      marginTop: spacing(1),
     },
   },
 }));
@@ -227,7 +229,9 @@ const EmbeddedPlayer = () => {
     } else {
       return (
         <Grid container className={classes.secondaryContent}>
-          <UserInfoBlock user={user} className={classes.userInfo} />
+          <div onClick={() => navigateToProfile(urlSlug)}>
+            <UserInfoBlock user={user} className={classes.userInfo} />
+          </div>
           {shouldShowPlayButton && (
             <Grid
               item

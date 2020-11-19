@@ -49,7 +49,7 @@ const useStyles = makeStyles(({ spacing, breakpoints, palette }) => ({
     height: '100%',
     position: 'relative',
     [breakpoints.down('xs')]: {
-      minHeight: 224,
+      minHeight: 200,
     },
   },
   chat: {

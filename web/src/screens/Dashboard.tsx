@@ -33,7 +33,7 @@ const useStyles = makeStyles(({ breakpoints, palette, spacing }) => ({
     backgroundColor: palette.common.black,
     height: '100%',
     [breakpoints.down('xs')]: {
-      minHeight: 224,
+      minHeight: 200,
     },
   },
   requestAccessMessage: {

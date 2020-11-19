@@ -59,17 +59,30 @@ const HowToBroadcast = () => {
         <Typography>
           1. Pick a streaming app - anything that lets you stream to an RTMP
           URL. Many people like OBS (for{' '}
-          <Link href="https://obsproject.com/">laptop/desktop</Link>) or Larix
-          Broadcaster (for{' '}
-          <Link href="https://apps.apple.com/us/app/larix-broadcaster/id1042474385">
+          <Link href="https://obsproject.com/" target="_blank">
+            laptop/desktop
+          </Link>
+          ) or Larix Broadcaster (for{' '}
+          <Link
+            href="https://apps.apple.com/us/app/larix-broadcaster/id1042474385"
+            target="_blank"
+          >
             iPhone/iPad
           </Link>{' '}
           or{' '}
-          <Link href="https://play.google.com/store/apps/details?id=com.wmspanel.larix_broadcaster">
+          <Link
+            href="https://play.google.com/store/apps/details?id=com.wmspanel.larix_broadcaster"
+            target="_blank"
+          >
             Android
           </Link>
           ) , which are free. Both have plenty of help resources and guides for
-          getting started.
+          getting started. If you want to do a show with prerecorded videos or
+          live guests, try{' '}
+          <Link href="https://streamyard.com/" target="_blank">
+            StreamYard
+          </Link>{' '}
+          (not free).
         </Typography>
         <Typography className={classes.quickstartContainer}>
           <em>Larix Broadcaster instructions</em>
