@@ -11,7 +11,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import FontSizeIcon from '@material-ui/icons/FormatSize';
 
 import useCurrentUser from 'hooks/useCurrentUser';
-import useChat, { ChatEvent } from 'hooks/useChat';
+import useChat from 'hooks/useChat';
 
 import ChatMessage from 'components/ChatMessage';
 import TipMessage from 'components/TipMessage';
@@ -61,6 +61,7 @@ interface Props {
 const ChatBox = ({ userId, shouldShowFontSizeToggle = false }: Props) => {
   const classes = useStyles();
   const chatsRef = useRef<HTMLDivElement>(null);
+  const chatsHeight = chatsRef.current?.scrollHeight ?? 0;
 
   const isMobile = useMediaQuery<Theme>((theme) =>
     theme.breakpoints.down('xs')
@@ -79,7 +80,7 @@ const ChatBox = ({ userId, shouldShowFontSizeToggle = false }: Props) => {
         behavior: 'smooth',
       });
     }
-  }, [chatEvents.length, chatsRef]);
+  }, [chatsRef, chatsHeight, chatEvents.length]);
 
   const onInputMessageChanged = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) =>
@@ -115,28 +116,31 @@ const ChatBox = ({ userId, shouldShowFontSizeToggle = false }: Props) => {
     [currentUser, sendChat]
   );
 
-  const renderChatEvent = useCallback(
-    (chatEvent: ChatEvent, index: number) => {
-      const { chat, payment } = chatEvent;
-      if (chat) {
-        return (
-          <ChatMessage
-            chat={chat}
-            isLargeFontSize={isLargeFontSize}
-            key={index}
-          />
-        );
-      } else if (payment) {
-        return (
-          <TipMessage
-            payment={payment}
-            isLargeFontSize={isLargeFontSize}
-            key={index}
-          />
-        );
-      }
-    },
-    [isLargeFontSize]
+  const memoizedChatEvents = useMemo(
+    () =>
+      chatEvents.map((chatEvent, index) => {
+        const { chat, payment } = chatEvent;
+        if (chat) {
+          return (
+            <ChatMessage
+              chat={chat}
+              isLargeFontSize={isLargeFontSize}
+              key={index}
+            />
+          );
+        } else if (payment) {
+          return (
+            <TipMessage
+              payment={payment}
+              isLargeFontSize={isLargeFontSize}
+              key={index}
+            />
+          );
+        } else {
+          return null;
+        }
+      }),
+    [chatEvents, isLargeFontSize]
   );
 
   const onFontSizeToggled = useCallback(() => {
@@ -146,7 +150,7 @@ const ChatBox = ({ userId, shouldShowFontSizeToggle = false }: Props) => {
   return (
     <Grid container className={classes.container}>
       <Grid item className={classes.chats} ref={chatsRef}>
-        {chatEvents.map(renderChatEvent)}
+        {memoizedChatEvents}
       </Grid>
       <Grid item className={classes.textInput}>
         <TextField
@@ -160,7 +164,7 @@ const ChatBox = ({ userId, shouldShowFontSizeToggle = false }: Props) => {
             onKeyDown: onKeyPressed,
           }}
         />
-        {shouldShowFontSizeToggle && (
+        {shouldShowFontSizeToggle && !isMobile && (
           <FontSizeIcon
             onClick={onFontSizeToggled}
             color="secondary"

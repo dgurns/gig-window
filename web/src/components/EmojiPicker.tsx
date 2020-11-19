@@ -11,7 +11,7 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
     borderRadius: spacing(1),
     fontSize: '1.4rem',
     lineHeight: '1.4rem',
-    margin: 1,
+    margin: 2,
     width: 'auto',
   },
   trigger: {
