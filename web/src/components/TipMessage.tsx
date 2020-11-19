@@ -1,4 +1,5 @@
 import React from 'react';
+import classnames from 'classnames';
 import { Link as RouterLink } from 'react-router-dom';
 import { Grid, Link, Typography } from '@material-ui/core';
 import { green } from '@material-ui/core/colors';
@@ -28,6 +29,9 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
   },
   username: {
     color: green[500],
+  },
+  usernameLarge: {
+    fontSize: '1.5rem',
   },
   tipMessage: {
     color: green[500],
@@ -67,10 +71,13 @@ const TipMessage = ({ payment, isLargeFontSize = false }: Props) => {
         className={classes.tipMessage}
       >
         <Link
-          variant={isLargeFontSize ? 'h5' : 'body1'}
           component={RouterLink}
           to={user.urlSlug}
-          className={classes.username}
+          classes={{
+            root: classnames(classes.username, {
+              [classes.usernameLarge]: isLargeFontSize,
+            }),
+          }}
         >
           {user.username}
         </Link>{' '}
