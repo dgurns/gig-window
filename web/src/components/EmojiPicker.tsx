@@ -9,8 +9,8 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
   container: {
     backgroundColor: palette.common.white,
     borderRadius: spacing(1),
-    fontSize: '1.5rem',
-    lineHeight: '1.5rem',
+    fontSize: '1.4rem',
+    lineHeight: '1.4rem',
     margin: 2,
     width: 'auto',
   },
@@ -27,7 +27,7 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
     padding: spacing(1),
     transition: 'transform 0.05s',
     '&:hover': {
-      transform: 'scale(1.2)',
+      transform: 'scale(1.3)',
     },
   },
 }));

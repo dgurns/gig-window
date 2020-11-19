@@ -42,6 +42,7 @@ const useStyles = makeStyles(({ spacing }) => ({
     marginBottom: spacing(3),
   },
   profileImage: {
+    borderRadius: spacing(1),
     display: 'block',
     height: 80,
     marginBottom: 4,

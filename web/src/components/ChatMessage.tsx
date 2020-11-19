@@ -7,10 +7,6 @@ import { Chat } from 'types';
 
 import { EMOJI_OPTIONS } from 'components/EmojiPicker';
 
-interface ChatMessageProps {
-  chat: Chat;
-}
-
 const useStyles = makeStyles(({ spacing, palette }) => ({
   container: {
     marginBottom: spacing(1),
@@ -36,12 +32,23 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
     flexDirection: 'column',
     marginTop: -5,
   },
+  usernameLarge: {
+    fontSize: '1.5rem',
+  },
   emoji: {
     fontSize: '2.2rem',
   },
+  emojiLarge: {
+    fontSize: '2.9rem',
+  },
 }));
 
-const ChatMessage = ({ chat }: ChatMessageProps) => {
+interface Props {
+  chat: Chat;
+  isLargeFontSize?: boolean;
+}
+
+const ChatMessage = ({ chat, isLargeFontSize = false }: Props) => {
   const classes = useStyles();
 
   if (!chat) {
@@ -66,13 +73,20 @@ const ChatMessage = ({ chat }: ChatMessageProps) => {
         )}
       </RouterLink>
       <Grid item className={classes.textContainer}>
-        <Link component={RouterLink} to={user.urlSlug} color="textPrimary">
+        <Link
+          component={RouterLink}
+          to={user.urlSlug}
+          color="textPrimary"
+          className={classnames({ [classes.usernameLarge]: isLargeFontSize })}
+        >
           {user.username}
         </Link>
         <Typography
           color="textSecondary"
+          variant={isLargeFontSize ? 'h5' : 'body1'}
           className={classnames({
             [classes.emoji]: isEmojiMessage,
+            [classes.emojiLarge]: isEmojiMessage && isLargeFontSize,
           })}
         >
           {message}
