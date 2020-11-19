@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Grid, TextField } from '@material-ui/core';
+import { Grid, TextField, Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import useCurrentUser from 'hooks/useCurrentUser';
 import useChat, { ChatEvent } from 'hooks/useChat';
@@ -13,7 +14,7 @@ interface ChatBoxProps {
   userId?: number;
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(({ spacing }) => ({
   container: {
     flexDirection: 'column',
     height: '100%',
@@ -24,11 +25,11 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'flex-end',
     maxHeight: 421,
     overflowY: 'scroll',
-    padding: theme.spacing(1),
+    padding: spacing(1),
     paddingTop: 0,
   },
   textInput: {
-    margin: theme.spacing(1),
+    margin: spacing(1),
     position: 'relative',
   },
   emojiPicker: {
@@ -41,6 +42,10 @@ const useStyles = makeStyles((theme) => ({
 const ChatBox = (props: ChatBoxProps) => {
   const classes = useStyles();
   const chatsRef = useRef<HTMLDivElement>(null);
+
+  const isMobile = useMediaQuery<Theme>((theme) =>
+    theme.breakpoints.down('xs')
+  );
 
   const [currentUser] = useCurrentUser();
   const [chatEvents, sendChat] = useChat(props.userId);
@@ -108,7 +113,7 @@ const ChatBox = (props: ChatBoxProps) => {
         <TextField
           placeholder="Your message here..."
           multiline
-          rows="3"
+          rows={isMobile ? '2' : '3'}
           variant="outlined"
           value={inputMessage}
           onChange={onInputMessageChanged}

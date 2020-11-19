@@ -35,7 +35,7 @@ const useStyles = makeStyles(({ spacing, breakpoints, palette }) => ({
   },
   videoChatContainer: {
     flexDirection: 'row',
-    height: 520,
+    height: 500,
     [breakpoints.down('xs')]: {
       flexDirection: 'column',
       height: 'auto',
@@ -56,7 +56,7 @@ const useStyles = makeStyles(({ spacing, breakpoints, palette }) => ({
     backgroundColor: palette.common.white,
     height: '100%',
     [breakpoints.down('xs')]: {
-      height: 260,
+      height: 224,
     },
   },
   tools: {

@@ -23,7 +23,7 @@ const useStyles = makeStyles(({ breakpoints, palette, spacing }) => ({
   },
   videoChatContainer: {
     flexDirection: 'row',
-    height: 520,
+    height: 500,
     [breakpoints.down('xs')]: {
       flexDirection: 'column',
       height: 'auto',
@@ -33,7 +33,7 @@ const useStyles = makeStyles(({ breakpoints, palette, spacing }) => ({
     backgroundColor: palette.common.black,
     height: '100%',
     [breakpoints.down('xs')]: {
-      minHeight: 230,
+      minHeight: 224,
     },
   },
   requestAccessMessage: {
@@ -46,7 +46,7 @@ const useStyles = makeStyles(({ breakpoints, palette, spacing }) => ({
     backgroundColor: palette.common.white,
     height: '100%',
     [breakpoints.down('xs')]: {
-      height: 300,
+      height: 224,
     },
   },
   tools: {
@@ -131,7 +131,7 @@ const Dashboard = () => {
               item
               container
               xs={12}
-              sm={5}
+              sm={6}
               direction="column"
               justify="center"
               alignItems="center"
@@ -139,7 +139,7 @@ const Dashboard = () => {
             >
               {videoArea}
             </Grid>
-            <Grid item container xs={false} sm={7} className={classes.chat}>
+            <Grid item container xs={false} sm={6} className={classes.chat}>
               <ChatBox userId={id} />
             </Grid>
           </Grid>
