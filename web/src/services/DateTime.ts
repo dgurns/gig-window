@@ -1,4 +1,6 @@
 import format from 'date-fns/format';
+import startOfTomorrow from 'date-fns/startOfTomorrow';
+import isEqual from 'date-fns/isEqual';
 import isToday from 'date-fns/isToday';
 import isTomorrow from 'date-fns/isTomorrow';
 import addMinutes from 'date-fns/addMinutes';
@@ -9,7 +11,9 @@ const formatUserReadableShowtime = (showtime?: number | string) => {
   if (!showtime) return '';
 
   const showtimeAsDate = new Date(showtime);
-  if (isToday(showtimeAsDate)) {
+  if (isEqual(showtimeAsDate, startOfTomorrow())) {
+    return 'Today at midnight';
+  } else if (isToday(showtimeAsDate)) {
     return format(showtimeAsDate, "'Today at' h:mm a");
   } else if (isTomorrow(showtimeAsDate)) {
     return format(showtimeAsDate, "'Tomorrow at' h:mm a");
