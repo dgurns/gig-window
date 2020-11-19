@@ -1,8 +1,8 @@
 import React from 'react';
 import { Grid, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { Show } from 'types';
 
+import { Show } from 'types';
 import DateTime from 'services/DateTime';
 
 const useStyles = makeStyles(({ spacing }) => ({
@@ -18,7 +18,7 @@ interface Props {
   shows?: Show[];
 }
 
-const UpcomingShowsList = ({ shows = [] }: Props) => {
+const UpcomingSchedule = ({ shows = [] }: Props) => {
   const classes = useStyles();
 
   return (
@@ -40,4 +40,4 @@ const UpcomingShowsList = ({ shows = [] }: Props) => {
   );
 };
 
-export default UpcomingShowsList;
+export default React.memo(UpcomingSchedule);

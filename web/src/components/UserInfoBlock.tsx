@@ -10,7 +10,7 @@ import DateTime from 'services/DateTime';
 import useShowsForUser from 'hooks/useShowsForUser';
 import useDialog from 'hooks/useDialog';
 
-import UpcomingShowsList from 'components/UpcomingShowsList';
+import UpcomingSchedule from 'components/UpcomingSchedule';
 
 const useStyles = makeStyles(({ spacing, palette }) => ({
   container: {
@@ -50,7 +50,10 @@ const UserInfoBlock = ({ user, className }: Props) => {
   const classes = useStyles();
 
   const [shows, showsQuery, activeShow] = useShowsForUser(user?.id);
-  const [UpcomingShowsDialog, setUpcomingShowsDialogIsVisible] = useDialog();
+  const [
+    UpcomingScheduleDialog,
+    setUpcomingScheduleDialogIsVisible,
+  ] = useDialog();
 
   const activeShowDescription = useMemo(() => {
     if (showsQuery.loading) {
@@ -66,7 +69,7 @@ const UserInfoBlock = ({ user, className }: Props) => {
         <Grid container direction="row">
           <Typography
             className={classes.activeShowDescription}
-            onClick={() => setUpcomingShowsDialogIsVisible(true)}
+            onClick={() => setUpcomingScheduleDialogIsVisible(true)}
           >
             {`${DateTime.formatUserReadableShowtime(activeShow.showtime)}: ${
               activeShow.title
@@ -82,7 +85,7 @@ const UserInfoBlock = ({ user, className }: Props) => {
         </Typography>
       );
     }
-  }, [showsQuery, activeShow, classes, setUpcomingShowsDialogIsVisible]);
+  }, [showsQuery, activeShow, classes, setUpcomingScheduleDialogIsVisible]);
 
   return (
     <Grid
@@ -100,9 +103,9 @@ const UserInfoBlock = ({ user, className }: Props) => {
         {user?.isAllowedToStream && activeShowDescription}
       </Grid>
 
-      <UpcomingShowsDialog>
-        <UpcomingShowsList shows={shows} />
-      </UpcomingShowsDialog>
+      <UpcomingScheduleDialog>
+        <UpcomingSchedule shows={shows} />
+      </UpcomingScheduleDialog>
     </Grid>
   );
 };
