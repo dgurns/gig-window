@@ -31,7 +31,7 @@ const useStyles = makeStyles(({ spacing, breakpoints, palette }) => ({
     },
   },
   userInfo: {
-    padding: `${spacing(4)}px ${spacing(4)}px`,
+    padding: `${spacing(2)}px ${spacing(2)}px`,
   },
   videoChatContainer: {
     flexDirection: 'row',
@@ -49,7 +49,7 @@ const useStyles = makeStyles(({ spacing, breakpoints, palette }) => ({
     height: '100%',
     position: 'relative',
     [breakpoints.down('xs')]: {
-      minHeight: 260,
+      minHeight: 224,
     },
   },
   chat: {
@@ -157,7 +157,15 @@ const Watch = () => {
       <UserInfoBlock user={user} className={classes.userInfo} />
       <Paper elevation={3}>
         <Grid container className={classes.videoChatContainer}>
-          <Grid item xs={12} sm={8} className={classes.videoContainer}>
+          <Grid
+            item
+            container
+            xs={12}
+            sm={8}
+            justify="center"
+            alignItems="center"
+            className={classes.videoContainer}
+          >
             {videoArea}
           </Grid>
           <Grid item xs={false} sm={4} className={classes.chat}>

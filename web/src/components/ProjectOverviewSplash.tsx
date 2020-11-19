@@ -56,6 +56,7 @@ const useStyles = makeStyles(({ palette, spacing, breakpoints }) => ({
     top: 0,
   },
   detailsContainer: {
+    borderRadius: spacing(1),
     marginTop: spacing(6),
     padding: spacing(3),
     textAlign: 'left',

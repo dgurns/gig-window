@@ -19,7 +19,7 @@ const useStyles = makeStyles(({ breakpoints, palette, spacing }) => ({
     paddingBottom: spacing(4),
   },
   userInfo: {
-    padding: `${spacing(4)}px ${spacing(4)}px`,
+    padding: `${spacing(2)}px ${spacing(2)}px`,
   },
   videoChatContainer: {
     flexDirection: 'row',

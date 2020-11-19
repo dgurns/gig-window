@@ -13,6 +13,7 @@ const useStyles = makeStyles(({ spacing }) => ({
     alignItems: 'center',
   },
   userImage: {
+    borderRadius: spacing(1),
     height: 80,
     marginRight: spacing(2),
     width: 80 * Image.DEFAULT_IMAGE_ASPECT_RATIO,
