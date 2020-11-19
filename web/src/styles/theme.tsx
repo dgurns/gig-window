@@ -8,6 +8,7 @@ export default createMuiTheme({
     },
     secondary: {
       main: grey[500],
+      dark: grey[600],
     },
     error: {
       main: red[800],

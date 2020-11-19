@@ -1,19 +1,23 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Grid, TextField } from '@material-ui/core';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from 'react';
+import { Grid, TextField, Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import FontSizeIcon from '@material-ui/icons/FormatSize';
 
 import useCurrentUser from 'hooks/useCurrentUser';
-import useChat, { ChatEvent } from 'hooks/useChat';
+import useChat from 'hooks/useChat';
 
 import ChatMessage from 'components/ChatMessage';
 import TipMessage from 'components/TipMessage';
 import EmojiPicker from 'components/EmojiPicker';
 
-interface ChatBoxProps {
-  userId?: number;
-}
-
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(({ spacing, palette }) => ({
   container: {
     flexDirection: 'column',
     height: '100%',
@@ -24,12 +28,23 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'flex-end',
     maxHeight: 421,
     overflowY: 'scroll',
-    padding: theme.spacing(1),
+    padding: spacing(1),
     paddingTop: 0,
   },
   textInput: {
-    margin: theme.spacing(1),
+    margin: spacing(1),
     position: 'relative',
+  },
+  fontSizeToggle: {
+    backgroundColor: palette.common.white,
+    color: palette.secondary.main,
+    cursor: 'pointer',
+    bottom: spacing(1),
+    left: spacing(1),
+    position: 'absolute',
+    '&:hover': {
+      color: palette.secondary.dark,
+    },
   },
   emojiPicker: {
     bottom: 0,
@@ -38,14 +53,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ChatBox = (props: ChatBoxProps) => {
+interface Props {
+  userId?: number;
+  shouldShowFontSizeToggle?: boolean;
+}
+
+const ChatBox = ({ userId, shouldShowFontSizeToggle = false }: Props) => {
   const classes = useStyles();
   const chatsRef = useRef<HTMLDivElement>(null);
+  const chatsHeight = chatsRef.current?.scrollHeight ?? 0;
+
+  const isMobile = useMediaQuery<Theme>((theme) =>
+    theme.breakpoints.down('xs')
+  );
 
   const [currentUser] = useCurrentUser();
-  const [chatEvents, sendChat] = useChat(props.userId);
+  const [chatEvents, sendChat] = useChat(userId);
 
   const [inputMessage, setInputMessage] = useState('');
+  const [isLargeFontSize, setIsLargeFontSize] = useState(false);
 
   useEffect(() => {
     if (chatsRef.current) {
@@ -54,7 +80,7 @@ const ChatBox = (props: ChatBoxProps) => {
         behavior: 'smooth',
       });
     }
-  }, [chatEvents.length, chatsRef]);
+  }, [chatsRef, chatsHeight, chatEvents.length]);
 
   const onInputMessageChanged = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) =>
@@ -90,25 +116,47 @@ const ChatBox = (props: ChatBoxProps) => {
     [currentUser, sendChat]
   );
 
-  const renderChatEvent = useCallback((chatEvent: ChatEvent, index: number) => {
-    const { chat, payment } = chatEvent;
-    if (chat) {
-      return <ChatMessage chat={chat} key={index} />;
-    } else if (payment) {
-      return <TipMessage payment={payment} key={index} />;
-    }
-  }, []);
+  const memoizedChatEvents = useMemo(
+    () =>
+      chatEvents.map((chatEvent, index) => {
+        const { chat, payment } = chatEvent;
+        if (chat) {
+          return (
+            <ChatMessage
+              chat={chat}
+              isLargeFontSize={isLargeFontSize}
+              key={index}
+            />
+          );
+        } else if (payment) {
+          return (
+            <TipMessage
+              payment={payment}
+              isLargeFontSize={isLargeFontSize}
+              key={index}
+            />
+          );
+        } else {
+          return null;
+        }
+      }),
+    [chatEvents, isLargeFontSize]
+  );
+
+  const onFontSizeToggled = useCallback(() => {
+    setIsLargeFontSize(!isLargeFontSize);
+  }, [isLargeFontSize]);
 
   return (
     <Grid container className={classes.container}>
       <Grid item className={classes.chats} ref={chatsRef}>
-        {chatEvents.map(renderChatEvent)}
+        {memoizedChatEvents}
       </Grid>
       <Grid item className={classes.textInput}>
         <TextField
           placeholder="Your message here..."
           multiline
-          rows="3"
+          rows={isMobile ? '2' : '3'}
           variant="outlined"
           value={inputMessage}
           onChange={onInputMessageChanged}
@@ -116,6 +164,13 @@ const ChatBox = (props: ChatBoxProps) => {
             onKeyDown: onKeyPressed,
           }}
         />
+        {shouldShowFontSizeToggle && !isMobile && (
+          <FontSizeIcon
+            onClick={onFontSizeToggled}
+            color="secondary"
+            className={classes.fontSizeToggle}
+          />
+        )}
         <EmojiPicker
           onEmojiPicked={onEmojiPicked}
           className={classes.emojiPicker}

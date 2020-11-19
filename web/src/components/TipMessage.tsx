@@ -1,14 +1,11 @@
 import React from 'react';
+import classnames from 'classnames';
 import { Link as RouterLink } from 'react-router-dom';
 import { Grid, Link, Typography } from '@material-ui/core';
 import { green } from '@material-ui/core/colors';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { Payment } from 'types';
-
-interface TipMessageProps {
-  payment: Payment;
-}
 
 const useStyles = makeStyles(({ spacing, palette }) => ({
   container: {
@@ -33,6 +30,9 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
   username: {
     color: green[500],
   },
+  usernameLarge: {
+    fontSize: '1.5rem',
+  },
   tipMessage: {
     color: green[500],
     display: 'inline',
@@ -41,7 +41,12 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
   },
 }));
 
-const TipMessage = ({ payment }: TipMessageProps) => {
+interface Props {
+  payment: Payment;
+  isLargeFontSize?: boolean;
+}
+
+const TipMessage = ({ payment, isLargeFontSize = false }: Props) => {
   const classes = useStyles();
 
   if (!payment) return null;
@@ -61,12 +66,18 @@ const TipMessage = ({ payment }: TipMessageProps) => {
           <Grid item className={classes.userImagePlaceholder} />
         )}
       </RouterLink>
-      <Typography variant="body1" className={classes.tipMessage}>
+      <Typography
+        variant={isLargeFontSize ? 'h5' : 'body1'}
+        className={classes.tipMessage}
+      >
         <Link
-          variant="body1"
           component={RouterLink}
           to={user.urlSlug}
-          className={classes.username}
+          classes={{
+            root: classnames(classes.username, {
+              [classes.usernameLarge]: isLargeFontSize,
+            }),
+          }}
         >
           {user.username}
         </Link>{' '}

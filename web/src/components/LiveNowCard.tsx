@@ -12,6 +12,7 @@ const useStyles = makeStyles(({ spacing }) => ({
   },
   card: {
     alignItems: 'flex-start',
+    borderRadius: spacing(1),
     display: 'flex',
     flex: 1,
     flexDirection: 'row',
@@ -23,6 +24,7 @@ const useStyles = makeStyles(({ spacing }) => ({
     },
   },
   image: {
+    borderRadius: spacing(1),
     height: 72,
     marginRight: spacing(1),
     minWidth: 109,
