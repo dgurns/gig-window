@@ -130,9 +130,6 @@ const LiveVideoArea = ({ show, payee }: LiveVideoAreaProps) => {
     } else if (!payee || hasAccessToLiveVideo) {
       return null;
     } else {
-      const minPriceInCents = show?.minPriceInCents ?? 100;
-      const payButtonText =
-        minPriceInCents > 100 ? 'Buy ticket' : 'Pay what you want';
       return (
         <Grid
           container
@@ -155,7 +152,7 @@ const LiveVideoArea = ({ show, payee }: LiveVideoAreaProps) => {
             <BuyTicketButton
               payee={payee}
               show={show}
-              buttonText={payButtonText}
+              buttonText="Pay what you want"
               className={classes.buyTicketButton}
             />
           </Grid>
