@@ -53,17 +53,19 @@ export class ShowResolver {
     @Arg('data') data: CreateShowInput,
     @Ctx() ctx: CustomContext
   ) {
+    const { title, showtime, minPriceInCents } = data;
+
     const user = ctx.getUser();
     if (!user) throw new Error('User must be logged in to create a show');
-    if (data.minPriceInCents === 0) {
+    if (minPriceInCents && minPriceInCents < 100) {
       throw new Error('Minimum price must be at least $1');
     }
 
     const show = Show.create({
       userId: user.id,
-      title: data.title,
-      showtime: data.showtime,
-      minPriceInCents: data.minPriceInCents,
+      title: title,
+      showtime: showtime,
+      minPriceInCents: minPriceInCents,
     });
     await show.save();
     return show;
@@ -81,7 +83,7 @@ export class ShowResolver {
     const show = await Show.findOne({ where: { id } });
     if (!show) {
       throw new Error('Could not find Show with that ID');
-    } else if (minPriceInCents === 0) {
+    } else if (minPriceInCents && minPriceInCents < 100) {
       throw new Error('Minimum price must be at least $1');
     }
 
