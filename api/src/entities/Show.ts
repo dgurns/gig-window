@@ -32,6 +32,10 @@ export class Show extends BaseEntity {
   @Column({ type: 'timestamptz' })
   showtime: Date;
 
+  @Field((type) => Int)
+  @Column({ default: 100 })
+  minPriceInCents: number;
+
   @Field()
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;

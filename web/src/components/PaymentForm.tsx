@@ -75,6 +75,9 @@ const PaymentForm = (props: PaymentFormProps) => {
   const { payee, show, prefilledPaymentAmount, onSuccess } = props;
   const classes = useStyles();
 
+  const minPriceInCents = show?.minPriceInCents ?? 100;
+  const minPriceAsString = `${minPriceInCents / 100}`;
+
   const [
     currentUser,
     { loading: currentUserLoading, refetch: refetchCurrentUser },
@@ -118,12 +121,15 @@ const PaymentForm = (props: PaymentFormProps) => {
   }, [refetchPayments, onSuccess]);
 
   const onChangePaymentAmount = debounce((value: string) => {
-    if (value === '' || value === '0') {
+    const valueAsInt = parseInt(value);
+    if (value === '' || value === '0' || isNaN(valueAsInt)) {
       return setPaymentAmount('');
-    } else if (typeof parseInt(value) === 'number') {
-      const absolutePaymentAmount = Math.abs(parseInt(value));
-      return setPaymentAmount(absolutePaymentAmount.toString());
     }
+    const absolutePaymentAmount = Math.abs(valueAsInt);
+    if (absolutePaymentAmount * 100 < minPriceInCents) {
+      return setPaymentAmount(minPriceAsString);
+    }
+    return setPaymentAmount(absolutePaymentAmount.toString());
   }, 400);
 
   const renderAuthOrPaymentForm = () => {
@@ -207,7 +213,7 @@ const PaymentForm = (props: PaymentFormProps) => {
             onChange={(event) => onChangePaymentAmount(event.target.value)}
           />
           <Typography variant="body2" color="secondary">
-            ($1 or more)
+            (${minPriceAsString} or more)
           </Typography>
         </Grid>
       )}

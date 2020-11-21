@@ -144,7 +144,7 @@ const LiveVideoArea = ({ show, payee }: LiveVideoAreaProps) => {
               <Countdown
                 targetDate={freePreviewExpiryDate}
                 countdownSuffix="left in free preview"
-                postTargetLabel="That's the end of your free preview. Pay what you want to join the show!"
+                postTargetLabel="That's the end of your free preview. Buy a ticket to join the show!"
                 onTargetDateReached={() => window.location.reload()}
                 className={classes.freePreviewCountdown}
               />

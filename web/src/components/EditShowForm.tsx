@@ -1,28 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { useMutation, gql } from '@apollo/client';
 import DatePicker from 'react-datepicker';
-
-import { Grid, Typography, TextField, Button } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
 import 'react-datepicker/dist/react-datepicker.css';
+import {
+  Grid,
+  Typography,
+  TextField,
+  Button,
+  InputAdornment,
+} from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 
-interface EditShowFormProps {
-  show: {
-    id: number;
-    title?: string;
-    showtime: string;
-  };
-  onSuccess?: () => void;
-}
+import { Show } from 'types';
 
 const UPDATE_SHOW = gql`
   mutation UpdateShow(
     $id: Int!
     $updatedTitle: String
     $updatedShowtime: String!
+    $updatedMinPriceInCents: Int
   ) {
     updateShow(
-      data: { id: $id, title: $updatedTitle, showtime: $updatedShowtime }
+      data: {
+        id: $id
+        title: $updatedTitle
+        showtime: $updatedShowtime
+        minPriceInCents: $updatedMinPriceInCents
+      }
     ) {
       id
     }
@@ -42,11 +46,13 @@ const useStyles = makeStyles(({ spacing }) => ({
   },
 }));
 
-const EditShowForm = (props: EditShowFormProps) => {
-  const {
-    show: { id, title, showtime },
-    onSuccess,
-  } = props;
+interface Props {
+  show: Show;
+  onSuccess?: () => void;
+}
+
+const EditShowForm = ({ show, onSuccess }: Props) => {
+  const { id, title, showtime, minPriceInCents } = show;
 
   const classes = useStyles();
   const [updateShow, { loading, data, error }] = useMutation(UPDATE_SHOW, {
@@ -55,6 +61,9 @@ const EditShowForm = (props: EditShowFormProps) => {
 
   const [updatedTitle, setUpdatedTitle] = useState(title);
   const [updatedShowtime, setUpdatedShowtime] = useState(new Date(showtime));
+  const [updatedMinPrice, setUpdatedMinPrice] = useState(
+    `${minPriceInCents / 100}`
+  );
   const [localValidationError, setLocalValidationError] = useState('');
 
   useEffect(() => {
@@ -65,9 +74,18 @@ const EditShowForm = (props: EditShowFormProps) => {
     }
   }, [data, onSuccess]);
 
+  const formatMinPriceInCents = (rawMinPrice?: string): number => {
+    let defaultMinPriceInCents = 100;
+    const rawMinPriceAsInt = parseInt(rawMinPrice ?? '');
+    if (isNaN(rawMinPriceAsInt)) {
+      return defaultMinPriceInCents;
+    }
+    return rawMinPriceAsInt * 100;
+  };
+
   const onSaveClicked = () => {
     setLocalValidationError('');
-    if (!updatedTitle || !updatedShowtime) {
+    if (!updatedTitle || !updatedShowtime || !updatedMinPrice) {
       return setLocalValidationError('Please fill out all the fields');
     } else if (new Date() > updatedShowtime) {
       return setLocalValidationError('Showtime must be in the future');
@@ -77,6 +95,7 @@ const EditShowForm = (props: EditShowFormProps) => {
         id: id,
         updatedTitle,
         updatedShowtime: updatedShowtime.toISOString(),
+        updatedMinPriceInCents: formatMinPriceInCents(updatedMinPrice),
       },
     });
   };
@@ -108,6 +127,16 @@ const EditShowForm = (props: EditShowFormProps) => {
           />
         }
         className={classes.datePicker}
+      />
+      <TextField
+        InputProps={{
+          startAdornment: <InputAdornment position="start">$</InputAdornment>,
+        }}
+        value={updatedMinPrice}
+        onChange={({ target: { value } }) => setUpdatedMinPrice(value)}
+        variant="outlined"
+        label="Minimum price ($1 or more)"
+        className={classes.formField}
       />
       {localValidationError && (
         <Typography variant="body2" color="error" className={classes.error}>

@@ -9,6 +9,7 @@ const GET_SHOWS_FOR_USER = gql`
       id
       title
       showtime
+      minPriceInCents
     }
   }
 `;
