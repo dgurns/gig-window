@@ -9,17 +9,12 @@ import { makeStyles } from '@material-ui/core/styles';
 import useCurrentUser from 'hooks/useCurrentUser';
 import useDialog from 'hooks/useDialog';
 import DateTime from 'services/DateTime';
+import { Show } from 'types';
 
 import NavSubheader from 'components/NavSubheader';
 import CreateShowForm from 'components/CreateShowForm';
 import EditShowForm from 'components/EditShowForm';
 import TextButton from 'components/TextButton';
-
-interface Show {
-  id: number;
-  title?: string;
-  showtime: string;
-}
 
 const GET_SHOWS = gql`
   query GetShows($userId: Int!) {
@@ -27,6 +22,7 @@ const GET_SHOWS = gql`
       id
       title
       showtime
+      minPriceInCents
     }
   }
 `;
@@ -102,7 +98,8 @@ const EditShows = () => {
     }
 
     return shows.map((show: Show) => {
-      const { id, title, showtime } = show;
+      const { id, title, showtime, minPriceInCents } = show;
+      const shouldShowMinPrice = minPriceInCents > 100;
       return (
         <Grid
           container
@@ -114,6 +111,7 @@ const EditShows = () => {
           <Typography>{title}</Typography>
           <Typography color="secondary">
             {DateTime.formatUserReadableShowtime(showtime)}
+            {shouldShowMinPrice && ` • $${minPriceInCents / 100} or more`}
           </Typography>
           <Grid item container direction="row">
             <TextButton

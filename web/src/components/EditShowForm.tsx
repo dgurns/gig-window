@@ -1,17 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useMutation, gql } from '@apollo/client';
 import DatePicker from 'react-datepicker';
-
+import 'react-datepicker/dist/react-datepicker.css';
 import { Grid, Typography, TextField, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import 'react-datepicker/dist/react-datepicker.css';
+
+import { Show } from 'types';
 
 interface EditShowFormProps {
-  show: {
-    id: number;
-    title?: string;
-    showtime: string;
-  };
+  show: Show;
   onSuccess?: () => void;
 }
 

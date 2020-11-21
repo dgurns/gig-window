@@ -65,4 +65,5 @@ export interface Show {
   title: string;
   showtime: string;
   user: User;
+  minPriceInCents: number;
 }

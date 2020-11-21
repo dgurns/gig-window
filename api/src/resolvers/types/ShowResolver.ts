@@ -28,6 +28,9 @@ export class CreateShowInput {
 
   @Field((type) => String)
   showtime: Date;
+
+  @Field((type) => Int, { nullable: true })
+  minPriceInCents?: number;
 }
 
 @InputType()

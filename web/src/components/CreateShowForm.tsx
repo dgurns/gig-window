@@ -1,18 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { useMutation, gql } from '@apollo/client';
 import DatePicker from 'react-datepicker';
-
-import { Grid, Typography, TextField, Button } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
 import 'react-datepicker/dist/react-datepicker.css';
+import {
+  Grid,
+  Typography,
+  TextField,
+  Button,
+  InputAdornment,
+} from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 
-interface CreateShowFormProps {
-  onSuccess?: () => void;
-}
+import TextButton from 'components/TextButton';
 
 const CREATE_SHOW = gql`
-  mutation CreateShow($title: String, $showtime: String!) {
-    createShow(data: { title: $title, showtime: $showtime }) {
+  mutation CreateShow(
+    $title: String
+    $showtime: String!
+    $minPriceInCents: Int
+  ) {
+    createShow(
+      data: {
+        title: $title
+        showtime: $showtime
+        minPriceInCents: $minPriceInCents
+      }
+    ) {
       id
     }
   }
@@ -25,15 +38,20 @@ const useStyles = makeStyles(({ spacing }) => ({
   datePicker: {
     width: '100%',
   },
+  moreOptions: {
+    marginBottom: spacing(3),
+  },
   error: {
     marginBottom: spacing(3),
     textAlign: 'center',
   },
 }));
 
-const CreateShowForm = (props: CreateShowFormProps) => {
-  const { onSuccess } = props;
+interface Props {
+  onSuccess?: () => void;
+}
 
+const CreateShowForm = ({ onSuccess }: Props) => {
   const classes = useStyles();
   const [createShow, { loading, data, error }] = useMutation(CREATE_SHOW, {
     errorPolicy: 'all',
@@ -41,6 +59,8 @@ const CreateShowForm = (props: CreateShowFormProps) => {
 
   const [title, setTitle] = useState('');
   const [showtime, setShowtime] = useState<Date | null>(null);
+  const [minPrice, setMinPrice] = useState('1');
+  const [shouldShowMoreOptions, setShouldShowMoreOptions] = useState(false);
   const [localValidationError, setLocalValidationError] = useState('');
 
   useEffect(() => {
@@ -54,15 +74,28 @@ const CreateShowForm = (props: CreateShowFormProps) => {
     }
   }, [data, onSuccess]);
 
+  const formatMinPriceInCents = (rawMinPrice?: string): number => {
+    let defaultMinPriceInCents = 100;
+    const rawMinPriceAsInt = parseInt(rawMinPrice ?? '');
+    if (isNaN(rawMinPriceAsInt)) {
+      return defaultMinPriceInCents;
+    }
+    return rawMinPriceAsInt * 100;
+  };
+
   const onCreateClicked = () => {
     setLocalValidationError('');
-    if (!title || !showtime) {
+    if (!title || !showtime || !minPrice) {
       return setLocalValidationError('Please fill out all the fields');
     } else if (new Date() > showtime) {
       return setLocalValidationError('Showtime must be in the future');
     }
     createShow({
-      variables: { title, showtime: showtime.toISOString() },
+      variables: {
+        title,
+        showtime: showtime.toISOString(),
+        minPriceInCents: formatMinPriceInCents(minPrice),
+      },
     });
   };
 
@@ -94,6 +127,29 @@ const CreateShowForm = (props: CreateShowFormProps) => {
         }
         className={classes.datePicker}
       />
+      {!shouldShowMoreOptions ? (
+        <Grid
+          container
+          className={classes.moreOptions}
+          direction="row"
+          justify="flex-start"
+        >
+          <TextButton onClick={() => setShouldShowMoreOptions(true)}>
+            More options
+          </TextButton>
+        </Grid>
+      ) : (
+        <TextField
+          InputProps={{
+            startAdornment: <InputAdornment position="start">$</InputAdornment>,
+          }}
+          value={minPrice}
+          onChange={({ target: { value } }) => setMinPrice(value)}
+          variant="outlined"
+          label="Minimum price ($1 or more)"
+          className={classes.formField}
+        />
+      )}
       {localValidationError && (
         <Typography variant="body2" color="error" className={classes.error}>
           {localValidationError}
