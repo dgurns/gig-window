@@ -130,6 +130,9 @@ const LiveVideoArea = ({ show, payee }: LiveVideoAreaProps) => {
     } else if (!payee || hasAccessToLiveVideo) {
       return null;
     } else {
+      const minPriceInCents = show?.minPriceInCents ?? 100;
+      const payButtonText =
+        minPriceInCents > 100 ? 'Buy ticket' : 'Pay what you want';
       return (
         <Grid
           container
@@ -144,7 +147,7 @@ const LiveVideoArea = ({ show, payee }: LiveVideoAreaProps) => {
               <Countdown
                 targetDate={freePreviewExpiryDate}
                 countdownSuffix="left in free preview"
-                postTargetLabel="That's the end of your free preview. Pay what you want to join the show!"
+                postTargetLabel="That's the end of your free preview. Buy a ticket to join the show!"
                 onTargetDateReached={() => window.location.reload()}
                 className={classes.freePreviewCountdown}
               />
@@ -152,7 +155,7 @@ const LiveVideoArea = ({ show, payee }: LiveVideoAreaProps) => {
             <BuyTicketButton
               payee={payee}
               show={show}
-              buttonText="Pay what you want"
+              buttonText={payButtonText}
               className={classes.buyTicketButton}
             />
           </Grid>

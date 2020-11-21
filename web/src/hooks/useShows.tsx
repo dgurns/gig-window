@@ -7,6 +7,7 @@ export const GET_SHOWS = gql`
       id
       title
       showtime
+      minPriceInCents
       user {
         id
         username
