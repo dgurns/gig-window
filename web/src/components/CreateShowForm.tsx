@@ -67,6 +67,8 @@ const CreateShowForm = ({ onSuccess }: Props) => {
     if (data?.createShow.id) {
       setTitle('');
       setShowtime(null);
+      setShouldShowMoreOptions(false);
+      setMinPrice('1');
 
       if (onSuccess) {
         onSuccess();

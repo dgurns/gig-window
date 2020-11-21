@@ -111,7 +111,7 @@ const EditShows = () => {
           <Typography>{title}</Typography>
           <Typography color="secondary">
             {DateTime.formatUserReadableShowtime(showtime)}
-            {shouldShowMinPrice && ` • $${minPriceInCents / 100} or more`}
+            {shouldShowMinPrice && ` • $${minPriceInCents / 100} min price`}
           </Typography>
           <Grid item container direction="row">
             <TextButton

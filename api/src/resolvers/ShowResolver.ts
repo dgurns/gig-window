@@ -55,11 +55,15 @@ export class ShowResolver {
   ) {
     const user = ctx.getUser();
     if (!user) throw new Error('User must be logged in to create a show');
+    if (data.minPriceInCents === 0) {
+      throw new Error('Minimum price must be at least $1');
+    }
 
     const show = Show.create({
       userId: user.id,
       title: data.title,
       showtime: data.showtime,
+      minPriceInCents: data.minPriceInCents,
     });
     await show.save();
     return show;
@@ -73,13 +77,17 @@ export class ShowResolver {
     const user = ctx.getUser();
     if (!user) throw new Error('User must be logged in to update a show');
 
-    const { id, title, showtime } = data;
+    const { id, title, showtime, minPriceInCents } = data;
     const show = await Show.findOne({ where: { id } });
     if (!show) {
       throw new Error('Could not find Show with that ID');
+    } else if (minPriceInCents === 0) {
+      throw new Error('Minimum price must be at least $1');
     }
+
     if (title) show.title = title;
     if (showtime) show.showtime = showtime;
+    if (minPriceInCents) show.minPriceInCents = minPriceInCents;
     await show.save();
     return show;
   }
