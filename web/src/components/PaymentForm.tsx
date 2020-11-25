@@ -75,6 +75,9 @@ const PaymentForm = (props: PaymentFormProps) => {
   const { payee, show, prefilledPaymentAmount, onSuccess } = props;
   const classes = useStyles();
 
+  const minPriceInCents = show?.minPriceInCents ?? 100;
+  const minPriceAsString = `${minPriceInCents / 100}`;
+
   const [
     currentUser,
     { loading: currentUserLoading, refetch: refetchCurrentUser },
@@ -118,15 +121,19 @@ const PaymentForm = (props: PaymentFormProps) => {
   }, [refetchPayments, onSuccess]);
 
   const onChangePaymentAmount = debounce((value: string) => {
-    if (value === '' || value === '0') {
+    const valueAsInt = parseInt(value);
+    if (value === '' || value === '0' || isNaN(valueAsInt)) {
       return setPaymentAmount('');
-    } else if (typeof parseInt(value) === 'number') {
-      const absolutePaymentAmount = Math.abs(parseInt(value));
-      return setPaymentAmount(absolutePaymentAmount.toString());
     }
+    const absolutePaymentAmount = Math.abs(valueAsInt);
+    return setPaymentAmount(absolutePaymentAmount.toString());
   }, 400);
 
   const renderAuthOrPaymentForm = () => {
+    const paymentAmountIsValid =
+      prefilledPaymentAmount ||
+      parseInt(paymentAmount ?? '0') * 100 >= minPriceInCents;
+
     if (
       currentUserLoading ||
       savedPaymentMethodQuery.loading ||
@@ -141,7 +148,7 @@ const PaymentForm = (props: PaymentFormProps) => {
           onSuccess={onAuthSuccess}
         />
       );
-    } else if (!paymentAmount) {
+    } else if (!paymentAmount || !paymentAmountIsValid) {
       return null;
     } else if (savedPaymentMethod?.card) {
       const paymentAmountInCents = parseInt(paymentAmount) * 100;
@@ -197,7 +204,7 @@ const PaymentForm = (props: PaymentFormProps) => {
           container
           direction="row"
           justify="flex-start"
-          alignItems="flex-end"
+          alignItems="center"
           className={classes.moneyInput}
         >
           <MoneyInputField
@@ -206,9 +213,7 @@ const PaymentForm = (props: PaymentFormProps) => {
             defaultValue={prefilledPaymentAmount}
             onChange={(event) => onChangePaymentAmount(event.target.value)}
           />
-          <Typography variant="body2" color="secondary">
-            ($1 or more)
-          </Typography>
+          <Typography>(${minPriceAsString} or more)</Typography>
         </Grid>
       )}
       <Typography color="secondary">
