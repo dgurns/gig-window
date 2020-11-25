@@ -126,9 +126,6 @@ const PaymentForm = (props: PaymentFormProps) => {
       return setPaymentAmount('');
     }
     const absolutePaymentAmount = Math.abs(valueAsInt);
-    if (absolutePaymentAmount * 100 < minPriceInCents) {
-      return setPaymentAmount(minPriceAsString);
-    }
     return setPaymentAmount(absolutePaymentAmount.toString());
   }, 400);
 
@@ -147,7 +144,10 @@ const PaymentForm = (props: PaymentFormProps) => {
           onSuccess={onAuthSuccess}
         />
       );
-    } else if (!paymentAmount) {
+    } else if (
+      !paymentAmount ||
+      parseInt(paymentAmount) * 100 < minPriceInCents
+    ) {
       return null;
     } else if (savedPaymentMethod?.card) {
       const paymentAmountInCents = parseInt(paymentAmount) * 100;
@@ -203,7 +203,7 @@ const PaymentForm = (props: PaymentFormProps) => {
           container
           direction="row"
           justify="flex-start"
-          alignItems="flex-end"
+          alignItems="center"
           className={classes.moneyInput}
         >
           <MoneyInputField
@@ -212,9 +212,7 @@ const PaymentForm = (props: PaymentFormProps) => {
             defaultValue={prefilledPaymentAmount}
             onChange={(event) => onChangePaymentAmount(event.target.value)}
           />
-          <Typography variant="body2" color="secondary">
-            (${minPriceAsString} or more)
-          </Typography>
+          <Typography>(${minPriceAsString} or more)</Typography>
         </Grid>
       )}
       <Typography color="secondary">
