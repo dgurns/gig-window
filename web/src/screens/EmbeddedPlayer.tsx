@@ -212,8 +212,8 @@ const EmbeddedPlayer = () => {
     showsQuery,
     user,
     urlSlug,
-    activeShow,
     classes,
+    activeShow,
     userIsStreamingLive,
     previewIsOver,
   ]);
@@ -255,7 +255,7 @@ const EmbeddedPlayer = () => {
               className={classes.secondaryCta}
               onClick={() => navigateToProfile(urlSlug)}
             >
-              Pay what you want
+              Buy ticket
             </Button>
           )}
         </Grid>
