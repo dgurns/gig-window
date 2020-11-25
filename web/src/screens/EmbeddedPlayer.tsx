@@ -212,8 +212,8 @@ const EmbeddedPlayer = () => {
     showsQuery,
     user,
     urlSlug,
-    activeShow,
     classes,
+    activeShow,
     userIsStreamingLive,
     previewIsOver,
   ]);
@@ -223,8 +223,6 @@ const EmbeddedPlayer = () => {
       userIsStreamingLive && !previewIsOver && !videoIsStarted;
     const shouldShowPayWhatYouWantButton =
       userIsStreamingLive && !previewIsOver && videoIsStarted;
-    const minPriceIsSet =
-      activeShow?.minPriceInCents && activeShow?.minPriceInCents > 100;
 
     if (!user || userQuery.loading || showsQuery.loading) {
       return null;
@@ -257,7 +255,7 @@ const EmbeddedPlayer = () => {
               className={classes.secondaryCta}
               onClick={() => navigateToProfile(urlSlug)}
             >
-              {minPriceIsSet ? 'Buy ticket' : 'Pay what you want'}
+              Buy ticket
             </Button>
           )}
         </Grid>
@@ -272,7 +270,6 @@ const EmbeddedPlayer = () => {
     userIsStreamingLive,
     videoIsStarted,
     previewIsOver,
-    activeShow,
   ]);
 
   return (

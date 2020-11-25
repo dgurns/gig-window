@@ -130,6 +130,10 @@ const PaymentForm = (props: PaymentFormProps) => {
   }, 400);
 
   const renderAuthOrPaymentForm = () => {
+    const paymentAmountIsValid =
+      prefilledPaymentAmount ||
+      parseInt(paymentAmount ?? '0') * 100 >= minPriceInCents;
+
     if (
       currentUserLoading ||
       savedPaymentMethodQuery.loading ||
@@ -144,10 +148,7 @@ const PaymentForm = (props: PaymentFormProps) => {
           onSuccess={onAuthSuccess}
         />
       );
-    } else if (
-      !paymentAmount ||
-      parseInt(paymentAmount) * 100 < minPriceInCents
-    ) {
+    } else if (!paymentAmount || !paymentAmountIsValid) {
       return null;
     } else if (savedPaymentMethod?.card) {
       const paymentAmountInCents = parseInt(paymentAmount) * 100;
