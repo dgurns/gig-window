@@ -3,7 +3,7 @@ version: '3.8'
 services:
   nginx:
     image: dgurney/gig-window-nginx:latest
-    x-aws-pull_credentials: arn:aws:secretsmanager:us-east-1:727441280422:secret:DOCKER_HUB_ACCESS_TOKEN-UMbyue
+    x-aws-pull_credentials: arn:aws:secretsmanager:us-east-1:727441280422:secret:DOCKER_HUB_ACCESS_CREDENTIALS-IsE8MO
     depends_on:
       - api
     restart: always
@@ -19,7 +19,7 @@ services:
 
   api:
     image: dgurney/gig-window-api:latest
-    x-aws-pull_credentials: arn:aws:secretsmanager:us-east-1:727441280422:secret:DOCKER_HUB_ACCESS_TOKEN-UMbyue
+    x-aws-pull_credentials: arn:aws:secretsmanager:us-east-1:727441280422:secret:DOCKER_HUB_ACCESS_CREDENTIALS-IsE8MO
     depends_on:
       - redis
     restart: always
