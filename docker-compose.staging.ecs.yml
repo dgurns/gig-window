@@ -1,0 +1,87 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: dgurney/gig-window-nginx:latest
+    depends_on:
+      - api
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /var/www/certbot:/var/www/certbot
+    environment:
+      - DOMAIN=api-staging.gigwindow.com
+
+  api:
+    image: dgurney/gig-window-api:latest
+    depends_on:
+      - redis
+    restart: always
+    secrets:
+      - STAGING_DATABASE_PASSWORD
+      - STAGING_COOKIE_SESSION_KEY
+      - STAGING_MUX_TOKEN_ID
+      - STAGING_MUX_TOKEN_SECRET
+      - STAGING_MUX_WEBHOOK_SECRET
+      - STAGING_AWS_ACCESS_KEY_ID
+      - STAGING_AWS_SECRET_ACCESS_KEY
+      - STAGING_STRIPE_SECRET_KEY
+      - STAGING_SENDGRID_API_KEY
+    environment:
+      NODE_ENV: production
+      DATABASE_HOST: gigwindow-staging.ctgvfpoeqoab.us-east-1.rds.amazonaws.com
+      DATABASE_PORT: 5432
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: /run/secrets/STAGING_DATABASE_PASSWORD
+      DATABASE_NAME: postgres
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      WEB_ORIGIN: https://staging.gigwindow.com
+      COOKIE_SESSION_KEY: /run/secrets/STAGING_COOKIE_SESSION_KEY
+      MUX_TOKEN_ID: /run/secrets/STAGING_MUX_TOKEN_ID
+      MUX_TOKEN_SECRET: /run/secrets/STAGING_MUX_TOKEN_SECRET
+      MUX_USE_TEST_LIVE_STREAMS: 'true'
+      MUX_WEBHOOK_SECRET: /run/secrets/STAGING_MUX_WEBHOOK_SECRET
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: /run/secrets/STAGING_AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY: /run/secrets/STAGING_AWS_SECRET_ACCESS_KEY
+      AWS_S3_BUCKET: gig-window-staging
+      STRIPE_SECRET_KEY: /run/secrets/STAGING_STRIPE_SECRET_KEY
+      SENDGRID_API_KEY: /run/secrets/STAGING_SENDGRID_API_KEY
+
+  redis:
+    image: redis:alpine
+    restart: always
+
+secrets:
+  STAGING_DATABASE_PASSWORD:
+    name: arn:aws:secretsmanager:us-east-1:727441280422:secret:STAGING_DATABASE_PASSWORD-Me46VY
+    external: true
+  STAGING_COOKIE_SESSION_KEY:
+    name: arn:aws:secretsmanager:us-east-1:727441280422:secret:STAGING_COOKIE_SESSION_KEY-Soe0Ik
+    external: true
+  STAGING_MUX_TOKEN_ID:
+    name: arn:aws:secretsmanager:us-east-1:727441280422:secret:STAGING_MUX_TOKEN_ID-a3lWi5
+    external: true
+  STAGING_MUX_TOKEN_SECRET:
+    name: arn:aws:secretsmanager:us-east-1:727441280422:secret:STAGING_MUX_TOKEN_SECRET-DNJI2l
+    external: true
+  STAGING_MUX_WEBHOOK_SECRET:
+    name: arn:aws:secretsmanager:us-east-1:727441280422:secret:STAGING_MUX_WEBHOOK_SECRET-mEdRKM
+    external: true
+  STAGING_AWS_ACCESS_KEY_ID:
+    name: arn:aws:secretsmanager:us-east-1:727441280422:secret:STAGING_AWS_ACCESS_KEY_ID-TNIcBf
+    external: true
+  STAGING_AWS_SECRET_ACCESS_KEY:
+    name: arn:aws:secretsmanager:us-east-1:727441280422:secret:STAGING_AWS_SECRET_ACCESS_KEY-42zQiU
+    external: true
+  STAGING_STRIPE_SECRET_KEY:
+    name: arn:aws:secretsmanager:us-east-1:727441280422:secret:STAGING_STRIPE_SECRET_KEY-vNPuGz
+    external: true
+  STAGING_SENDGRID_API_KEY:
+    name: arn:aws:secretsmanager:us-east-1:727441280422:secret:STAGING_SENDGRID_API_KEY-RKWMZD
+    external: true
