@@ -6,14 +6,10 @@ services:
     x-aws-pull_credentials: arn:aws:secretsmanager:us-east-1:727441280422:secret:DOCKER_HUB_ACCESS_CREDENTIALS-IsE8MO
     depends_on:
       - api
-    restart: always
     ports:
       - 80:80
       - 443:443
     command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
-    volumes:
-      - /etc/letsencrypt:/etc/letsencrypt
-      - /var/www/certbot:/var/www/certbot
     environment:
       - DOMAIN=api-staging.gigwindow.com
 
@@ -22,7 +18,11 @@ services:
     x-aws-pull_credentials: arn:aws:secretsmanager:us-east-1:727441280422:secret:DOCKER_HUB_ACCESS_CREDENTIALS-IsE8MO
     depends_on:
       - redis
-    restart: always
+    deploy:
+      x-aws-autoscaling:
+        min: 1
+        max: 10
+        cpu: 75
     secrets:
       - STAGING_DATABASE_PASSWORD
       - STAGING_COOKIE_SESSION_KEY
@@ -57,7 +57,6 @@ services:
 
   redis:
     image: redis:alpine
-    restart: always
 
 secrets:
   STAGING_DATABASE_PASSWORD:
