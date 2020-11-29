@@ -3,6 +3,7 @@ import 'reflect-metadata';
 
 import http from 'http';
 import express from 'express';
+import cors from 'cors';
 import compression from 'compression';
 import cookieSession from 'cookie-session';
 import passport from 'passport';
@@ -25,8 +26,14 @@ import { PaymentResolver } from 'resolvers/PaymentResolver';
 import { ShowResolver } from 'resolvers/ShowResolver';
 import { AdminResolver } from 'resolvers/AdminResolver';
 
-const { REDIS_HOST, REDIS_PORT, WEB_ORIGIN, COOKIE_SESSION_KEY } = process.env;
-export const SERVER_PORT = 4000;
+const {
+  NODE_ENV,
+  REDIS_HOST,
+  REDIS_PORT,
+  WEB_ORIGIN,
+  COOKIE_SESSION_KEY,
+} = process.env;
+const SERVER_PORT = 4000;
 
 const redisOptions = {
   host: REDIS_HOST,
@@ -55,7 +62,27 @@ async function start() {
     );
     app.use(passport.initialize());
     app.use(passport.session());
+
+    // Non-GraphQL requests, including webhooks, are handled by the REST router
     app.use(restRouter);
+
+    // Apply CORS to all further requests when not in development mode
+    if (NODE_ENV !== 'development') {
+      const allowedOrigins = [WEB_ORIGIN];
+      app.use(
+        cors({
+          origin: function (origin, callback) {
+            if (origin && allowedOrigins.indexOf(origin) !== -1) {
+              callback(null, true);
+            } else {
+              callback(new Error('Request blocked by CORS'));
+            }
+          },
+          credentials: true,
+          optionsSuccessStatus: 200,
+        })
+      );
+    }
 
     const schema = await buildSchema({
       resolvers: [
