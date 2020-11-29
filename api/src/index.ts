@@ -3,7 +3,6 @@ import 'reflect-metadata';
 
 import http from 'http';
 import express from 'express';
-import cors from 'cors';
 import compression from 'compression';
 import cookieSession from 'cookie-session';
 import passport from 'passport';
@@ -26,14 +25,8 @@ import { PaymentResolver } from 'resolvers/PaymentResolver';
 import { ShowResolver } from 'resolvers/ShowResolver';
 import { AdminResolver } from 'resolvers/AdminResolver';
 
-const {
-  NODE_ENV,
-  REDIS_HOST,
-  REDIS_PORT,
-  WEB_ORIGIN,
-  COOKIE_SESSION_KEY,
-} = process.env;
-const SERVER_PORT = 4000;
+const { REDIS_HOST, REDIS_PORT, WEB_ORIGIN, COOKIE_SESSION_KEY } = process.env;
+export const SERVER_PORT = 4000;
 
 const redisOptions = {
   host: REDIS_HOST,
@@ -52,24 +45,6 @@ async function start() {
 
     const app = express();
 
-    const allowedOrigins = [WEB_ORIGIN];
-    if (NODE_ENV === 'development') {
-      allowedOrigins.push(`http://localhost:${SERVER_PORT}`);
-    }
-    app.use(
-      cors({
-        origin: function (origin, callback) {
-          if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-            callback(null, true);
-          } else {
-            callback(new Error('Request blocked by CORS'));
-          }
-        },
-        credentials: true,
-        optionsSuccessStatus: 200,
-      })
-    );
-    app.use(express.json());
     app.use(compression());
     app.use(
       cookieSession({
