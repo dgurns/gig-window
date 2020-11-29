@@ -52,24 +52,6 @@ async function start() {
 
     const app = express();
 
-    const allowedOrigins = [WEB_ORIGIN];
-    if (NODE_ENV === 'development') {
-      allowedOrigins.push(`http://localhost:${SERVER_PORT}`);
-    }
-    app.use(
-      cors({
-        origin: function (origin, callback) {
-          if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-            callback(null, true);
-          } else {
-            callback(new Error('Request blocked by CORS'));
-          }
-        },
-        credentials: true,
-        optionsSuccessStatus: 200,
-      })
-    );
-    app.use(express.json());
     app.use(compression());
     app.use(
       cookieSession({
@@ -80,7 +62,27 @@ async function start() {
     );
     app.use(passport.initialize());
     app.use(passport.session());
+
+    // Non-GraphQL requests, including webhooks, are handled by the REST router
     app.use(restRouter);
+
+    // Apply CORS to all further requests when not in development mode
+    if (NODE_ENV !== 'development') {
+      const allowedOrigins = [WEB_ORIGIN];
+      app.use(
+        cors({
+          origin: function (origin, callback) {
+            if (origin && allowedOrigins.indexOf(origin) !== -1) {
+              callback(null, true);
+            } else {
+              callback(new Error('Request blocked by CORS'));
+            }
+          },
+          credentials: true,
+          optionsSuccessStatus: 200,
+        })
+      );
+    }
 
     const schema = await buildSchema({
       resolvers: [
