@@ -40,9 +40,10 @@ const redisOptions = {
   port: REDIS_PORT ? parseInt(REDIS_PORT) : undefined,
   retryStrategy: () => 2000,
 };
-export const pubSub = new RedisPubSub({
-  publisher: new Redis(redisOptions),
-  subscriber: new Redis(redisOptions),
+export const redisClient = new Redis(redisOptions);
+export const redisPubSubClient = new RedisPubSub({
+  publisher: redisClient,
+  subscriber: redisClient,
 });
 
 async function start() {
@@ -93,7 +94,7 @@ async function start() {
         ShowResolver,
         AdminResolver,
       ],
-      pubSub,
+      pubSub: redisPubSubClient,
       authChecker,
       authMode: 'null',
       dateScalarMode: 'isoDate',
