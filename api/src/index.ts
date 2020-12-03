@@ -94,7 +94,7 @@ async function start() {
         origin: function (origin, callback) {
           if (NODE_ENV === 'development') {
             return callback(null, true);
-          } else if (origin && allowedOrigins.indexOf(origin) !== -1) {
+          } else if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
             return callback(null, true);
           } else {
             return callback(new Error('Request blocked by CORS'));
