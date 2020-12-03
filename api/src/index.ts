@@ -3,7 +3,6 @@ import 'reflect-metadata';
 
 import http from 'http';
 import express from 'express';
-import cors from 'cors';
 import compression from 'compression';
 import cookieSession from 'cookie-session';
 import passport from 'passport';
@@ -67,24 +66,6 @@ async function start() {
     // Non-GraphQL requests, including webhooks, are handled by the REST router
     app.use(restRouter);
 
-    // Apply CORS to all further requests when not in development mode
-    if (NODE_ENV !== 'development') {
-      const allowedOrigins = [WEB_ORIGIN];
-      app.use(
-        cors({
-          origin: function (origin, callback) {
-            if (origin && allowedOrigins.indexOf(origin) !== -1) {
-              callback(null, true);
-            } else {
-              callback(new Error('Request blocked by CORS'));
-            }
-          },
-          credentials: true,
-          optionsSuccessStatus: 200,
-        })
-      );
-    }
-
     const schema = await buildSchema({
       resolvers: [
         UserResolver,
@@ -106,10 +87,19 @@ async function start() {
       context: ({ req, res }) => buildContext({ req, res, User }),
     });
 
+    const allowedOrigins = [WEB_ORIGIN];
     server.applyMiddleware({
       app,
       cors: {
-        origin: WEB_ORIGIN,
+        origin: function (origin, callback) {
+          if (NODE_ENV === 'development') {
+            return callback(null, true);
+          } else if (origin && allowedOrigins.indexOf(origin) !== -1) {
+            return callback(null, true);
+          } else {
+            return callback(new Error('Request blocked by CORS'));
+          }
+        },
         credentials: true,
       },
     });
