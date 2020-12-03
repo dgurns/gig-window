@@ -39,10 +39,9 @@ const redisOptions = {
   port: REDIS_PORT ? parseInt(REDIS_PORT) : undefined,
   retryStrategy: () => 2000,
 };
-export const redisClient = new Redis(redisOptions);
 export const redisPubSubClient = new RedisPubSub({
-  publisher: redisClient,
-  subscriber: redisClient,
+  publisher: new Redis(redisOptions),
+  subscriber: new Redis(redisOptions),
 });
 
 async function start() {
@@ -91,10 +90,11 @@ async function start() {
     server.applyMiddleware({
       app,
       cors: {
+        // This cors policy only applies to requests going to the GraphQL API
         origin: function (origin, callback) {
           if (NODE_ENV === 'development') {
             return callback(null, true);
-          } else if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+          } else if (origin && allowedOrigins.indexOf(origin) !== -1) {
             return callback(null, true);
           } else {
             return callback(new Error('Request blocked by CORS'));
