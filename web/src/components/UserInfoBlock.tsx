@@ -104,7 +104,7 @@ const UserInfoBlock = ({ user, className }: Props) => {
       </Grid>
 
       <UpcomingScheduleDialog>
-        <UpcomingSchedule shows={shows} />
+        <UpcomingSchedule user={user} shows={shows} />
       </UpcomingScheduleDialog>
     </Grid>
   );
