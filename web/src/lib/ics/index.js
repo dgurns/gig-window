@@ -134,7 +134,7 @@ var ics = function (uidDomain, prodId) {
         'BEGIN:VALARM',
         'ACTION:DISPLAY',
         'DESCRIPTION:' + subject,
-        'TRIGGER:-PT30M',
+        'TRIGGER:-PT15M',
         'END:VALARM',
         'END:VEVENT',
       ];
