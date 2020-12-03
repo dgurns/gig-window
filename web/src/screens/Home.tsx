@@ -63,10 +63,18 @@ const Home = () => {
     queryOptions: { fetchPolicy: 'cache-and-network' },
   });
 
-  const { liveNowData, upcomingShowData } = useMemo(
-    () => Show.generateShowListingData(usersStreamingLive, shows),
-    [usersStreamingLive, shows]
-  );
+  const { liveNowData, upcomingShowData } = useMemo(() => {
+    if (
+      typeof usersStreamingLive === 'undefined' ||
+      typeof shows === 'undefined'
+    ) {
+      return {
+        liveNowData: [],
+        upcomingShowData: [],
+      };
+    }
+    return Show.generateShowListingData(usersStreamingLive, shows);
+  }, [usersStreamingLive, shows]);
 
   const liveShows = useMemo(
     () =>
