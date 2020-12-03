@@ -133,12 +133,12 @@ const ProjectOverviewSplash = () => {
             show
           </Typography>
           <Typography variant="h6" className={classes.sellingPoint}>
-            Fans pay what
+            Fans buy tickets
             <br />
-            they want
+            and tip
           </Typography>
           <Typography variant="h6" className={classes.sellingPoint}>
-            Get paid directly to
+            Payments go to
             <br />
             your bank account
           </Typography>
@@ -157,8 +157,8 @@ const ProjectOverviewSplash = () => {
         </Card>
         <Card elevation={3} className={classes.detailsContainer}>
           <Typography color="secondary">
-            • Broadcast from your laptop, tablet, or smartphone - we give you
-            RTMP details
+            • Broadcast from your laptop, tablet, or smartphone - we give you an
+            RTMP endpoint
             <br />
             • Adaptive streaming means the video will automatically optimize for
             smooth playback

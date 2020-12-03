@@ -4,7 +4,7 @@ import bodyParser from 'body-parser';
 import { User } from 'entities/User';
 import Mux from 'services/Mux';
 import { authenticateMuxWebhookRequest } from 'middlewares/authenticateMuxWebhookRequest';
-import { pubSub } from './';
+import { redisPubSubClient } from './';
 
 const restRouter = Router();
 
@@ -20,7 +20,7 @@ const handleLiveStreamWebhook = async (req: Request, res: Response) => {
   user.muxLiveStreamStatus = extractedStatusString;
   await user.save();
 
-  await pubSub.publish('MUX_LIVE_STREAM_STATUS_UPDATED', user);
+  await redisPubSubClient.publish('MUX_LIVE_STREAM_STATUS_UPDATED', user);
 
   return res.status(200).end();
 };

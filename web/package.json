@@ -12,6 +12,7 @@
     "@types/react-image-crop": "^8.1.2",
     "classnames": "^2.2.6",
     "date-fns": "^2.13.0",
+    "file-saver": "^2.0.5",
     "graphql": "^14.6.0",
     "hls.js": "^0.14.0",
     "husky": "^4.3.0",
