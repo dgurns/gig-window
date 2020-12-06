@@ -1,6 +1,6 @@
-import { useEffect } from "react";
-import { useQuery, gql, QueryResult } from "@apollo/client";
-import { User } from "types";
+import { useEffect } from 'react';
+import { useQuery, gql, QueryResult } from '@apollo/client';
+import { User } from 'types';
 
 export const GET_CURRENT_USER = gql`
   query GetCurrentUser {
@@ -10,6 +10,7 @@ export const GET_CURRENT_USER = gql`
       email
       username
       urlSlug
+      aboutMarkdown
       isAllowedToStream
       isInPublicMode
       muxStreamKey
@@ -30,6 +31,7 @@ const USER_EVENT_SUBSCRIPTION = gql`
       email
       username
       urlSlug
+      aboutMarkdown
       isAllowedToStream
       isInPublicMode
       muxStreamKey
@@ -55,7 +57,7 @@ const useCurrentUser = ({ subscribe = false }: UseCurrentUserArgs = {}): [
   const currentUser = data?.getCurrentUser;
 
   useEffect(() => {
-    if (!currentUser || !subscribe) {
+    if (!currentUser || !subscribe || !subscribeToMore) {
       return;
     }
 

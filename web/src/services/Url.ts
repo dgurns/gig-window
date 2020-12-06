@@ -13,6 +13,7 @@ const getParentRoute = (url: string) => {
   return cleanedUrl.slice(0, indexOfLastSlash);
 };
 
-export default {
+const UrlService = {
   getParentRoute,
 };
+export default UrlService;

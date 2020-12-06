@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@apollo/client": "3.2.0",
+    "@apollo/client": "3.3.0",
     "@material-ui/core": "^4.9.7",
     "@material-ui/icons": "^4.9.1",
     "@stripe/react-stripe-js": "^1.1.2",
@@ -24,7 +24,8 @@
     "react-image-crop": "^8.6.4",
     "react-markdown": "^5.0.3",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "3.4.1",
+    "react-scripts": "4.0.1",
+    "remark-gfm": "^1.0.0",
     "subscriptions-transport-ws": "^0.9.16"
   },
   "devDependencies": {
@@ -42,7 +43,7 @@
     "history": "^5.0.0",
     "lint-staged": "^10.4.0",
     "mockdate": "^3.0.2",
-    "msw": "^0.21.2",
+    "msw": "0.24.1",
     "prettier": "^2.1.2",
     "typescript": "4.1.2"
   },

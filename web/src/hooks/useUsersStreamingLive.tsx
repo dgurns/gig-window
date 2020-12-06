@@ -1,5 +1,5 @@
-import { useQuery, gql, QueryHookOptions, QueryResult } from "@apollo/client";
-import { User } from "types";
+import { useQuery, gql, QueryHookOptions, QueryResult } from '@apollo/client';
+import { User } from 'types';
 
 export const GET_USERS_STREAMING_LIVE = gql`
   query GetUsersStreamingLive {
@@ -12,10 +12,14 @@ export const GET_USERS_STREAMING_LIVE = gql`
   }
 `;
 
+interface UsersStreamingLiveData {
+  getUsersStreamingLive: User[];
+}
+
 const useUsersStreamingLive = (
   queryOptions?: QueryHookOptions
-): [User[] | undefined, QueryResult<User>] => {
-  const getUsersStreamingLiveQuery = useQuery(
+): [User[] | undefined, QueryResult<UsersStreamingLiveData>] => {
+  const getUsersStreamingLiveQuery = useQuery<UsersStreamingLiveData>(
     GET_USERS_STREAMING_LIVE,
     queryOptions
   );
