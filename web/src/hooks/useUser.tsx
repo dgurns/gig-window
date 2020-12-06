@@ -14,6 +14,7 @@ const GET_USER = gql`
       id
       username
       urlSlug
+      aboutMarkdown
       profileImageUrl
       isAllowedToStream
       isInPublicMode
@@ -30,6 +31,7 @@ const USER_EVENT_SUBSCRIPTION = gql`
       id
       username
       urlSlug
+      aboutMarkdown
       profileImageUrl
       isAllowedToStream
       isInPublicMode
@@ -52,7 +54,7 @@ const useUser = ({
   const { subscribeToMore } = getUserQuery;
 
   useEffect(() => {
-    if ((!id && !urlSlug) || !subscribe) {
+    if ((!id && !urlSlug) || !subscribe || !subscribeToMore) {
       return;
     }
 

@@ -55,6 +55,10 @@ export class User extends BaseEntity {
   @Column({ unique: true })
   urlSlug: string;
 
+  @Field((type) => String)
+  @Column({ default: '' })
+  aboutMarkdown: string;
+
   @Column()
   hashedPassword: string;
 

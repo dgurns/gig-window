@@ -18,6 +18,10 @@ export const GET_SHOWS = gql`
   }
 `;
 
+interface ShowsData {
+  getShows: Show[];
+}
+
 interface UseShowsArgs {
   minShowtime?: string;
   take?: number;
@@ -30,8 +34,8 @@ const useShows = ({
   take,
   skip,
   queryOptions,
-}: UseShowsArgs = {}): [Show[] | undefined, QueryResult<Show>] => {
-  const getShowsQuery = useQuery(GET_SHOWS, {
+}: UseShowsArgs = {}): [Show[] | undefined, QueryResult<ShowsData>] => {
+  const getShowsQuery = useQuery<ShowsData>(GET_SHOWS, {
     variables: {
       minShowtime,
       take,

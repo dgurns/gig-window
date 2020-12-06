@@ -18,6 +18,7 @@ import Paywall from 'components/Paywall';
 import ChatBox from 'components/ChatBox';
 import ShareButton from 'components/ShareButton';
 import TipButton from 'components/TipButton';
+import MarkdownRenderer from 'components/MarkdownRenderer';
 
 const useStyles = makeStyles(({ spacing, breakpoints, palette }) => ({
   pageContainer: {
@@ -70,6 +71,15 @@ const useStyles = makeStyles(({ spacing, breakpoints, palette }) => ({
   tipAmount: {
     marginRight: spacing(1),
     width: 56,
+  },
+  aboutWrapper: {
+    padding: `${spacing(3)}px ${spacing(4)}px 0`,
+    [breakpoints.down('xs')]: {
+      padding: `${spacing(3)}px ${spacing(2)}px 0`,
+    },
+  },
+  aboutContent: {
+    marginTop: spacing(2),
   },
 }));
 
@@ -142,6 +152,7 @@ const Watch = () => {
   const shouldShowTipButton =
     !showsQuery.loading &&
     Ui.shouldShowTipButton({
+      user: currentUser,
       payee: user,
       isActiveShow: Boolean(activeShow),
       paymentForShow,
@@ -155,6 +166,7 @@ const Watch = () => {
       className={classes.pageContainer}
     >
       <UserInfoBlock user={user} className={classes.userInfo} />
+
       <Paper elevation={3}>
         <Grid container className={classes.videoChatContainer}>
           <Grid
@@ -173,6 +185,7 @@ const Watch = () => {
           </Grid>
         </Grid>
       </Paper>
+
       <Grid
         container
         direction="row"
@@ -191,6 +204,23 @@ const Watch = () => {
           {shouldShowTipButton && <TipButton payee={user} show={activeShow} />}
         </Grid>
       </Grid>
+
+      {user.aboutMarkdown && (
+        <Grid
+          container
+          item
+          direction="column"
+          xs={12}
+          sm={8}
+          className={classes.aboutWrapper}
+        >
+          <Typography variant="h6">About</Typography>
+          <MarkdownRenderer
+            rawMarkdown={user.aboutMarkdown}
+            className={classes.aboutContent}
+          />
+        </Grid>
+      )}
     </Container>
   );
 };

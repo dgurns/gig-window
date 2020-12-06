@@ -63,78 +63,9 @@ const Home = () => {
     queryOptions: { fetchPolicy: 'cache-and-network' },
   });
 
-  const { liveNowData, upcomingShowData } = useMemo(() => {
-    if (
-      typeof usersStreamingLive === 'undefined' ||
-      typeof shows === 'undefined'
-    ) {
-      return {
-        liveNowData: [],
-        upcomingShowData: [],
-      };
-    }
-    return Show.generateShowListingData(usersStreamingLive, shows);
-  }, [usersStreamingLive, shows]);
-
-  const liveShows = useMemo(
-    () =>
-      liveNowData.length > 0 && (
-        <Grid item xs={12} className={classes.usersStreamingLive}>
-          <Grid
-            item
-            container
-            direction="row"
-            alignItems="center"
-            className={classes.sectionHeading}
-          >
-            <div className={classes.liveCircle} />
-            <Typography variant="h6" color="error">
-              Live now
-            </Typography>
-          </Grid>
-          <Grid container item xs={12} spacing={2}>
-            {liveNowData.map(({ user, show }, index) => {
-              return (
-                <Grid
-                  item
-                  xs={12}
-                  sm={6}
-                  className={classes.showCard}
-                  key={index}
-                >
-                  <LiveNowCard user={user} show={show} />
-                </Grid>
-              );
-            })}
-          </Grid>
-        </Grid>
-      ),
-    [liveNowData, classes]
-  );
-
-  const upcomingShows = useMemo(
-    () =>
-      upcomingShowData.length > 0 && (
-        <>
-          <Typography variant="h6" className={classes.sectionHeading}>
-            Upcoming shows
-          </Typography>
-          <Grid item container xs={12} spacing={2}>
-            {upcomingShowData.map((show, index) => (
-              <Grid
-                item
-                xs={12}
-                sm={6}
-                className={classes.showCard}
-                key={index}
-              >
-                <UpcomingShowCard show={show} />
-              </Grid>
-            ))}
-          </Grid>
-        </>
-      ),
-    [upcomingShowData, classes]
+  const { liveNowData, upcomingShowData } = useMemo(
+    () => Show.generateShowListingData(usersStreamingLive, shows),
+    [usersStreamingLive, shows]
   );
 
   const dataLoading = usersStreamingLiveQuery.loading || showsQuery.loading;
@@ -151,12 +82,61 @@ const Home = () => {
     } else {
       return (
         <>
-          {liveShows}
-          {upcomingShows}
+          {liveNowData.length > 0 && (
+            <Grid item xs={12} className={classes.usersStreamingLive}>
+              <Grid
+                item
+                container
+                direction="row"
+                alignItems="center"
+                className={classes.sectionHeading}
+              >
+                <div className={classes.liveCircle} />
+                <Typography variant="h6" color="error">
+                  Live now
+                </Typography>
+              </Grid>
+              <Grid container item xs={12} spacing={2}>
+                {liveNowData.map(({ user, show }, index) => {
+                  return (
+                    <Grid
+                      item
+                      xs={12}
+                      sm={6}
+                      className={classes.showCard}
+                      key={index}
+                    >
+                      <LiveNowCard user={user} show={show} />
+                    </Grid>
+                  );
+                })}
+              </Grid>
+            </Grid>
+          )}
+          {upcomingShowData.length > 0 && (
+            <>
+              <Typography variant="h6" className={classes.sectionHeading}>
+                Upcoming shows
+              </Typography>
+              <Grid item container xs={12} spacing={2}>
+                {upcomingShowData.map((show, index) => (
+                  <Grid
+                    item
+                    xs={12}
+                    sm={6}
+                    className={classes.showCard}
+                    key={index}
+                  >
+                    <UpcomingShowCard show={show} />
+                  </Grid>
+                ))}
+              </Grid>
+            </>
+          )}
         </>
       );
     }
-  }, [dataError, dataLoading, noData, liveShows, upcomingShows]);
+  }, [dataError, dataLoading, noData, liveNowData, upcomingShowData, classes]);
 
   const shouldShowSplash = !currentUser && !currentUserQuery.loading;
 

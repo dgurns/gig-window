@@ -29,7 +29,8 @@ const isAdmin = (user: User | undefined) => {
   return Object.values(permissions).includes('Admin' as UserPermission);
 };
 
-export default {
+const UserService = {
   hasAccessToLiveVideo,
   isAdmin,
 };
+export default UserService;

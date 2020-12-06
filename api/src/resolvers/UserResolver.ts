@@ -298,6 +298,23 @@ export class UserResolver {
   }
 
   @Mutation(() => User)
+  async updateAboutMarkdown(
+    @Arg('aboutMarkdown') aboutMarkdown: string,
+    @Ctx() ctx: CustomContext
+  ) {
+    const user = ctx.getUser();
+    if (!user) throw new Error('User is not logged in');
+
+    if (aboutMarkdown === user.aboutMarkdown) {
+      throw new Error('This is the same as your existing About text');
+    }
+
+    user.aboutMarkdown = aboutMarkdown;
+    await user.save();
+    return user;
+  }
+
+  @Mutation(() => User)
   async updatePassword(
     @Arg('password') password: string,
     @Ctx() ctx: CustomContext
