@@ -68,9 +68,15 @@ interface GenerateShowDataResult {
 }
 
 const generateShowListingData = (
-  usersStreamingLive: User[] = [],
-  shows: Show[] = []
+  usersStreamingLive?: User[],
+  shows?: Show[]
 ): GenerateShowDataResult => {
+  if (!usersStreamingLive && !shows) {
+    return {
+      liveNowData: [],
+      upcomingShowData: [],
+    };
+  }
   const liveNowData = generateLiveNowData(usersStreamingLive, shows);
   const showsIncludedInLiveNow: Show[] = [];
   liveNowData.forEach((item) => {
