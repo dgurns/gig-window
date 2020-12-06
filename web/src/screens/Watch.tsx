@@ -142,6 +142,7 @@ const Watch = () => {
   const shouldShowTipButton =
     !showsQuery.loading &&
     Ui.shouldShowTipButton({
+      user: currentUser,
       payee: user,
       isActiveShow: Boolean(activeShow),
       paymentForShow,
