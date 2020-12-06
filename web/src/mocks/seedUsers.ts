@@ -41,6 +41,7 @@ export const seedUsers = {
     email: 'user3@test.com',
     username: 'user3',
     urlSlug: 'user3UrlSlug',
+    aboutMarkdown: '',
     isAllowedToStream: true,
     isInPublicMode: false,
     muxStreamKey: 'adc78eb0-5f57-9s3a-84c5-6da5c3a7c236',
