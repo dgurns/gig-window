@@ -82,14 +82,14 @@ _Italic_
   return (
     <Grid container item direction="column" xs={12}>
       <Typography color="secondary" className={classes.description}>
-        This appears on your profile below the video and chat. It uses{' '}
+        This appears on your profile below the video and chat. You can use{' '}
         <Link
           href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet"
           target="_blank"
         >
           Markdown formatting
         </Link>{' '}
-        which enables you to add links, bold/italics, and more.
+        to add links, bold/italics, and more.
       </Typography>
 
       <TextField
