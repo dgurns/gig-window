@@ -54,6 +54,7 @@ const shouldShowTipButton = ({
   return false;
 };
 
-export default {
+const UiService = {
   shouldShowTipButton,
 };
+export default UiService;

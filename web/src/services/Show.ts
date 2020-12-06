@@ -86,10 +86,11 @@ const generateShowListingData = (
   };
 };
 
-export default {
+const ShowService = {
   filterShowsByUser,
   getActiveShow,
   generateLiveNowData,
   generateUpcomingShowData,
   generateShowListingData,
 };
+export default ShowService;
