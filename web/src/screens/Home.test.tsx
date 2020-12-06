@@ -40,5 +40,6 @@ describe('Home screen', () => {
     screen.getByText(/Dan's show/i);
 
     expect(screen.queryByText(/Play online shows/)).toBeFalsy();
+    await wait();
   });
 });

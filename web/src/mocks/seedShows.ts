@@ -8,6 +8,7 @@ export const seedShows = {
       id: 1,
       username: 'dang',
       urlSlug: 'dang',
+      aboutMarkdown: 'Dang is a user',
       profileImageUrl:
         'https://gig-window-dev.s3.amazonaws.com/users/1/profileImage.jpeg?updated=1600184388177',
       __typename: 'User',
@@ -23,6 +24,7 @@ export const seedShows = {
       id: 1,
       username: 'dang',
       urlSlug: 'dang',
+      aboutMarkdown: 'Dang is a user',
       profileImageUrl:
         'https://gig-window-dev.s3.amazonaws.com/users/1/profileImage.jpeg?updated=1600184388177',
       __typename: 'User',
