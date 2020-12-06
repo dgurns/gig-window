@@ -170,9 +170,7 @@ const EditProfile = () => {
         </Grid>
         <Grid className={classes.profileSection}>
           <Typography variant="h6">About</Typography>
-          {aboutMarkdown ? (
-            <Typography>{`${aboutMarkdown.substr(0, 10)}...`}</Typography>
-          ) : (
+          {!aboutMarkdown && (
             <Typography color="secondary">Nothing yet</Typography>
           )}
           <TextButton

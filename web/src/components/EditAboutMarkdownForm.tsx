@@ -24,7 +24,7 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
     border: `1px dashed ${palette.secondary.main}`,
     borderRadius: spacing(1),
     marginTop: spacing(2),
-    padding: `0 ${spacing(2)}px`,
+    padding: spacing(2),
   },
   submitButton: {
     marginTop: spacing(3),

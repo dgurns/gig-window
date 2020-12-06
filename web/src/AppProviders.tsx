@@ -1,16 +1,16 @@
-import React from "react";
+import React from 'react';
 import {
   ApolloClient,
   HttpLink,
   split,
   InMemoryCache,
   ApolloProvider,
-} from "@apollo/client";
-import { WebSocketLink } from "@apollo/client/link/ws";
-import { getMainDefinition } from "@apollo/client/utilities";
-import { ThemeProvider, CssBaseline } from "@material-ui/core";
+} from '@apollo/client';
+import { WebSocketLink } from '@apollo/client/link/ws';
+import { getMainDefinition } from '@apollo/client/utilities';
+import { ThemeProvider, CssBaseline } from '@material-ui/core';
 
-import theme from "styles/theme";
+import theme from 'styles/theme';
 
 const {
   REACT_APP_API_HTTP_ORIGIN,
@@ -20,7 +20,7 @@ const {
 
 const httpLink = new HttpLink({
   uri: `${REACT_APP_API_HTTP_ORIGIN}${REACT_APP_API_GRAPHQL_PATH}`,
-  credentials: "include",
+  credentials: 'include',
 });
 const wsLink = new WebSocketLink({
   uri: `${REACT_APP_API_WEBSOCKET_ORIGIN}${REACT_APP_API_GRAPHQL_PATH}`,
@@ -32,8 +32,8 @@ const splitLink = split(
   ({ query }) => {
     const definition = getMainDefinition(query);
     return (
-      definition.kind === "OperationDefinition" &&
-      definition.operation === "subscription"
+      definition.kind === 'OperationDefinition' &&
+      definition.operation === 'subscription'
     );
   },
   wsLink,
