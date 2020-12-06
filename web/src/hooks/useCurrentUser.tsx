@@ -57,7 +57,7 @@ const useCurrentUser = ({ subscribe = false }: UseCurrentUserArgs = {}): [
   const currentUser = data?.getCurrentUser;
 
   useEffect(() => {
-    if (!currentUser || !subscribe) {
+    if (!currentUser || !subscribe || !subscribeToMore) {
       return;
     }
 

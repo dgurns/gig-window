@@ -30,7 +30,7 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
     marginTop: spacing(3),
   },
   error: {
-    marginBottom: spacing(3),
+    marginTop: spacing(3),
     textAlign: 'center',
   },
 }));

@@ -54,7 +54,7 @@ const useUser = ({
   const { subscribeToMore } = getUserQuery;
 
   useEffect(() => {
-    if ((!id && !urlSlug) || !subscribe) {
+    if ((!id && !urlSlug) || !subscribe || !subscribeToMore) {
       return;
     }
 
