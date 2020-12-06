@@ -9,6 +9,7 @@ export interface User {
   email?: string;
   username: string;
   urlSlug: string;
+  aboutMarkdown: string;
   isAllowedToStream: boolean;
   isInPublicMode: boolean;
   muxStreamKey?: string;

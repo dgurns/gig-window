@@ -1,9 +1,28 @@
 import Mux from '@mux/mux-node';
+import { Request } from 'express';
 import { User } from 'entities/User';
 
-const { MUX_USE_TEST_LIVE_STREAMS } = process.env;
+const { MUX_USE_TEST_LIVE_STREAMS, MUX_WEBHOOK_SECRET } = process.env;
 
 const { Video: MuxVideo } = new Mux();
+
+const verifyWebhookSignature = (incomingRequest: Request): boolean => {
+  try {
+    const signature = incomingRequest.headers['mux-signature'];
+    const body = incomingRequest.body;
+    if (
+      !signature ||
+      Array.isArray(signature) ||
+      !body ||
+      !MUX_WEBHOOK_SECRET
+    ) {
+      return false;
+    }
+    return Mux.Webhooks.verifyHeader(body, signature, MUX_WEBHOOK_SECRET);
+  } catch {
+    return false;
+  }
+};
 
 const createLiveStreamForUser = async (user: User) => {
   const liveStream = await MuxVideo.LiveStreams.create({
@@ -25,6 +44,7 @@ const deleteAsset = (assetId: string) => {
 };
 
 export default {
+  verifyWebhookSignature,
   createLiveStreamForUser,
   deleteAsset,
 };

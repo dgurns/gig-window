@@ -3,7 +3,6 @@ import 'reflect-metadata';
 
 import http from 'http';
 import express from 'express';
-import cors from 'cors';
 import compression from 'compression';
 import cookieSession from 'cookie-session';
 import passport from 'passport';
@@ -40,7 +39,7 @@ const redisOptions = {
   port: REDIS_PORT ? parseInt(REDIS_PORT) : undefined,
   retryStrategy: () => 2000,
 };
-export const pubSub = new RedisPubSub({
+export const redisPubSubClient = new RedisPubSub({
   publisher: new Redis(redisOptions),
   subscriber: new Redis(redisOptions),
 });
@@ -52,24 +51,6 @@ async function start() {
 
     const app = express();
 
-    const allowedOrigins = [WEB_ORIGIN];
-    if (NODE_ENV === 'development') {
-      allowedOrigins.push(`http://localhost:${SERVER_PORT}`);
-    }
-    app.use(
-      cors({
-        origin: function (origin, callback) {
-          if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-            callback(null, true);
-          } else {
-            callback(new Error('Request blocked by CORS'));
-          }
-        },
-        credentials: true,
-        optionsSuccessStatus: 200,
-      })
-    );
-    app.use(express.json());
     app.use(compression());
     app.use(
       cookieSession({
@@ -80,6 +61,8 @@ async function start() {
     );
     app.use(passport.initialize());
     app.use(passport.session());
+
+    // Non-GraphQL requests, including webhooks, are handled by the REST router
     app.use(restRouter);
 
     const schema = await buildSchema({
@@ -91,7 +74,7 @@ async function start() {
         ShowResolver,
         AdminResolver,
       ],
-      pubSub,
+      pubSub: redisPubSubClient,
       authChecker,
       authMode: 'null',
       dateScalarMode: 'isoDate',
@@ -103,10 +86,20 @@ async function start() {
       context: ({ req, res }) => buildContext({ req, res, User }),
     });
 
+    const allowedOrigins = [WEB_ORIGIN];
     server.applyMiddleware({
       app,
       cors: {
-        origin: WEB_ORIGIN,
+        // This cors policy only applies to requests going to the GraphQL API
+        origin: function (origin, callback) {
+          if (NODE_ENV === 'development') {
+            return callback(null, true);
+          } else if (origin && allowedOrigins.indexOf(origin) !== -1) {
+            return callback(null, true);
+          } else {
+            return callback(new Error('Request blocked by CORS'));
+          }
+        },
         credentials: true,
       },
     });

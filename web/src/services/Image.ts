@@ -46,7 +46,8 @@ const generateImageBlobFromCrop = (
   });
 };
 
-export default {
+const ImageService = {
   DEFAULT_IMAGE_ASPECT_RATIO,
   generateImageBlobFromCrop,
 };
+export default ImageService;

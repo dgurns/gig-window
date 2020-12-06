@@ -58,9 +58,10 @@ const showtimeIsSoon = (showtime?: string | number): boolean => {
   return false;
 };
 
-export default {
+const DateTimeService = {
   formatUserReadableShowtime,
   formatUserReadableDate,
   showtimeIsStillActive,
   showtimeIsSoon,
 };
+export default DateTimeService;

@@ -54,7 +54,7 @@ const HowToBroadcast = () => {
 
   return (
     <Grid container direction="column">
-      <Typography variant="h6">How to broadcast:</Typography>
+      <Typography variant="h6">How to broadcast</Typography>
       <Grid className={classes.section}>
         <Typography>
           1. Pick a streaming app - anything that lets you stream to an RTMP

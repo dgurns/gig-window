@@ -12,6 +12,7 @@ import LiveVideoArea from 'components/LiveVideoArea';
 import StreamPreviewMessage from 'components/StreamPreviewMessage';
 import ChatBox from 'components/ChatBox';
 import ShareButton from 'components/ShareButton';
+import MarkdownRenderer from 'components/MarkdownRenderer';
 import HowToBroadcast from 'components/HowToBroadcast';
 
 const useStyles = makeStyles(({ breakpoints, palette, spacing }) => ({
@@ -54,13 +55,22 @@ const useStyles = makeStyles(({ breakpoints, palette, spacing }) => ({
     paddingLeft: spacing(4),
     paddingRight: spacing(4),
     [breakpoints.down('sm')]: {
-      padding: `0 ${spacing(3)}px`,
+      padding: `0 ${spacing(2)}px`,
     },
   },
-  howTo: {
-    padding: `${spacing(5)}px ${spacing(4)}px ${spacing(12)}px`,
+  aboutWrapper: {
+    padding: `${spacing(3)}px ${spacing(4)}px 0`,
     [breakpoints.down('xs')]: {
-      padding: `${spacing(4)}px ${spacing(3)}px`,
+      padding: `${spacing(3)}px ${spacing(2)}px 0`,
+    },
+  },
+  aboutContent: {
+    marginTop: spacing(2),
+  },
+  howTo: {
+    padding: `${spacing(4)}px ${spacing(4)}px ${spacing(12)}px`,
+    [breakpoints.down('xs')]: {
+      padding: `${spacing(3)}px ${spacing(2)}px`,
     },
   },
 }));
@@ -72,6 +82,7 @@ const Dashboard = () => {
   const {
     id,
     urlSlug,
+    aboutMarkdown,
     isAllowedToStream,
     muxLiveStreamStatus,
     stripeConnectAccountId,
@@ -153,6 +164,23 @@ const Dashboard = () => {
         >
           <ShareButton urlSlug={urlSlug} />
         </Grid>
+
+        {aboutMarkdown && (
+          <Grid
+            container
+            item
+            direction="column"
+            xs={12}
+            sm={8}
+            className={classes.aboutWrapper}
+          >
+            <Typography variant="h6">About</Typography>
+            <MarkdownRenderer
+              rawMarkdown={aboutMarkdown}
+              className={classes.aboutContent}
+            />
+          </Grid>
+        )}
 
         {isAllowedToStream && (
           <Grid
