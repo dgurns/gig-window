@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, wait } from 'test-utils';
+import { render, screen, wait, act } from 'test-utils';
 import Home from 'screens/Home';
 import { server, graphql } from 'mocks/server';
 
