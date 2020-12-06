@@ -25,6 +25,7 @@
     "react-markdown": "^5.0.3",
     "react-router-dom": "^5.1.2",
     "react-scripts": "4.0.1",
+    "remark-gfm": "^1.0.0",
     "subscriptions-transport-ws": "^0.9.16"
   },
   "devDependencies": {

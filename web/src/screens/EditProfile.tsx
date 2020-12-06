@@ -29,8 +29,8 @@ enum EditableField {
   ProfileImage = 'profileImage',
   Email = 'email',
   Username = 'username',
-  UrlSlug = 'urlSlug',
   AboutMarkdown = 'aboutMarkdown',
+  UrlSlug = 'urlSlug',
   Password = 'password',
 }
 
@@ -117,8 +117,6 @@ const EditProfile = () => {
         return (
           <EditUsernameForm username={username} onSuccess={onEditSuccess} />
         );
-      case EditableField.UrlSlug:
-        return <EditUrlSlugForm urlSlug={urlSlug} onSuccess={onEditSuccess} />;
       case EditableField.AboutMarkdown:
         return (
           <EditAboutMarkdownForm
@@ -126,6 +124,8 @@ const EditProfile = () => {
             onSuccess={onEditSuccess}
           />
         );
+      case EditableField.UrlSlug:
+        return <EditUrlSlugForm urlSlug={urlSlug} onSuccess={onEditSuccess} />;
       case EditableField.Password:
         return <EditPasswordForm onSuccess={onEditSuccess} />;
       default:
@@ -169,22 +169,24 @@ const EditProfile = () => {
           </TextButton>
         </Grid>
         <Grid className={classes.profileSection}>
-          <Typography variant="h6">Custom URL</Typography>
-          <Typography>
-            {window.location.origin}/{urlSlug}
-          </Typography>
-          <TextButton onClick={() => setActiveField(EditableField.UrlSlug)}>
-            Edit
-          </TextButton>
-        </Grid>
-        <Grid className={classes.profileSection}>
           <Typography variant="h6">About</Typography>
-          {!aboutMarkdown && (
+          {aboutMarkdown ? (
+            <Typography>{`${aboutMarkdown.substr(0, 10)}...`}</Typography>
+          ) : (
             <Typography color="secondary">Nothing yet</Typography>
           )}
           <TextButton
             onClick={() => setActiveField(EditableField.AboutMarkdown)}
           >
+            Edit
+          </TextButton>
+        </Grid>
+        <Grid className={classes.profileSection}>
+          <Typography variant="h6">Custom URL</Typography>
+          <Typography>
+            {window.location.origin}/{urlSlug}
+          </Typography>
+          <TextButton onClick={() => setActiveField(EditableField.UrlSlug)}>
             Edit
           </TextButton>
         </Grid>

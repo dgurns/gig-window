@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useMutation, gql } from '@apollo/client';
-import { Grid, Typography, TextField, Button } from '@material-ui/core';
+import { Grid, Link, Typography, TextField, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+
+import MarkdownRenderer from 'components/MarkdownRenderer';
 
 const UPDATE_ABOUT_MARKDOWN = gql`
   mutation UpdateAboutMarkdown($aboutMarkdown: String!) {
@@ -11,10 +13,21 @@ const UPDATE_ABOUT_MARKDOWN = gql`
   }
 `;
 
-const useStyles = makeStyles(({ spacing }) => ({
+const useStyles = makeStyles(({ spacing, palette }) => ({
+  description: {
+    marginBottom: spacing(2),
+  },
   formField: {
-    marginBottom: spacing(3),
     marginTop: spacing(1),
+  },
+  markdownPreview: {
+    border: `1px dashed ${palette.secondary.main}`,
+    borderRadius: spacing(1),
+    marginTop: spacing(2),
+    padding: `0 ${spacing(2)}px`,
+  },
+  submitButton: {
+    marginTop: spacing(3),
   },
   error: {
     marginBottom: spacing(3),
@@ -59,15 +72,41 @@ const EditAboutMarkdownForm = ({ aboutMarkdown, onSuccess }: Props) => {
     updateAboutMarkdown({ variables: { aboutMarkdown: updatedAboutMarkdown } });
   };
 
+  const placeholderText = `Tell viewers about yourself...
+
+**Bold**
+_Italic_
+[Link](https://your-website.com)
+  `;
+
   return (
     <Grid container item direction="column" xs={12}>
+      <Typography color="secondary" className={classes.description}>
+        This appears on your profile below the video and chat. It uses{' '}
+        <Link
+          href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet"
+          target="_blank"
+        >
+          Markdown formatting
+        </Link>{' '}
+        which enables you to add links, bold/italics, and more.
+      </Typography>
+
       <TextField
         value={updatedAboutMarkdown}
         onChange={({ target: { value } }) => setUpdatedAboutMarkdown(value)}
         variant="outlined"
-        label="Username"
+        multiline
+        rows="10"
+        placeholder={placeholderText}
         className={classes.formField}
       />
+
+      <MarkdownRenderer
+        className={classes.markdownPreview}
+        rawMarkdown={updatedAboutMarkdown}
+      />
+
       {localValidationError && (
         <Typography variant="body2" color="error" className={classes.error}>
           {localValidationError}
@@ -78,7 +117,9 @@ const EditAboutMarkdownForm = ({ aboutMarkdown, onSuccess }: Props) => {
           {error.graphQLErrors.map(({ message }) => message)}
         </Typography>
       )}
+
       <Button
+        className={classes.submitButton}
         onClick={onSaveClicked}
         color="primary"
         variant="contained"
