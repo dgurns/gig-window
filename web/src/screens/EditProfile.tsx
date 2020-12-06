@@ -14,6 +14,7 @@ import EditProfileImageForm from 'components/EditProfileImageForm';
 import EditEmailForm from 'components/EditEmailForm';
 import EditUsernameForm from 'components/EditUsernameForm';
 import EditUrlSlugForm from 'components/EditUrlSlugForm';
+import EditAboutMarkdownForm from 'components/EditAboutMarkdownForm';
 import EditPasswordForm from 'components/EditPasswordForm';
 
 const UNLINK_STRIPE_CONNECT_ACCOUNT = gql`
@@ -29,6 +30,7 @@ enum EditableField {
   Email = 'email',
   Username = 'username',
   UrlSlug = 'urlSlug',
+  AboutMarkdown = 'aboutMarkdown',
   Password = 'password',
 }
 
@@ -86,6 +88,7 @@ const EditProfile = () => {
     email,
     username,
     urlSlug,
+    aboutMarkdown,
     stripeConnectAccountId,
   } = currentUser;
 
@@ -116,6 +119,13 @@ const EditProfile = () => {
         );
       case EditableField.UrlSlug:
         return <EditUrlSlugForm urlSlug={urlSlug} onSuccess={onEditSuccess} />;
+      case EditableField.AboutMarkdown:
+        return (
+          <EditAboutMarkdownForm
+            aboutMarkdown={aboutMarkdown}
+            onSuccess={onEditSuccess}
+          />
+        );
       case EditableField.Password:
         return <EditPasswordForm onSuccess={onEditSuccess} />;
       default:
@@ -164,6 +174,17 @@ const EditProfile = () => {
             {window.location.origin}/{urlSlug}
           </Typography>
           <TextButton onClick={() => setActiveField(EditableField.UrlSlug)}>
+            Edit
+          </TextButton>
+        </Grid>
+        <Grid className={classes.profileSection}>
+          <Typography variant="h6">About</Typography>
+          {!aboutMarkdown && (
+            <Typography color="secondary">Nothing yet</Typography>
+          )}
+          <TextButton
+            onClick={() => setActiveField(EditableField.AboutMarkdown)}
+          >
             Edit
           </TextButton>
         </Grid>
