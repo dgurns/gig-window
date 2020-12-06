@@ -28,8 +28,8 @@ describe('Home screen', () => {
     screen.getByText(/Dan's show/i);
   });
 
-  it('should display shows but no splash screen for a logged in user', async () => {
-    render(<Home />);
+  it.only('should display shows but no splash screen for a logged in user', async () => {
+    const { debug } = render(<Home />);
 
     await screen.findByText(/Live now/i);
     await wait(() => {
@@ -40,6 +40,6 @@ describe('Home screen', () => {
     screen.getByText(/Dan's show/i);
 
     expect(screen.queryByText(/Play online shows/)).toBeFalsy();
-    await wait();
+    debug();
   });
 });
