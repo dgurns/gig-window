@@ -33,7 +33,7 @@ const useStyles = makeStyles(({ spacing }) => ({
 function App() {
   const classes = useStyles();
 
-  const [currentUser, { loading, data, error }] = useCurrentUser();
+  const [currentUser, { data, error }] = useCurrentUser();
 
   useEffect(() => {
     // Remove any styles left over from server side rendering
@@ -47,7 +47,7 @@ function App() {
     return <EmbeddedPlayer />;
   }
 
-  const isCheckingForCurrentUser = !data && loading;
+  const isCheckingForCurrentUser = typeof data === 'undefined';
   if (isCheckingForCurrentUser) {
     return null;
   } else if (error) {

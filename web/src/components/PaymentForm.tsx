@@ -110,7 +110,7 @@ const PaymentForm = (props: PaymentFormProps) => {
     setupIntent.data?.createStripeSetupIntent.client_secret;
 
   const onAuthSuccess = useCallback(() => {
-    refetchCurrentUser();
+    refetchCurrentUser && refetchCurrentUser();
   }, [refetchCurrentUser]);
 
   const onPaymentSuccess = useCallback(async () => {
