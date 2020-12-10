@@ -1,13 +1,12 @@
-import { PaymentForShow, RecentPaymentToPayee } from 'hooks/usePayments';
 import UserService from 'services/User';
-import { User } from 'types';
+import { User, Payment } from 'types';
 
 interface ShouldShowTipButtonArgs {
   user?: User;
   payee?: User;
   isActiveShow?: boolean;
-  paymentForShow?: PaymentForShow;
-  recentPaymentsToPayee?: RecentPaymentToPayee[];
+  paymentForShow?: Payment;
+  recentPaymentsToPayee?: Payment[];
   freePreviewIsUsed?: boolean;
 }
 

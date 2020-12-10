@@ -68,7 +68,7 @@ const EditProfile = () => {
       window.alert(
         'Successfully unlinked Stripe account. You can always re-link it again in the future.'
       );
-      refetchCurrentUser();
+      refetchCurrentUser && refetchCurrentUser();
     } else if (error) {
       window.alert('Error unlinking Stripe account. Please try again');
     }
@@ -93,7 +93,7 @@ const EditProfile = () => {
   } = currentUser;
 
   const onEditSuccess = () => {
-    refetchCurrentUser();
+    refetchCurrentUser && refetchCurrentUser();
     setActiveField(null);
   };
 

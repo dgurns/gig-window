@@ -92,12 +92,12 @@ const useStyles = makeStyles(({ palette, spacing, breakpoints }) => ({
 const ProjectOverviewSplash = () => {
   const classes = useStyles();
 
-  const [, currentUserQuery] = useCurrentUser();
+  const [, { refetch }] = useCurrentUser();
   const [VideoDialog, setVideoDialogIsVisible] = useDialog();
   const [AuthDialog, setAuthDialogIsVisible] = useDialog();
 
   const onAuthSuccess = () => {
-    currentUserQuery.refetch();
+    refetch && refetch();
   };
 
   return (

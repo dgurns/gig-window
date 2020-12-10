@@ -38,7 +38,7 @@
     "reflect-metadata": "^0.1.13",
     "stripe": "^8.49.0",
     "type-graphql": "1.0.0",
-    "typeorm": "^0.2.24",
+    "typeorm": "0.2.29",
     "uuid": "^7.0.3"
   },
   "devDependencies": {

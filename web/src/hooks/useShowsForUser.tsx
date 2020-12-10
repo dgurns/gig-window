@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
-import { useQuery, gql, QueryResult } from '@apollo/client';
+import { useMemo, useEffect } from 'react';
+import { useLazyQuery, gql, LazyQueryResult } from '@apollo/client';
 import ShowService from 'services/Show';
 import { Show } from 'types';
 
@@ -14,13 +14,28 @@ const GET_SHOWS_FOR_USER = gql`
   }
 `;
 
+interface QueryData {
+  getShowsForUser: Show[];
+}
+interface QueryVars {
+  userId: number;
+}
+
 const useShowsForUser = (
   userId?: number
-): [Show[] | undefined, QueryResult<Show>, Show | undefined] => {
-  const getShowsQuery = useQuery(GET_SHOWS_FOR_USER, {
-    variables: { userId },
-    skip: !userId,
-  });
+): [
+  Show[] | undefined,
+  LazyQueryResult<QueryData, QueryVars>,
+  Show | undefined
+] => {
+  const [getShowsForUser, getShowsQuery] = useLazyQuery<QueryData, QueryVars>(
+    GET_SHOWS_FOR_USER
+  );
+  useEffect(() => {
+    if (userId) {
+      getShowsForUser({ variables: { userId } });
+    }
+  }, [getShowsForUser, userId]);
 
   const shows = getShowsQuery.data?.getShowsForUser;
   const activeShow = useMemo(() => ShowService.getActiveShow(shows), [shows]);

@@ -1,28 +1,26 @@
-import { graphql } from "msw";
-import { seedUsers } from "./seedUsers";
-import { seedShows } from "./seedShows";
+import { graphql } from 'msw';
+import { seedUsers } from './seedUsers';
+import { seedShows } from './seedShows';
 
 export const handlers = [
-  graphql.query("GetCurrentUser", (_, res, ctx) => {
+  graphql.query('GetCurrentUser', (_, res, ctx) => {
     return res(
       ctx.data({
-        getCurrentUser: seedUsers["1"],
+        getCurrentUser: seedUsers['1'],
       })
     );
   }),
-
-  graphql.query("GetShows", (_, res, ctx) => {
+  graphql.query('GetShows', (_, res, ctx) => {
     return res(
       ctx.data({
-        getShows: [seedShows["1"], seedShows["2"]],
+        getShows: [seedShows['1'], seedShows['2']],
       })
     );
   }),
-
-  graphql.query("GetUsersStreamingLive", (_, res, ctx) => {
+  graphql.query('GetUsersStreamingLive', (_, res, ctx) => {
     return res(
       ctx.data({
-        getUsersStreamingLive: [seedUsers["1"]],
+        getUsersStreamingLive: [seedUsers['1']],
       })
     );
   }),
