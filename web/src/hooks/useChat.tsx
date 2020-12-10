@@ -1,5 +1,5 @@
 import { useEffect, useCallback } from 'react';
-import { useLazyQuery, useMutation, gql } from '@apollo/client';
+import { useQuery, useMutation, gql } from '@apollo/client';
 import { ChatEvent } from 'types';
 
 const GET_CHAT_EVENTS = gql`
@@ -82,16 +82,13 @@ interface SubscriptionData {
 const useChat = (
   parentUserId?: number
 ): [ChatEvent[], (message?: string) => void] => {
-  const [
-    getChatEvents,
-    { subscribeToMore, ...getChatEventsResult },
-  ] = useLazyQuery<QueryData>(GET_CHAT_EVENTS);
-
-  useEffect(() => {
-    if (parentUserId) {
-      getChatEvents({ variables: { parentUserId } });
+  const { subscribeToMore, ...getChatEventsResult } = useQuery<QueryData>(
+    GET_CHAT_EVENTS,
+    {
+      variables: { parentUserId },
+      skip: !parentUserId,
     }
-  }, [getChatEvents, parentUserId]);
+  );
 
   const chatEvents = getChatEventsResult.data?.getChatEvents || [];
 

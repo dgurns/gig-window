@@ -39,8 +39,14 @@ interface PaymentsData {
 interface PaymentForShowData {
   getUserPaymentForShow: Payment;
 }
+interface PaymentForShowVars {
+  showId: number;
+}
 interface RecentPaymentsToPayeeData {
   getUserPaymentsToPayee: Payment[];
+}
+interface RecentPaymentsToPayeeVars {
+  payeeUserId: number;
 }
 
 interface UsePaymentsArgs {
@@ -51,9 +57,12 @@ interface UsePaymentsReturnValue {
   payments?: Payment[];
   paymentsQuery: LazyQueryResult<PaymentsData, {}>;
   paymentForShow?: Payment;
-  paymentForShowQuery: LazyQueryResult<PaymentForShowData, {}>;
+  paymentForShowQuery: LazyQueryResult<PaymentForShowData, PaymentForShowVars>;
   recentPaymentsToPayee?: Payment[];
-  recentPaymentsToPayeeQuery: LazyQueryResult<RecentPaymentsToPayeeData, {}>;
+  recentPaymentsToPayeeQuery: LazyQueryResult<
+    RecentPaymentsToPayeeData,
+    RecentPaymentsToPayeeVars
+  >;
   refetchPayments: () => void;
 }
 
@@ -76,7 +85,8 @@ const usePayments = ({
   }, [getPayments, currentUser]);
 
   const [getPaymentForShow, paymentForShowQuery] = useLazyQuery<
-    PaymentForShowData
+    PaymentForShowData,
+    PaymentForShowVars
   >(GET_PAYMENT_FOR_SHOW, { fetchPolicy: 'cache-and-network' });
   useEffect(() => {
     if (showId && currentUser) {
@@ -85,7 +95,8 @@ const usePayments = ({
   }, [getPaymentForShow, showId, currentUser]);
 
   const [getRecentPaymentsToPayee, recentPaymentsToPayeeQuery] = useLazyQuery<
-    RecentPaymentsToPayeeData
+    RecentPaymentsToPayeeData,
+    RecentPaymentsToPayeeVars
   >(GET_RECENT_PAYMENTS_TO_PAYEE, { fetchPolicy: 'cache-and-network' });
   useEffect(() => {
     if (payeeUserId && currentUser) {

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useLazyQuery, gql, LazyQueryResult } from '@apollo/client';
+import { useQuery, gql, QueryResult } from '@apollo/client';
 import { User } from 'types';
 
 export const GET_CURRENT_USER = gql`
@@ -54,17 +54,15 @@ interface QueryData {
 interface SubscriptionData {
   newUserEvent: User;
 }
+interface SubscriptionVars {
+  userId: number;
+}
 
 const useCurrentUser = ({ subscribe = false }: UseCurrentUserArgs = {}): [
   User | undefined,
-  LazyQueryResult<QueryData, {}>
+  QueryResult<QueryData>
 ] => {
-  const [getCurrentUser, currentUserQuery] = useLazyQuery<QueryData>(
-    GET_CURRENT_USER
-  );
-  useEffect(() => {
-    getCurrentUser();
-  }, [getCurrentUser]);
+  const currentUserQuery = useQuery<QueryData>(GET_CURRENT_USER);
 
   const { data, subscribeToMore } = currentUserQuery;
   const currentUser = data?.getCurrentUser;
@@ -74,7 +72,7 @@ const useCurrentUser = ({ subscribe = false }: UseCurrentUserArgs = {}): [
       return;
     }
 
-    const unsubscribe = subscribeToMore<SubscriptionData>({
+    const unsubscribe = subscribeToMore<SubscriptionData, SubscriptionVars>({
       document: USER_EVENT_SUBSCRIPTION,
       variables: { userId: currentUser.id },
       updateQuery: (prev, { subscriptionData }) => {

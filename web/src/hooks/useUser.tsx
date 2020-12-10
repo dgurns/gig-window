@@ -2,12 +2,6 @@ import { useEffect } from 'react';
 import { useQuery, gql, QueryResult } from '@apollo/client';
 import { User } from 'types';
 
-interface UserArgs {
-  id?: number;
-  urlSlug?: string;
-  subscribe?: boolean;
-}
-
 const GET_USER = gql`
   query GetUser($id: Int, $urlSlug: String) {
     getUser(data: { id: $id, urlSlug: $urlSlug }) {
@@ -42,23 +36,45 @@ const USER_EVENT_SUBSCRIPTION = gql`
   }
 `;
 
+interface QueryData {
+  getUser: User;
+}
+interface QueryVars {
+  id?: number;
+  urlSlug?: string;
+}
+interface SubscriptionData {
+  newUserEvent: User;
+}
+interface SubscriptionVars {
+  userId?: number;
+  userUrlSlug?: string;
+}
+
+interface UseUserArgs {
+  id?: number;
+  urlSlug?: string;
+  subscribe?: boolean;
+}
+
 const useUser = ({
   id,
   urlSlug,
   subscribe = false,
-}: UserArgs): [User | undefined, QueryResult<User>] => {
-  const getUserQuery = useQuery(GET_USER, {
+}: UseUserArgs): [User | undefined, QueryResult<QueryData, QueryVars>] => {
+  const getUserQuery = useQuery<QueryData, QueryVars>(GET_USER, {
     variables: { id, urlSlug },
     skip: !id && !urlSlug,
   });
+
   const { subscribeToMore } = getUserQuery;
 
   useEffect(() => {
-    if ((!id && !urlSlug) || !subscribe || !subscribeToMore) {
+    if (!subscribe || !subscribeToMore || (!id && !urlSlug)) {
       return;
     }
 
-    const unsubscribe = subscribeToMore({
+    const unsubscribe = subscribeToMore<SubscriptionData, SubscriptionVars>({
       document: USER_EVENT_SUBSCRIPTION,
       variables: { userId: id, userUrlSlug: urlSlug },
       updateQuery: (prev, { subscriptionData }) => {
@@ -69,8 +85,9 @@ const useUser = ({
         });
       },
     });
+
     return () => unsubscribe();
-  }, [id, urlSlug, subscribe, subscribeToMore]);
+  }, [subscribe, subscribeToMore, id, urlSlug]);
 
   return [getUserQuery.data?.getUser, getUserQuery];
 };
