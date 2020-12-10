@@ -6,6 +6,8 @@ describe('App component', () => {
   it('should not display UI while fetching current user status', async () => {
     const { container } = render(<App />);
     expect(container.firstChild).toBe(null);
+
+    await screen.findByText(/Live now/i);
     await waitFor(() => {
       expect(screen.queryAllByText(/dang/i).length).toEqual(4);
     });
