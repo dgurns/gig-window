@@ -86,11 +86,13 @@ const useChat = (
     getChatEvents,
     { subscribeToMore, ...getChatEventsResult },
   ] = useLazyQuery<QueryData>(GET_CHAT_EVENTS);
+
   useEffect(() => {
     if (parentUserId) {
       getChatEvents({ variables: { parentUserId } });
     }
   }, [getChatEvents, parentUserId]);
+
   const chatEvents = getChatEventsResult.data?.getChatEvents || [];
 
   useEffect(() => {

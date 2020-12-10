@@ -1,10 +1,9 @@
-import { User, UserPermission } from 'types';
-import { PaymentForShow, RecentPaymentToPayee } from 'hooks/usePayments';
+import { User, UserPermission, Payment } from 'types';
 
 interface HasAccessToLiveVideoArgs {
   user?: User;
-  paymentForShow?: PaymentForShow;
-  recentPaymentsToPayee?: RecentPaymentToPayee[];
+  paymentForShow?: Payment;
+  recentPaymentsToPayee?: Payment[];
 }
 
 const hasAccessToLiveVideo = ({
