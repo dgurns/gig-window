@@ -54,11 +54,12 @@ const AutoLogin = () => {
         </Typography>
       );
     }
+    return null;
   }, [loading, error]);
 
   return (
     <Container maxWidth="md" disableGutters className={classes.pageContent}>
-      {message}
+      <>{message}</>
     </Container>
   );
 };
