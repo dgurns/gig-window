@@ -21,9 +21,10 @@ services:
     depends_on:
       - redis
     restart: always
+    network_mode: host
     environment:
       - NODE_ENV=production
-      - DATABASE_HOST=host.docker.internal
+      - DATABASE_HOST=localhost
       - DATABASE_PORT=5432
       - DATABASE_USERNAME=gigwindow
       - DATABASE_PASSWORD=${DATABASE_PASSWORD}
