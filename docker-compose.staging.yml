@@ -23,7 +23,7 @@ services:
     restart: always
     environment:
       - NODE_ENV=production
-      - DATABASE_HOST=host.docker.internal
+      - DATABASE_HOST=api-staging.gigwindow.com
       - DATABASE_PORT=5432
       - DATABASE_USERNAME=gigwindow
       - DATABASE_PASSWORD=${DATABASE_PASSWORD}
