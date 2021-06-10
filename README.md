@@ -1,5 +1,7 @@
 # GigWindow - Play online shows
 
+> _NOTE: I took down the running instance of GigWindow, but feel free to start your own_ - [Read the project Post Mortem](https://github.com/dgurns/gig-window/blob/develop/POST_MORTEM.md)
+
 An open source project from the co-founder of Concert Window  
 https://gigwindow.com
 
@@ -14,7 +16,7 @@ Typescript, Create React App, Apollo Client, Material UI, GraphQL, Apollo Server
 - **Need support?** 
   - Check the [Wiki](https://github.com/dgurns/gig-window/wiki) for some common questions and answers. 
     - If you're a community member and would like to help out by adding some more Q+A's to the wiki, please go right ahead.
-  - If that still doesn't answer your question, post a [new issue](https://github.com/dgurns/gig-window/issues/new/choose) - first search to see if it has been asked already! 
+  - If that still doesn't answer your question, post a [new discussion](https://github.com/dgurns/gig-window/discussions) - first search to see if it has been asked already! 
     - Again if you're a community member and would like to help answer people's questions, please go for it and thank you 🙏
 - **Want to raise a bug?** Post a [new issue](https://github.com/dgurns/gig-window/issues/new/choose). First search to see if it's been raised already, and be sure to fill out the complete issue template so we can recreate the bug. Bugs without the template will be closed.
 - **Want to contribute to the code?** Open a [pull request](https://github.com/dgurns/gig-window/compare). We recommend first posting an issue with your idea so others can comment on it. Not all pull requests will be accepted! To have the best chance, make it small, clean, and polished.

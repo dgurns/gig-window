@@ -23,11 +23,11 @@ services:
     restart: always
     environment:
       - NODE_ENV=production
-      - DATABASE_HOST=gigwindow-staging.ctgvfpoeqoab.us-east-1.rds.amazonaws.com
+      - DATABASE_HOST=api-staging.gigwindow.com
       - DATABASE_PORT=5432
-      - DATABASE_USERNAME=postgres
+      - DATABASE_USERNAME=gigwindow
       - DATABASE_PASSWORD=${DATABASE_PASSWORD}
-      - DATABASE_NAME=postgres
+      - DATABASE_NAME=gigwindowstaging
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - WEB_ORIGIN=https://staging.gigwindow.com

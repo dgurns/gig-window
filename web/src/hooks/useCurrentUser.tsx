@@ -48,11 +48,22 @@ interface UseCurrentUserArgs {
   subscribe?: boolean;
 }
 
+interface QueryData {
+  getCurrentUser: User;
+}
+interface SubscriptionData {
+  newUserEvent: User;
+}
+interface SubscriptionVars {
+  userId: number;
+}
+
 const useCurrentUser = ({ subscribe = false }: UseCurrentUserArgs = {}): [
   User | undefined,
-  QueryResult<User>
+  QueryResult<QueryData>
 ] => {
-  const currentUserQuery = useQuery(GET_CURRENT_USER);
+  const currentUserQuery = useQuery<QueryData>(GET_CURRENT_USER);
+
   const { data, subscribeToMore } = currentUserQuery;
   const currentUser = data?.getCurrentUser;
 
@@ -61,7 +72,7 @@ const useCurrentUser = ({ subscribe = false }: UseCurrentUserArgs = {}): [
       return;
     }
 
-    const unsubscribe = subscribeToMore({
+    const unsubscribe = subscribeToMore<SubscriptionData, SubscriptionVars>({
       document: USER_EVENT_SUBSCRIPTION,
       variables: { userId: currentUser.id },
       updateQuery: (prev, { subscriptionData }) => {

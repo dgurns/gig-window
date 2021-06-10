@@ -60,8 +60,8 @@ const Header = () => {
     }
   }, [pathname]);
 
-  const [currentUser, currentUserQuery] = useCurrentUser();
-  const userIsLoggedOut = !currentUser && !currentUserQuery.loading;
+  const [currentUser, { loading, refetch }] = useCurrentUser();
+  const userIsLoggedOut = !currentUser && !loading;
 
   const [AuthDialog, setAuthDialogIsVisible] = useDialog();
   const [signUpIsActive, setSignUpIsActive] = useState(true);
@@ -73,7 +73,9 @@ const Header = () => {
 
   const onAuthSuccess = () => {
     setAuthDialogIsVisible(false);
-    currentUserQuery.refetch();
+    if (refetch) {
+      refetch();
+    }
   };
 
   return (

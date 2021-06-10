@@ -1,47 +1,7 @@
-import { useQuery, gql, QueryResult } from '@apollo/client';
+import { useEffect } from 'react';
+import { useLazyQuery, gql, LazyQueryResult } from '@apollo/client';
 import useCurrentUser from 'hooks/useCurrentUser';
-
-export interface Payment {
-  id: number;
-  createdAt: string;
-  amountInCents: number;
-  isRefunded: boolean;
-  payeeUser: {
-    username: string;
-  };
-}
-interface PaymentsData {
-  getUserPayments: Payment[];
-}
-
-export interface PaymentForShow {
-  id: number;
-}
-interface PaymentForShowData {
-  getUserPaymentForShow: PaymentForShow;
-}
-
-export interface RecentPaymentToPayee {
-  id: number;
-}
-interface RecentPaymentsToPayeeData {
-  getUserPaymentsToPayee: RecentPaymentToPayee[];
-}
-
-interface UsePaymentsArgs {
-  showId?: number;
-  payeeUserId?: number;
-}
-
-interface UsePaymentsReturnValue {
-  payments?: Payment[];
-  paymentsQuery: QueryResult<PaymentsData>;
-  paymentForShow?: PaymentForShow;
-  paymentForShowQuery: QueryResult<PaymentForShowData>;
-  recentPaymentsToPayee?: RecentPaymentToPayee[];
-  recentPaymentsToPayeeQuery: QueryResult<RecentPaymentsToPayeeData>;
-  refetchPayments: () => void;
-}
+import { Payment } from 'types';
 
 const GET_PAYMENTS = gql`
   query GetPayments {
@@ -73,32 +33,76 @@ const GET_RECENT_PAYMENTS_TO_PAYEE = gql`
   }
 `;
 
+interface PaymentsData {
+  getUserPayments: Payment[];
+}
+interface PaymentForShowData {
+  getUserPaymentForShow: Payment;
+}
+interface PaymentForShowVars {
+  showId: number;
+}
+interface RecentPaymentsToPayeeData {
+  getUserPaymentsToPayee: Payment[];
+}
+interface RecentPaymentsToPayeeVars {
+  payeeUserId: number;
+}
+
+interface UsePaymentsArgs {
+  showId?: number;
+  payeeUserId?: number;
+}
+interface UsePaymentsReturnValue {
+  payments?: Payment[];
+  paymentsQuery: LazyQueryResult<PaymentsData, {}>;
+  paymentForShow?: Payment;
+  paymentForShowQuery: LazyQueryResult<PaymentForShowData, PaymentForShowVars>;
+  recentPaymentsToPayee?: Payment[];
+  recentPaymentsToPayeeQuery: LazyQueryResult<
+    RecentPaymentsToPayeeData,
+    RecentPaymentsToPayeeVars
+  >;
+  refetchPayments: () => void;
+}
+
 const usePayments = ({
   showId,
   payeeUserId,
 }: UsePaymentsArgs = {}): UsePaymentsReturnValue => {
   const [currentUser] = useCurrentUser();
 
-  const paymentsQuery = useQuery<PaymentsData>(GET_PAYMENTS, {
-    skip: !currentUser,
-    fetchPolicy: 'cache-and-network',
-  });
-  const paymentForShowQuery = useQuery<PaymentForShowData>(
-    GET_PAYMENT_FOR_SHOW,
+  const [getPayments, paymentsQuery] = useLazyQuery<PaymentsData>(
+    GET_PAYMENTS,
     {
-      variables: { showId },
-      skip: !showId || !currentUser,
       fetchPolicy: 'cache-and-network',
     }
   );
-  const recentPaymentsToPayeeQuery = useQuery<RecentPaymentsToPayeeData>(
-    GET_RECENT_PAYMENTS_TO_PAYEE,
-    {
-      variables: { payeeUserId },
-      skip: !payeeUserId || !currentUser,
-      fetchPolicy: 'cache-and-network',
+  useEffect(() => {
+    if (currentUser) {
+      getPayments();
     }
-  );
+  }, [getPayments, currentUser]);
+
+  const [getPaymentForShow, paymentForShowQuery] = useLazyQuery<
+    PaymentForShowData,
+    PaymentForShowVars
+  >(GET_PAYMENT_FOR_SHOW, { fetchPolicy: 'cache-and-network' });
+  useEffect(() => {
+    if (showId && currentUser) {
+      getPaymentForShow({ variables: { showId } });
+    }
+  }, [getPaymentForShow, showId, currentUser]);
+
+  const [getRecentPaymentsToPayee, recentPaymentsToPayeeQuery] = useLazyQuery<
+    RecentPaymentsToPayeeData,
+    RecentPaymentsToPayeeVars
+  >(GET_RECENT_PAYMENTS_TO_PAYEE, { fetchPolicy: 'cache-and-network' });
+  useEffect(() => {
+    if (payeeUserId && currentUser) {
+      getRecentPaymentsToPayee({ variables: { payeeUserId } });
+    }
+  }, [getRecentPaymentsToPayee, payeeUserId, currentUser]);
 
   const payments = paymentsQuery.data?.getUserPayments;
   const paymentForShow = paymentForShowQuery.data?.getUserPaymentForShow;
@@ -106,11 +110,18 @@ const usePayments = ({
     recentPaymentsToPayeeQuery.data?.getUserPaymentsToPayee;
 
   const refetchPayments = () => {
-    if (!currentUser) return;
+    if (!currentUser) {
+      return;
+    }
 
-    paymentsQuery.refetch();
-    if (showId) paymentForShowQuery.refetch();
-    if (payeeUserId) recentPaymentsToPayeeQuery.refetch();
+    paymentsQuery.refetch && paymentsQuery.refetch();
+    if (showId) {
+      paymentForShowQuery.refetch && paymentForShowQuery.refetch();
+    }
+    if (payeeUserId) {
+      recentPaymentsToPayeeQuery.refetch &&
+        recentPaymentsToPayeeQuery.refetch();
+    }
   };
 
   return {

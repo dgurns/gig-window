@@ -127,7 +127,7 @@ const Watch = () => {
     activeShow,
   ]);
 
-  if (userQuery.loading) {
+  if (userQuery.loading || typeof userQuery.data === 'undefined') {
     return (
       <Container disableGutters maxWidth={false}>
         <Grid container direction="row" className={classes.userInfo}>

@@ -1,4 +1,10 @@
-import { useQuery, gql, QueryHookOptions, QueryResult } from '@apollo/client';
+import { useEffect } from 'react';
+import {
+  useLazyQuery,
+  gql,
+  QueryHookOptions,
+  LazyQueryResult,
+} from '@apollo/client';
 import { Show } from 'types';
 
 export const GET_SHOWS = gql`
@@ -18,10 +24,6 @@ export const GET_SHOWS = gql`
   }
 `;
 
-interface ShowsData {
-  getShows: Show[];
-}
-
 interface UseShowsArgs {
   minShowtime?: string;
   take?: number;
@@ -29,20 +31,32 @@ interface UseShowsArgs {
   queryOptions?: QueryHookOptions;
 }
 
+interface QueryData {
+  getShows: Show[];
+}
+interface QueryVars {
+  minShowtime?: string;
+  take?: number;
+  skip?: number;
+}
+
 const useShows = ({
   minShowtime,
   take,
   skip,
   queryOptions,
-}: UseShowsArgs = {}): [Show[] | undefined, QueryResult<ShowsData>] => {
-  const getShowsQuery = useQuery<ShowsData>(GET_SHOWS, {
-    variables: {
-      minShowtime,
-      take,
-      skip,
-    },
-    ...queryOptions,
-  });
+}: UseShowsArgs = {}): [
+  Show[] | undefined,
+  LazyQueryResult<QueryData, QueryVars>
+] => {
+  const [getShows, getShowsQuery] = useLazyQuery<QueryData>(
+    GET_SHOWS,
+    queryOptions
+  );
+
+  useEffect(() => {
+    getShows({ variables: { minShowtime, take, skip } });
+  }, [getShows, minShowtime, take, skip]);
 
   const shows = getShowsQuery.data?.getShows;
 

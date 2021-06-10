@@ -1,11 +1,6 @@
 import { useEffect, useCallback } from 'react';
 import { useQuery, useMutation, gql } from '@apollo/client';
-import { Chat, Payment } from 'types';
-
-export interface ChatEvent {
-  chat?: Chat;
-  payment?: Payment;
-}
+import { ChatEvent } from 'types';
 
 const GET_CHAT_EVENTS = gql`
   query GetChatEvents($parentUserId: Int!) {
@@ -77,22 +72,30 @@ const CREATE_CHAT = gql`
   }
 `;
 
+interface QueryData {
+  getChatEvents: ChatEvent[];
+}
+interface SubscriptionData {
+  newChatEvent: ChatEvent;
+}
+
 const useChat = (
   parentUserId?: number
 ): [ChatEvent[], (message?: string) => void] => {
-  const { subscribeToMore, ...getChatEventsResult } = useQuery(
+  const { subscribeToMore, ...getChatEventsResult } = useQuery<QueryData>(
     GET_CHAT_EVENTS,
     {
       variables: { parentUserId },
       skip: !parentUserId,
     }
   );
+
   const chatEvents = getChatEventsResult.data?.getChatEvents || [];
 
   useEffect(() => {
-    if (!parentUserId) return;
+    if (!parentUserId || !subscribeToMore) return;
 
-    const unsubscribe = subscribeToMore({
+    const unsubscribe = subscribeToMore<SubscriptionData>({
       document: CHAT_EVENTS_SUBSCRIPTION,
       variables: { parentUserId },
       updateQuery: (prev, { subscriptionData }) => {

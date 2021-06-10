@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, wait, act } from 'test-utils';
+import { render, screen, waitFor } from 'test-utils';
 import Home from 'screens/Home';
 import { server, graphql } from 'mocks/server';
 
@@ -20,7 +20,7 @@ describe('Home screen', () => {
     screen.getByText(/Sign up/i);
 
     await screen.findByText(/Live now/i);
-    await wait(() => {
+    await waitFor(() => {
       expect(screen.queryAllByText(/dang/i).length).toEqual(3);
     });
     screen.getByText(/Upcoming shows/i);
@@ -32,7 +32,7 @@ describe('Home screen', () => {
     render(<Home />);
 
     await screen.findByText(/Live now/i);
-    await wait(() => {
+    await waitFor(() => {
       expect(screen.queryAllByText(/dang/i).length).toEqual(3);
     });
     screen.getByText(/Upcoming shows/i);

@@ -92,12 +92,12 @@ const useStyles = makeStyles(({ palette, spacing, breakpoints }) => ({
 const ProjectOverviewSplash = () => {
   const classes = useStyles();
 
-  const [, currentUserQuery] = useCurrentUser();
+  const [, { refetch }] = useCurrentUser();
   const [VideoDialog, setVideoDialogIsVisible] = useDialog();
   const [AuthDialog, setAuthDialogIsVisible] = useDialog();
 
   const onAuthSuccess = () => {
-    currentUserQuery.refetch();
+    refetch && refetch();
   };
 
   return (
@@ -112,15 +112,13 @@ const ProjectOverviewSplash = () => {
         <Typography variant="h6" className={classes.subheading}>
           An open source project from the co-founder of Concert Window
         </Typography>
-        <Button
-          onClick={() => setAuthDialogIsVisible(true)}
-          color="primary"
-          variant="contained"
-          size="large"
-          className={classes.ctaButton}
-        >
-          Sign up
-        </Button>
+        <Typography className={classes.ctaButton}>
+          [This project has been archived, but you can{' '}
+          <Link href="https://github.com/dgurns/gig-window">
+            view all the code on GitHub
+          </Link>
+          ]
+        </Typography>
         <Grid
           item
           container
@@ -202,7 +200,9 @@ const ProjectOverviewSplash = () => {
             <br />
             <br />
             Now this tool will <em>always</em> be available to people no matter
-            what happens.
+            what happens. [Edit: Very few people ended up using this, but all
+            the code is still available on GitHub. Feel free to start up your
+            own instance!]
             <br />
             <br />
             I want to run this as a sustainable project for the community, and
