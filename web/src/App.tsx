@@ -1,5 +1,10 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from 'react-router-dom';
 
 import useCurrentUser from 'hooks/useCurrentUser';
 
@@ -18,6 +23,7 @@ import LinkStripeAccount from 'screens/LinkStripeAccount';
 import AutoLogin from 'screens/AutoLogin';
 import Admin from 'screens/Admin';
 import EmbeddedPlayer from 'screens/EmbeddedPlayer';
+import ProjectOverviewSplash from 'components/ProjectOverviewSplash';
 
 const useStyles = makeStyles(({ spacing }) => ({
   content: {
@@ -47,25 +53,25 @@ function App() {
     return <EmbeddedPlayer />;
   }
 
-  const isCheckingForCurrentUser = typeof data === 'undefined';
-  if (isCheckingForCurrentUser) {
-    return null;
-  } else if (error) {
-    return (
-      <Grid
-        container
-        direction="column"
-        alignItems="center"
-        className={classes.networkError}
-      >
-        <Typography color="error">
-          Network error - could not reach the backend.
-          <br />
-          Please double-check your internet connection and reload the page.
-        </Typography>
-      </Grid>
-    );
-  }
+  //   const isCheckingForCurrentUser = typeof data === 'undefined';
+  //   if (isCheckingForCurrentUser) {
+  //     return null;
+  //   } else if (error) {
+  //     return (
+  //       <Grid
+  //         container
+  //         direction="column"
+  //         alignItems="center"
+  //         className={classes.networkError}
+  //       >
+  //         <Typography color="error">
+  //           Network error - could not reach the backend.
+  //           <br />
+  //           Please double-check your internet connection and reload the page.
+  //         </Typography>
+  //       </Grid>
+  //     );
+  //   }
 
   return (
     <Router>
@@ -74,10 +80,16 @@ function App() {
       <div className={classes.content}>
         <Switch>
           <Route exact path="/">
-            <Home />
+            {/* <Home /> */}
+            <ProjectOverviewSplash />
           </Route>
 
-          <Route exact path="/oauth/stripe-connect">
+          {/* Now that the project is archived, redirect all routes to Home */}
+          <Route>
+            <Redirect to="/" />
+          </Route>
+
+          {/* <Route exact path="/oauth/stripe-connect">
             <LinkStripeAccount />
           </Route>
 
@@ -110,7 +122,7 @@ function App() {
 
           <Route path="/:userUrlSlug">
             <Watch />
-          </Route>
+          </Route> */}
         </Switch>
       </div>
 
