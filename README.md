@@ -1,5 +1,7 @@
 # GigWindow - Play online shows
 
+> _NOTE: I took down the running instance of GigWindow, but feel free to start your own_ - [Read the project Post Mortem](https://github.com/dgurns/gig-window/blob/develop/POST_MORTEM.md)
+
 An open source project from the co-founder of Concert Window  
 https://gigwindow.com
 
