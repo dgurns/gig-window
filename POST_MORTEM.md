@@ -53,6 +53,10 @@ Of course, very few people actually _used it_. But solely for the fun and the le
   - But NextJS is open source and can be deployed on any provider
   - And it gives fantastic config out of the box, which would have saved me tons of time. Stuff like static site generation, built-in TypeScript support, much better routing system than React Router.
   - Even though I probably should have just used NextJS, CRA was totally fine.
+- Using a Git Flow development model 
+  - This means doing new feature branches and merging them into `develop` via PR, then doing manual releases to `master`
+  - I should have used GitHub Flow and merged every PR into `master`, with preview deployments per PR
+  - It would have required more CI/CD config but I think it would have been cleaner and made releases less of a chore
 
 ## Terrible decisions
 - Material UI
